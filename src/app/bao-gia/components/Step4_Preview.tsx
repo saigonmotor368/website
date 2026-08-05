@@ -143,7 +143,7 @@ export default function Step4_Preview({ quoteData, onNext, onPrev }: Step4Props)
             </div>
 
             {/* Bảng Hồ sơ */}
-            <div className="mb-12">
+            <div className="mb-8">
               <h3 className="text-[#D4AF37] font-bold uppercase mb-3">2. Hồ sơ khách hàng cần chuẩn bị</h3>
               <table className="w-full border-collapse border border-gray-300">
                 <thead>
@@ -169,6 +169,16 @@ export default function Step4_Preview({ quoteData, onNext, onPrev }: Step4Props)
                 </tbody>
               </table>
             </div>
+
+            {/* Ghi chú chung */}
+            {quoteData.note && (
+              <div className="mb-12">
+                <h3 className="text-gray-800 font-bold mb-2">Ghi chú:</h3>
+                <div className="text-sm text-gray-700 whitespace-pre-wrap italic bg-gray-50 p-4 border-l-4 border-[#D4AF37]">
+                  {quoteData.note}
+                </div>
+              </div>
+            )}
 
             {/* Signatures */}
             <div className="flex justify-between px-12 mt-16 pt-8">
