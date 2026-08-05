@@ -138,6 +138,13 @@ export default function Step5_Export({ quoteData, onReset }: Step5Props) {
           >
             Tạo Báo Giá Mới
           </button>
+          
+          <button 
+            onClick={() => window.location.href = '/bao-gia'}
+            className="text-gray-400 hover:text-white mt-2 text-sm underline underline-offset-4"
+          >
+            Về trang Quản lý Lịch sử
+          </button>
         </div>
       </div>
     </div>
