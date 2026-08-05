@@ -17,9 +17,9 @@ async function saveQuotes(quotes: any[]) {
   await fs.writeFile(dbPath, JSON.stringify(quotes, null, 2), 'utf8');
 }
 
-export async function PUT(req: NextRequest, { params }: { params: { id: string } }) {
+export async function PUT(req: NextRequest, context: { params: Promise<{ id: string }> }) {
   try {
-    const id = params.id;
+    const { id } = await context.params;
     const updateData = await req.json();
     
     const quotes = await getQuotes();
@@ -44,9 +44,9 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
   }
 }
 
-export async function DELETE(req: NextRequest, { params }: { params: { id: string } }) {
+export async function DELETE(req: NextRequest, context: { params: Promise<{ id: string }> }) {
   try {
-    const id = params.id;
+    const { id } = await context.params;
     let quotes = await getQuotes();
     
     const initialLength = quotes.length;
