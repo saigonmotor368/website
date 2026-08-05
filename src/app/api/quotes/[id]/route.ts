@@ -1,45 +1,31 @@
 import { NextRequest, NextResponse } from 'next/server';
-import fs from 'fs/promises';
-import path from 'path';
+import { createClient } from '@supabase/supabase-js';
 
-const dbPath = path.join(process.cwd(), 'src', 'data', 'quotes.json');
-
-async function getQuotes() {
-  try {
-    const data = await fs.readFile(dbPath, 'utf8');
-    return JSON.parse(data);
-  } catch (error) {
-    return [];
-  }
-}
-
-async function saveQuotes(quotes: any[]) {
-  await fs.writeFile(dbPath, JSON.stringify(quotes, null, 2), 'utf8');
-}
+const supabaseUrl = process.env.SUPABASE_URL || '';
+const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || '';
+const supabase = createClient(supabaseUrl, supabaseKey);
 
 export async function PUT(req: NextRequest, context: { params: Promise<{ id: string }> }) {
   try {
     const { id } = await context.params;
     const updateData = await req.json();
     
-    const quotes = await getQuotes();
-    const index = quotes.findIndex((q: any) => q.id === id);
-    
-    if (index === -1) {
-      return NextResponse.json({ error: 'Quote not found' }, { status: 404 });
-    }
+    // Đảm bảo không ghi đè ID trong data JSONB
+    updateData.id = id;
+    updateData.updatedAt = new Date().toISOString();
 
-    quotes[index] = {
-      ...quotes[index],
-      ...updateData,
-      id, // ensure ID is not overwritten
-      updatedAt: new Date().toISOString()
-    };
+    const { error } = await supabase
+      .from('quotes')
+      .update({
+        data: updateData
+      })
+      .eq('id', id);
 
-    await saveQuotes(quotes);
+    if (error) throw error;
 
-    return NextResponse.json({ success: true, data: quotes[index] });
+    return NextResponse.json({ success: true, data: updateData });
   } catch (error) {
+    console.error('Error updating quote in Supabase:', error);
     return NextResponse.json({ error: 'Failed to update quote' }, { status: 500 });
   }
 }
@@ -47,19 +33,17 @@ export async function PUT(req: NextRequest, context: { params: Promise<{ id: str
 export async function DELETE(req: NextRequest, context: { params: Promise<{ id: string }> }) {
   try {
     const { id } = await context.params;
-    let quotes = await getQuotes();
     
-    const initialLength = quotes.length;
-    quotes = quotes.filter((q: any) => q.id !== id);
-    
-    if (quotes.length === initialLength) {
-      return NextResponse.json({ error: 'Quote not found' }, { status: 404 });
-    }
+    const { error } = await supabase
+      .from('quotes')
+      .delete()
+      .eq('id', id);
 
-    await saveQuotes(quotes);
+    if (error) throw error;
 
     return NextResponse.json({ success: true });
   } catch (error) {
+    console.error('Error deleting quote in Supabase:', error);
     return NextResponse.json({ error: 'Failed to delete quote' }, { status: 500 });
   }
 }
