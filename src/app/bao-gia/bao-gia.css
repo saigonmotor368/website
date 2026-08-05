@@ -1,0 +1,77 @@
+/* src/app/bao-gia/bao-gia.css */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.bao-gia-layout {
+  @apply min-h-screen bg-[#0f1117] text-gray-100 font-sans;
+}
+
+.bao-gia-card {
+  @apply bg-[#1a1d27] border border-gray-800 rounded-xl p-4 sm:p-6 shadow-2xl;
+}
+
+.bao-gia-input {
+  @apply w-full bg-[#2a2d3d] border border-gray-700 rounded-lg px-3 py-3 sm:px-4 sm:py-2.5 text-base sm:text-sm text-white focus:outline-none focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37] transition-colors;
+}
+
+.bao-gia-btn-primary {
+  @apply bg-[#D4AF37] hover:bg-[#b8952d] text-gray-900 font-semibold py-3 sm:py-2.5 px-4 sm:px-6 rounded-lg transition-all transform hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed text-center justify-center;
+}
+
+.bao-gia-btn-secondary {
+  @apply bg-gray-700 hover:bg-gray-600 text-white font-semibold py-3 sm:py-2.5 px-4 sm:px-6 rounded-lg transition-all text-center justify-center;
+}
+
+.bao-gia-table {
+  @apply w-full text-left border-collapse;
+}
+
+.bao-gia-table th {
+  @apply bg-[#2a2d3d] px-4 py-3 text-sm font-medium text-gray-400 uppercase tracking-wider;
+}
+
+.bao-gia-table td {
+  @apply px-4 py-4 border-b border-gray-800 align-middle;
+}
+
+/* Ẩn các elements không cần thiết khi export PDF */
+.pdf-exporting {
+  @apply bg-white text-black p-8 !important;
+  width: 794px !important; /* A4 width in pixels at 96 DPI */
+  max-width: none !important;
+}
+
+.pdf-exporting * {
+  @apply text-black border-gray-300 !important;
+}
+
+.pdf-exporting .no-print {
+  display: none !important;
+}
+
+.pdf-exporting input, .pdf-exporting textarea {
+  border: none !important;
+  background: transparent !important;
+  resize: none !important;
+  padding: 0 !important;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #0f1117;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #374151;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #4b5563;
+}

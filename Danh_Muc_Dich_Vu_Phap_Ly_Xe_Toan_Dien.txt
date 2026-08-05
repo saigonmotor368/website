@@ -1,0 +1,81 @@
+# TỔNG HỢP DANH MỤC DỊCH VỤ PHÁP LÝ & HỒ SƠ XE (Dành cho Agent Xây dựng Web)
+
+**LƯU Ý QUAN TRỌNG ĐẦU TRANG:** Hệ thống KHÔNG cung cấp dịch vụ Công chứng Hợp đồng mua bán. Khách hàng vui lòng chuẩn bị sẵn HĐMB đã công chứng/chứng thực theo quy định pháp luật.
+
+---
+
+## NHÓM 1: DỊCH VỤ THU HỒI ĐĂNG KÝ & BIỂN SỐ (RÚT HỒ SƠ GỐC)
+*Căn cứ pháp lý: Điều 25, 26 Thông tư 79/2024/TT-BCA (được hợp nhất).*
+**1. Các dịch vụ cung cấp:**
+- Thu hồi đăng ký, biển số xe ô tô/xe máy khi chuyển quyền sở hữu (bán, tặng cho, thừa kế).
+- Thu hồi đăng ký, biển số đối với xe hết niên hạn sử dụng, xe hỏng không sử dụng được hoặc xe bị mất cắp.
+- Hỗ trợ nộp phạt chậm sang tên (nếu quá 30 ngày kể từ ngày ký HĐMB mà chưa làm thủ tục).
+
+**2. Hồ sơ yêu cầu:**
+- Giấy chứng nhận đăng ký xe (bản gốc).
+- Biển số xe (Tháo cả biển trước/sau đối với ô tô).
+- Bản sao chứng từ chuyển quyền sở hữu (HĐMB/Tặng cho đã công chứng).
+- Giấy tờ tùy thân của chủ xe (CCCD gắn chíp).
+
+---
+
+## NHÓM 2: DỊCH VỤ ĐĂNG KÝ XE & SANG TÊN ĐỔI CHỦ
+*Căn cứ pháp lý: Điều 14, 15, 16, 17 Thông tư 79/2024/TT-BCA (được hợp nhất).*
+**1. Các dịch vụ cung cấp:**
+- Đăng ký xe mới (Ô tô, Xe máy) & Bấm biển số lần đầu.
+- Sang tên trọn gói ô tô, xe máy (cùng tỉnh hoặc chuyển tỉnh).
+- Đăng ký, cấp biển số xe trúng đấu giá.
+- Đăng ký xe tạm thời (dành cho xe di chuyển từ nhà máy, đại lý đến nơi đăng ký hoặc xe quá cảnh).
+
+**2. Hồ sơ yêu cầu:**
+- *Xe mới:* Phiếu kiểm tra chất lượng xuất xưởng, Hóa đơn GTGT, Chứng từ nộp lệ phí trước bạ.
+- *Sang tên:* Chứng nhận thu hồi đăng ký/biển số, HĐMB công chứng, Chứng từ nộp lệ phí trước bạ, CCCD người mua.
+- *Xe đấu giá:* Thêm Quyết định xác nhận biển số xe trúng đấu giá của Cục CSGT.
+
+---
+
+## NHÓM 3: XỬ LÝ CA KHÓ - XE QUA NHIỀU ĐỜI CHỦ (VẮNG CHỦ)
+*Căn cứ pháp lý: Điều 32 Thông tư 79/2024/TT-BCA (được hợp nhất).*
+**1. Mô tả dịch vụ:**
+- Hỗ trợ sang tên đối với xe đã chuyển quyền sở hữu qua nhiều người nhưng thiếu hoặc không có Hợp đồng mua bán với người đứng tên trên Cà vẹt (vắng chủ).
+
+**2. Hồ sơ yêu cầu:**
+- Giấy chứng nhận đăng ký xe & Biển số xe (bắt buộc phải có để thu hồi).
+- Giấy tờ mua bán viết tay của người bán cuối cùng.
+- Giấy cam kết chịu trách nhiệm trước pháp luật về nguồn gốc xe (Hệ thống sẽ cung cấp mẫu để khách ký).
+- *Lưu ý thời gian:* Bắt buộc niêm yết công khai 30 ngày tại cơ quan Công an trước khi có kết quả.
+
+---
+
+## NHÓM 4: DỊCH VỤ CẤP ĐỔI, CẤP LẠI & CẢI TẠO XE
+*Căn cứ pháp lý: Điều 18, 19, 21 Thông tư 79/2024/TT-BCA (được hợp nhất).*
+**1. Các dịch vụ cung cấp:**
+- Cấp lại Cà vẹt (Giấy chứng nhận đăng ký) bị mất, mờ, rách, hỏng.
+- Cấp lại Biển số xe bị rơi mất, gãy, hỏng.
+- Đổi biển số kinh doanh (từ nền Trắng sang Vàng và ngược lại).
+- Đổi định dạng biển số (đổi biển vuông sang biển dài cho ô tô).
+- Đổi Cà vẹt do thay đổi thông tin chủ xe (đổi địa chỉ thường trú, cập nhật CCCD).
+- Đổi Cà vẹt do thay đổi màu sơn, cải tạo hoán cải xe (yêu cầu mang xe đi xét xe thực tế).
+
+**2. Hồ sơ yêu cầu:**
+- Cà vẹt / Biển số cũ (nếu hỏng/đổi).
+- Đơn trình báo mất (nếu mất).
+- Giấy phép kinh doanh vận tải (nếu đổi biển Vàng).
+- Giấy chứng nhận an toàn kỹ thuật (nếu cải tạo/hoán cải).
+
+---
+
+## NHÓM 5: DỊCH VỤ HỖ TRỢ NGHIỆP VỤ HIỆN TRƯỜNG
+**1. Các dịch vụ cung cấp:**
+- Dịch vụ Cà số khung, số máy tận nơi (tại nhà, bãi xe, showroom).
+- Tư vấn tính toán, tra cứu Lệ phí trước bạ và Phí cấp đổi biển số theo barem của Thuế và Thông tư 71/2025/TT-BTC.
+- Rà soát, tra cứu phạt nguội và tình trạng thế chấp ngân hàng trước khi giao dịch.
+
+---
+
+**QUY TRÌNH TIẾP NHẬN CHUNG (SOP):**
+1. **Tiếp nhận & Rà soát:** Tra cứu phạt nguội, thế chấp ngân hàng, tính hợp pháp của xe.
+2. **Thu thập hồ sơ:** Nhận giấy tờ vật lý hoặc dữ liệu số hóa từ khách hàng.
+3. **Hiện trường:** Cà số khung, số máy, kiểm tra xe (nếu cần).
+4. **Dịch vụ công:** Kê khai trực tuyến, nộp thuế trước bạ thay khách.
+5. **Hoàn tất:** Trả kết quả (Cà vẹt, Biển số mới, Giấy thu hồi) tận tay khách hàng.
