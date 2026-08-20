@@ -31,7 +31,7 @@ export default function Header() {
               SAIGON<span className="text-teal">MOTOR</span>
             </div>
             <div style={{ fontSize: '0.65rem', color: 'var(--text-secondary)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.5px' }}>
-              Bởi Công Ty TNHH Ô tô Xe Máy 368
+              Trực thuộc Công Ty TNHH Ô tô Xe Máy 368
             </div>
           </div>
         </Link>
