@@ -19,9 +19,10 @@ export default function Footer() {
             <Image src="/logo_sgm.png" alt="SGM Logo" fill style={{ objectFit: 'contain' }} />
           </div>
           <h4 style={{ color: 'var(--brand-yellow)', fontSize: '1.2rem', marginBottom: '1rem', textTransform: 'uppercase', fontFamily: 'var(--font-heading)' }}>Công ty TNHH Oto Xe Máy 368</h4>
-          <ul style={{ display: 'flex', flexDirection: 'column', gap: '1rem', color: '#DCD3BF' }}>
-            <li><strong>MST:</strong> <span style={{ color: '#F4F1EA' }}>0316339254</span></li>
-            <li><strong>Địa chỉ:</strong> 745 Phạm Văn Đồng, Kp8, P. Hiệp Bình Chánh, TP Hồ Chí Minh</li>
+          <ul style={{ display: 'flex', flexDirection: 'column', gap: '0.8rem', color: '#DCD3BF', fontSize: '0.95rem', lineHeight: '1.5' }}>
+            <li><strong>GPKD/MST:</strong> <span style={{ color: '#F4F1EA' }}>0316339254</span> cấp ngày 22/06/2020 bởi Sở Kế hoạch và Đầu tư TP.HCM</li>
+            <li><strong>Đại diện pháp luật:</strong> Lương Thế Bằng</li>
+            <li><strong>Địa chỉ trụ sở:</strong> 745 Phạm Văn Đồng, Kp8, P. Linh Đông, TP Thủ Đức, TP Hồ Chí Minh</li>
             <li><strong>Email:</strong> <a href="mailto:saigommotor68@gmail.com" className="text-yellow" style={{ textDecoration: 'none' }}>saigommotor68@gmail.com</a></li>
             <li><strong>Hotline:</strong> <motion.a whileHover={{ scale: 1.1, color: '#fff' }} href="tel:0704104104" className="text-yellow" style={{ display: 'inline-block', fontSize: '1.5rem', fontWeight: 800, textDecoration: 'none' }}>0704.104.104</motion.a></li>
           </ul>

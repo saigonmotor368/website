@@ -36,6 +36,7 @@ export default function Header() {
           <motion.div whileHover={{ y: -3, color: 'var(--brand-red)' }} transition={{ duration: 0.2 }}><Link href="/#dich-vu">Dịch Vụ</Link></motion.div>
           <motion.div whileHover={{ y: -3, color: 'var(--brand-red)' }} transition={{ duration: 0.2 }}><Link href="/#cam-nang">Cẩm Nang</Link></motion.div>
           <motion.div whileHover={{ y: -3, color: 'var(--brand-red)' }} transition={{ duration: 0.2 }}><Link href="/#bang-gia">Bảng Giá</Link></motion.div>
+          <motion.div whileHover={{ y: -3, color: 'var(--brand-red)' }} transition={{ duration: 0.2 }}><Link href="/phap-ly-cam-ket">Pháp Lý & Cam Kết</Link></motion.div>
         </nav>
         <motion.div className="desktop-only" whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
           <Link href="/#tu-van" className="btn btn-teal">Nhận Báo Giá</Link>
@@ -65,6 +66,7 @@ export default function Header() {
                 <Link href="/#dich-vu" onClick={() => setIsMobileMenuOpen(false)}>Dịch Vụ</Link>
                 <Link href="/#cam-nang" onClick={() => setIsMobileMenuOpen(false)}>Cẩm Nang</Link>
                 <Link href="/#bang-gia" onClick={() => setIsMobileMenuOpen(false)}>Bảng Giá</Link>
+                <Link href="/phap-ly-cam-ket" onClick={() => setIsMobileMenuOpen(false)}>Pháp Lý</Link>
               </nav>
               <Link href="/#tu-van" className="btn btn-teal" onClick={() => setIsMobileMenuOpen(false)} style={{ marginTop: '1rem' }}>
                 Nhận Báo Giá
