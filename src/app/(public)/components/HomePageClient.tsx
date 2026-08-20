@@ -52,7 +52,6 @@ export default function Home() {
   return (
     <>
       <main>
-      <main>
         <HeroSection />
 
         {/* EXTENDED SERVICES SECTION */}
