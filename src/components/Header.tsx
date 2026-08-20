@@ -26,8 +26,13 @@ export default function Header() {
           >
              <Image src="/logo_sgm.png" alt="SGM Logo" fill style={{ objectFit: 'contain' }} />
           </motion.div>
-          <div style={{ fontWeight: 900, fontSize: '1.75rem', color: 'var(--brand-red)', letterSpacing: '1px', fontFamily: 'var(--font-heading)' }}>
-            SAIGON<span className="text-teal">MOTOR</span>
+          <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+            <div style={{ fontWeight: 900, fontSize: '1.75rem', color: 'var(--brand-red)', letterSpacing: '1px', fontFamily: 'var(--font-heading)', lineHeight: 1.1 }}>
+              SAIGON<span className="text-teal">MOTOR</span>
+            </div>
+            <div style={{ fontSize: '0.65rem', color: 'var(--text-secondary)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+              Bởi Công Ty TNHH Ô tô Xe Máy 368
+            </div>
           </div>
         </Link>
         
