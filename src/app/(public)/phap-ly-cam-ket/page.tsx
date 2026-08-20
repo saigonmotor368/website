@@ -2,16 +2,10 @@
 
 import { motion } from "framer-motion";
 import Link from "next/link";
-import Head from "next/head";
 
 export default function PhapLyCamKetPage() {
   return (
     <>
-      <Head>
-        <title>Pháp Lý & Cam Kết | Saigon Motor</title>
-        <meta name="description" content="Hồ sơ pháp lý và cam kết chất lượng dịch vụ của Saigon Motor (Công ty TNHH Oto Xe Máy 368)." />
-      </Head>
-      
       <main className="bg-sand min-h-screen pt-32 pb-16" style={{ fontFamily: 'var(--font-lora)' }}>
         <div className="container" style={{ maxWidth: '900px', margin: '0 auto', padding: '0 1.5rem' }}>
           

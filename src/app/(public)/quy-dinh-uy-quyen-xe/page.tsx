@@ -1,5 +1,11 @@
 import Image from "next/image";
 import Link from "next/link";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Quy Định Về Giấy Ủy Quyền Mua Bán Xe | Saigon Motor",
+  description: "Giải đáp pháp lý về hợp đồng ủy quyền xe: thời hạn bao lâu, có tự sang tên được không, và các rủi ro khi mua xe qua ủy quyền.",
+};
 
 export default function UyQuyenXePage() {
   return (

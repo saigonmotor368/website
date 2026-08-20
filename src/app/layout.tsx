@@ -28,6 +28,33 @@ export default function RootLayout({
     <html lang="vi" className={`${playfair.variable} ${lora.variable}`}>
       <body>
         {children}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "LocalBusiness",
+              "name": "Saigon Motor (Công ty TNHH Ô tô Xe máy 368)",
+              "image": "https://saigonmotor.vn/logo_sgm.png",
+              "@id": "https://saigonmotor.vn",
+              "url": "https://saigonmotor.vn",
+              "telephone": "0704104104",
+              "address": {
+                "@type": "PostalAddress",
+                "streetAddress": "745 Phạm Văn Đồng, khu phố 8, Phường Linh Đông",
+                "addressLocality": "Thủ Đức",
+                "addressRegion": "Hồ Chí Minh",
+                "postalCode": "700000",
+                "addressCountry": "VN"
+              },
+              "geo": {
+                "@type": "GeoCoordinates",
+                "latitude": 10.8437212,
+                "longitude": 106.7448224
+              }
+            })
+          }}
+        />
       </body>
     </html>
   );

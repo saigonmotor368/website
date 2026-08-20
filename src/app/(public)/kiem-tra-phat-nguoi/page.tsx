@@ -1,5 +1,11 @@
 import Image from "next/image";
 import Link from "next/link";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Hướng dẫn Kiểm Tra và Xử Lý Phạt Nguội | Saigon Motor",
+  description: "Cách tra cứu lỗi phạt nguội chính xác nhất và quy trình đóng phạt, xóa lỗi trên hệ thống đăng kiểm toàn quốc.",
+};
 
 export default function PhatNguoiPage() {
   return (

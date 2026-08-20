@@ -1,5 +1,11 @@
 import Image from "next/image";
 import Link from "next/link";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Thủ tục Cấp đổi Giấy tờ, Biển số xe bị mất | Saigon Motor",
+  description: "Hướng dẫn xin cấp lại Cavet xe, đổi biển số xe bị mờ, hỏng, gãy. Quy trình xử lý hồ sơ nhanh, không cần chờ đợi lâu.",
+};
 
 export default function CapDoiGiayToPage() {
   return (

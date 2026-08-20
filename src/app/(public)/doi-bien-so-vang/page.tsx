@@ -1,5 +1,11 @@
 import Image from "next/image";
 import Link from "next/link";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Đổi Biển Số Vàng Cho Xe Kinh Doanh | Saigon Motor",
+  description: "Thủ tục và chi phí cấp đổi biển số vàng cho xe kinh doanh vận tải (Grab, Be, Taxi) và cách rút hồ sơ trả lại biển trắng.",
+};
 
 export default function DoiBienSoVangPage() {
   return (

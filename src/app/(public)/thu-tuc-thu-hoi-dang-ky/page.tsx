@@ -1,5 +1,11 @@
 import Image from "next/image";
 import Link from "next/link";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Hướng dẫn Thu hồi Đăng ký & Biển số xe (Rút gốc) | Saigon Motor",
+  description: "Thủ tục thu hồi giấy đăng ký, biển số xe theo quy định biển số định danh mới nhất. Dịch vụ rút hồ sơ gốc nhanh chóng.",
+};
 
 export default function ThuHoiDangKyPage() {
   return (

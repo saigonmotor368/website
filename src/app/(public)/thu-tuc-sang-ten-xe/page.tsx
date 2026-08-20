@@ -1,5 +1,11 @@
 import Image from "next/image";
 import Link from "next/link";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Thủ tục Sang tên Ô tô, Xe máy từ A đến Z | Saigon Motor",
+  description: "Hướng dẫn chi tiết thủ tục sang tên đổi chủ xe ô tô, xe máy năm 2026. Hồ sơ, chi phí và quy trình sang tên xe khác tỉnh, xe vắng chủ.",
+};
 
 export default function SangTenXePage() {
   return (
