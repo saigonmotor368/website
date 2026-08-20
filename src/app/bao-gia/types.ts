@@ -49,4 +49,5 @@ export interface QuoteData {
   quoteNumber: string;           // Mã báo giá tự sinh (VD: BG-20260804-001)
   vatRate: number;               // 0, 8, hoặc 10
   includeRegistrationFee?: boolean; // Tính thêm thuế trước bạ tham khảo
+  note?: string;                 // Ghi chú chung cho báo giá
 }
