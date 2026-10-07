@@ -1,6 +1,9 @@
 import { NextResponse } from 'next/server';
+import { getCurrentStaff } from '@/lib/staff-auth';
 
 export async function POST(request: Request) {
+  const staff = await getCurrentStaff();
+  if (!staff) return NextResponse.json({ error: 'Chưa đăng nhập' }, { status: 401 });
   try {
     const body = await request.json();
     const { imageBase64 } = body;

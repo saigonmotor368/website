@@ -1,84 +1,12 @@
-import Image from "next/image";
+import type { Metadata } from "next";
 import Link from "next/link";
-import { Metadata } from "next";
-
-export const metadata: Metadata = {
-  title: "Thủ tục Sang tên Ô tô, Xe máy từ A đến Z | Saigon Motor",
-  description: "Hướng dẫn chi tiết thủ tục sang tên đổi chủ xe ô tô, xe máy năm 2026. Hồ sơ, chi phí và quy trình sang tên xe khác tỉnh, xe vắng chủ.",
-};
-
-export default function SangTenXePage() {
-  return (
-    <main style={{ paddingTop: '100px', backgroundColor: 'var(--bg-primary)', minHeight: '100vh', paddingBottom: '4rem' }}>
-      <div className="container" style={{ maxWidth: '800px', margin: '0 auto' }}>
-        
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', marginBottom: '3rem' }}>
-          <div style={{ color: 'var(--brand-red)', fontWeight: 700, letterSpacing: '2px', textTransform: 'uppercase', fontSize: '0.9rem', fontFamily: 'var(--font-heading)' }}>
-            Cẩm Nang Pháp Lý Cơ Giới
-          </div>
-          <h1 style={{ fontSize: '3rem', fontWeight: 900, color: 'var(--brand-teal)', lineHeight: 1.2, fontFamily: 'var(--font-heading)' }}>
-            Thủ tục Sang tên Ô tô, Xe máy từ A đến Z (Cập nhật 2026)
-          </h1>
-          <p style={{ color: 'var(--text-secondary)', fontSize: '1.2rem', lineHeight: 1.6, fontStyle: 'italic' }}>
-            Quy trình pháp lý chi tiết giúp bạn chuyển nhượng chiếc xế hộp hoặc xe máy một cách suôn sẻ, an toàn, không lo vướng mắc.
-          </p>
-        </div>
-
-        <div style={{ position: 'relative', width: '100%', aspectRatio: '16/9', marginBottom: '3rem', border: '8px solid white', boxShadow: 'var(--shadow-hard)' }}>
-          <Image src="/vintage_car_sale.png" alt="Sang tên mua bán xe cũ Sài Gòn" fill style={{ objectFit: 'cover' }} priority />
-        </div>
-
-        <article style={{ fontSize: '1.15rem', color: 'var(--text-primary)', lineHeight: 1.8 }}>
-          <h2 style={{ fontSize: '2rem', color: 'var(--brand-teal)', marginTop: '2rem', marginBottom: '1rem', fontFamily: 'var(--font-heading)' }}>
-            1. Hồ sơ cần chuẩn bị (Cả Người Bán & Người Mua)
-          </h2>
-          <p>
-            Trước khi tiến hành sang tên, cả hai bên cần chuẩn bị đầy đủ các giấy tờ pháp lý để tránh việc phải đi lại nhiều lần. Dưới đây là danh sách bắt buộc:
-          </p>
-          <ul style={{ paddingLeft: '1.5rem', marginBottom: '2rem' }}>
-            <li><strong>Giấy tờ cá nhân:</strong> Căn cước công dân (CCCD) gắn chip của cả hai bên. Nếu bên bán có vợ/chồng thì cần CCCD của cả hai vợ chồng và giấy đăng ký kết hôn (hoặc giấy xác nhận độc thân).</li>
-            <li><strong>Giấy tờ xe:</strong> Giấy chứng nhận đăng ký xe (Cavet) bản gốc.</li>
-            <li>Hợp đồng mua bán, tặng cho (Sẽ được lập tại văn phòng công chứng).</li>
-          </ul>
-
-          <h2 style={{ fontSize: '2rem', color: 'var(--brand-teal)', marginTop: '2rem', marginBottom: '1rem', fontFamily: 'var(--font-heading)' }}>
-            2. Quy trình thực hiện chi tiết
-          </h2>
-          
-          <h3 style={{ fontSize: '1.4rem', color: 'var(--brand-red)', marginTop: '1.5rem' }}>Bước 1: Công chứng Hợp đồng Mua bán</h3>
-          <p>
-            Hai bên mang toàn bộ hồ sơ đã chuẩn bị đến Văn phòng Công chứng để lập và công chứng Hợp đồng mua bán. Xin lưu ý, theo luật hiện hành, việc mua bán bằng giấy viết tay không qua công chứng sẽ bị phạt khi sang tên.
-          </p>
-
-          <h3 style={{ fontSize: '1.4rem', color: 'var(--brand-red)', marginTop: '1.5rem' }}>Bước 2: Nộp lệ phí trước bạ</h3>
-          <p>
-            Người mua mang Hợp đồng mua bán và Giấy tờ xe đến Chi cục Thuế nơi mình cư trú để khai và nộp lệ phí trước bạ. Đối với xe cũ, mức thu thường là 2% đối với ô tô và 1% đối với xe máy (tùy khu vực). Hiện nay có thể nộp trực tuyến qua Cổng Dịch vụ công.
-          </p>
-
-          <h3 style={{ fontSize: '1.4rem', color: 'var(--brand-red)', marginTop: '1.5rem' }}>Bước 3: Sang tên tại cơ quan Công an</h3>
-          <p>
-            Nộp hồ sơ sang tên tại Phòng CSGT (nếu là ô tô) hoặc Công an cấp Huyện/Xã (nếu là xe máy). Cán bộ sẽ kiểm tra số khung, số máy và thu lại giấy đăng ký cũ để cấp giấy mới mang tên bạn. 
-            <em> (Lưu ý: Biển số xe hiện nay được định danh theo chủ cũ. Vui lòng xem thêm bài viết về Thủ tục thu hồi).</em>
-          </p>
-
-          <h2 style={{ fontSize: '2rem', color: 'var(--brand-teal)', marginTop: '2rem', marginBottom: '1rem', fontFamily: 'var(--font-heading)' }}>
-            3. Bạn thấy quá rắc rối và tốn thời gian?
-          </h2>
-          <div style={{ backgroundColor: 'var(--bg-secondary)', padding: '2rem', border: '1px solid var(--brand-teal)', marginTop: '2rem' }}>
-            <p style={{ marginBottom: '1.5rem' }}>
-              Việc đi lại giữa Công chứng, Thuế và Cơ quan Công an thường mất rất nhiều thời gian (có thể kéo dài vài ngày) nếu bạn không rành thủ tục hoặc thiếu sót hồ sơ. 
-              Đừng để những rắc rối hành chính làm hỏng niềm vui sở hữu xe mới!
-            </p>
-            <p style={{ fontWeight: 700, color: 'var(--brand-red)', marginBottom: '1.5rem' }}>
-              SGM cung cấp dịch vụ Sang tên - Công chứng tại nhà trọn gói. Chúng tôi sẽ lo liệu mọi thủ tục từ A-Z, bạn chỉ cần ký tên và nhận giấy tờ tại nhà.
-            </p>
-            <div style={{ textAlign: 'center' }}>
-              <Link href="/#tu-van" className="btn btn-teal">Liên hệ Tư vấn Ngay &rarr;</Link>
-            </div>
-          </div>
-
-        </article>
-      </div>
-    </main>
-  );
-}
+import LeadForm from "@/components/LeadForm";
+import TrackedAnchor from "@/components/TrackedAnchor";
+export const metadata:Metadata={title:"Dịch vụ sang tên ô tô, xe máy",description:"Hỗ trợ kiểm tra và thực hiện thủ tục sang tên ô tô, xe máy tại TP.HCM và các tỉnh. Báo phí sau khi xem tình trạng hồ sơ.",alternates:{canonical:"/thu-tuc-sang-ten-xe"}};
+const faqs=[["Sang tên ô tô trọn gói gồm những phần nào?","SGM sẽ xác định phần việc cụ thể sau khi kiểm tra hồ sơ. Gói tham khảo có thể gồm thủ tục thu hồi, đăng ký và hỗ trợ kê khai; thuế trước bạ và lệ phí cấp biển số được tách riêng."],["Xe mua đã lâu nhưng chưa sang tên có nhận không?","SGM có thể kiểm tra trường hợp này. Khả năng tiếp nhận phụ thuộc giấy tờ mua bán, thông tin chủ đăng ký và tình trạng thực tế của xe."],["Thời gian hoàn tất là bao lâu?","Thời gian phụ thuộc loại hồ sơ, nơi đăng ký và tiến độ xử lý của cơ quan có thẩm quyền. SGM chỉ đưa ra thời gian dự kiến sau khi kiểm tra đủ thông tin."]];
+export default function Page(){return <main><section className="service-hero"><div className="container service-hero-grid"><div><span className="eyebrow">Dịch vụ sang tên xe</span><h1>Kiểm tra hồ sơ kỹ, báo rõ chi phí trước khi sang tên</h1><p className="section-lead">SGM hỗ trợ bạn từ bước kiểm tra giấy tờ, hướng dẫn quy trình đến khi hoàn thành phần việc đã thống nhất. Những hồ sơ phức tạp sẽ được xem xét riêng trước khi tiếp nhận.</p><div className="hero-actions"><TrackedAnchor className="btn btn-primary" href="tel:0704104104" eventName="call_click" placement="service_transfer_hero">Gọi 0704 104 104</TrackedAnchor><Link className="btn btn-outline" href="#tu-van-sang-ten">Đăng ký nhận tư vấn</Link></div></div><aside className="service-aside"><strong>Dịch vụ phù hợp khi bạn cần</strong><ul className="check-list"><li>Sang tên ô tô hoặc xe máy</li><li>Chuyển quyền sở hữu cùng tỉnh hoặc khác tỉnh</li><li>Kiểm tra giấy tờ mua bán đang có</li><li>Xem xét trường hợp xe qua nhiều đời chủ</li></ul></aside></div></section>
+<section className="section"><div className="container grid-2"><div><span className="eyebrow">Hồ sơ ban đầu</span><h2 className="section-heading">Bạn cần chuẩn bị những thông tin gì?</h2><ul className="check-list"><li>Thông tin đăng ký xe và biển số</li><li>Giấy tờ mua bán, chuyển nhượng đang có</li><li>Thông tin người đứng tên đăng ký</li><li>Nơi xe đang đăng ký và nơi dự kiến sang tên</li></ul><p className="price-note">Danh sách trên giúp SGM kiểm tra ban đầu và có thể thay đổi tuỳ theo tình trạng của từng hồ sơ.</p></div><div><span className="eyebrow">Phối hợp thực hiện</span><h2 className="section-heading">SGM hỗ trợ phần nào, bạn cần làm gì?</h2><div className="grid-2" style={{marginTop:24}}><div className="card"><h3>Phần SGM hỗ trợ</h3><p>Kiểm tra thông tin, hướng dẫn bổ sung giấy tờ, chuẩn bị biểu mẫu, theo dõi phần việc đã nhận và cập nhật tiến độ.</p></div><div className="card"><h3>Phần bạn cần phối hợp</h3><p>Cung cấp thông tin chính xác, ký hồ sơ khi cần, thực hiện nghĩa vụ tài chính và có mặt nếu cơ quan xử lý yêu cầu.</p></div></div></div></div></section>
+<section className="section section-soft"><div className="container"><span className="eyebrow">Quy trình dự kiến</span><h2 className="section-heading">Từ kiểm tra hồ sơ đến bàn giao</h2><div className="grid-4 steps" style={{marginTop:38}}><div className="step"><h3>Tiếp nhận</h3><p>Ghi nhận loại xe, nơi đăng ký và tình trạng giấy tờ.</p></div><div className="step"><h3>Thẩm định</h3><p>Xác định điều kiện, giấy tờ thiếu và rủi ro cần lưu ý.</p></div><div className="step"><h3>Thống nhất</h3><p>Báo phạm vi công việc, phí dịch vụ và khoản chưa bao gồm.</p></div><div className="step"><h3>Thực hiện</h3><p>Triển khai, cập nhật tiến độ và bàn giao phần việc đã thống nhất.</p></div></div></div></section>
+<section className="section"><div className="container"><span className="eyebrow">Chi phí tham khảo</span><h2 className="section-heading">Bảng giá sang tên và đăng ký</h2><div className="price-table-wrap" style={{marginTop:30}}><table className="price-table"><thead><tr><th>Dịch vụ</th><th>TP.HCM</th><th>Tỉnh khác</th></tr></thead><tbody><tr><td>Sang tên trọn gói ô tô</td><td>Từ 5.000.000 ₫</td><td>Từ 5.500.000 ₫</td></tr><tr><td>Đăng ký ô tô</td><td>Từ 2.500.000 ₫</td><td>Từ 3.000.000 ₫</td></tr><tr><td>Đăng ký xe máy</td><td>Từ 1.200.000 ₫</td><td>Từ 2.000.000 ₫</td></tr></tbody></table></div><p className="price-note">Giá tham khảo cho hồ sơ thông thường, giấy tờ đầy đủ; có thể thay đổi khoảng 10–20% tuỳ loại xe, địa phương và tình trạng hồ sơ. Chưa gồm thuế trước bạ, lệ phí cấp biển số và khoản phải nộp cho cơ quan nhà nước.</p></div></section>
+<section className="section section-soft" id="tu-van-sang-ten"><div className="container"><div className="lead-shell"><div className="lead-intro"><span className="eyebrow" style={{color:"var(--gold)"}}>Kiểm tra trước khi báo phí</span><h2>Hãy cho SGM biết tình trạng thực tế của xe</h2><p>Bạn chỉ cần để lại thông tin cơ bản. Nhân viên SGM sẽ liên hệ để tìm hiểu hồ sơ và hướng dẫn bước tiếp theo.</p></div><LeadForm defaultService="sang-ten"/></div></div></section>
+<section className="section"><div className="container"><h2 className="section-heading center">Câu hỏi thường gặp</h2><div className="faq" style={{maxWidth:850,margin:"34px auto 0"}}>{faqs.map(([q,a])=><details key={q}><summary>{q}</summary><p>{a}</p></details>)}</div></div></section></main>}

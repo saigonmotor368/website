@@ -1,9 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { GoogleGenAI } from '@google/genai';
+import { getCurrentStaff } from '@/lib/staff-auth';
 
 const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY || 'dummy' });
 
 export async function POST(req: NextRequest) {
+  const staff = await getCurrentStaff();
+  if (!staff) return NextResponse.json({ error: 'Chưa đăng nhập' }, { status: 401 });
   try {
     const { images } = await req.json();
 

@@ -1,84 +1,12 @@
-import Image from "next/image";
+import type { Metadata } from "next";
 import Link from "next/link";
-import { Metadata } from "next";
-
-export const metadata: Metadata = {
-  title: "Hướng dẫn Thu hồi Đăng ký & Biển số xe (Rút gốc) | Saigon Motor",
-  description: "Thủ tục thu hồi giấy đăng ký, biển số xe theo quy định biển số định danh mới nhất. Dịch vụ rút hồ sơ gốc nhanh chóng.",
-};
-
-export default function ThuHoiDangKyPage() {
-  return (
-    <main style={{ paddingTop: '100px', backgroundColor: 'var(--bg-primary)', minHeight: '100vh', paddingBottom: '4rem' }}>
-      <div className="container" style={{ maxWidth: '800px', margin: '0 auto' }}>
-        
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', marginBottom: '3rem' }}>
-          <div style={{ color: 'var(--brand-red)', fontWeight: 700, letterSpacing: '2px', textTransform: 'uppercase', fontSize: '0.9rem', fontFamily: 'var(--font-heading)' }}>
-            Cập nhật Thông tư 79/2024/TT-BCA
-          </div>
-          <h1 style={{ fontSize: '3rem', fontWeight: 900, color: 'var(--brand-teal)', lineHeight: 1.2, fontFamily: 'var(--font-heading)' }}>
-            Hướng dẫn Thu hồi Đăng ký & Biển số xe (Rút hồ sơ gốc)
-          </h1>
-          <p style={{ color: 'var(--text-secondary)', fontSize: '1.2rem', lineHeight: 1.6, fontStyle: 'italic' }}>
-            "Xe đi, Biển ở lại" - Nắm vững quy định về định danh biển số để không bị phạt và bảo vệ quyền lợi pháp lý của bản thân khi bán xe.
-          </p>
-        </div>
-
-        <div style={{ position: 'relative', width: '100%', aspectRatio: '16/9', marginBottom: '3rem', border: '8px solid white', boxShadow: 'var(--shadow-hard)' }}>
-          <Image src="/vintage_license_plate.png" alt="Thu hồi biển số định danh Sài Gòn" fill style={{ objectFit: 'cover' }} priority />
-        </div>
-
-        <article style={{ fontSize: '1.15rem', color: 'var(--text-primary)', lineHeight: 1.8 }}>
-          <div style={{ backgroundColor: '#fff3cd', borderLeft: '5px solid #ffecb5', padding: '1.5rem', marginBottom: '2rem', color: '#856404' }}>
-            <strong>Lưu ý thuật ngữ:</strong> Theo quy định mới từ Bộ Công An, thủ tục mà người dân thường gọi là "Rút hồ sơ gốc" nay được gọi chính thức là <strong>"Thủ tục thu hồi giấy chứng nhận đăng ký và biển số xe"</strong>.
-          </div>
-
-          <h2 style={{ fontSize: '2rem', color: 'var(--brand-teal)', marginTop: '2rem', marginBottom: '1rem', fontFamily: 'var(--font-heading)' }}>
-            1. Tại sao phải làm thủ tục Thu hồi?
-          </h2>
-          <p>
-            Theo Thông tư 79/2024/TT-BCA (và trước đó là Thông tư 24/2023), biển số xe đã được quản lý theo mã định danh của chủ xe. Khi bán, tặng cho, thừa kế xe, chủ xe <strong>bắt buộc phải giữ lại biển số và giấy đăng ký xe</strong> để nộp lại cho cơ quan Công an làm thủ tục thu hồi.
-          </p>
-          <p style={{ color: 'var(--brand-red)', fontWeight: 'bold' }}>
-            Nếu quá 30 ngày kể từ ngày làm giấy tờ chuyển quyền sở hữu mà không làm thủ tục thu hồi, chủ xe sẽ bị phạt hành chính và phải chịu trách nhiệm trước pháp luật về các vi phạm giao thông liên quan đến chiếc xe đó.
-          </p>
-
-          <h2 style={{ fontSize: '2rem', color: 'var(--brand-teal)', marginTop: '2rem', marginBottom: '1rem', fontFamily: 'var(--font-heading)' }}>
-            2. Hồ sơ chuẩn bị Thu hồi
-          </h2>
-          <ul style={{ paddingLeft: '1.5rem', marginBottom: '2rem' }}>
-            <li>Giấy khai thu hồi đăng ký, biển số xe (theo mẫu).</li>
-            <li>Giấy tờ của chủ xe (CCCD gắn chip).</li>
-            <li>2 bản chà số khung, số máy.</li>
-            <li>Chứng nhận đăng ký xe (bản gốc).</li>
-            <li>Biển số xe (Tháo cả 2 biển trước sau đối với ô tô).</li>
-            <li>Bản sao chứng từ chuyển quyền sở hữu (Hợp đồng mua bán).</li>
-          </ul>
-
-          <h2 style={{ fontSize: '2rem', color: 'var(--brand-teal)', marginTop: '2rem', marginBottom: '1rem', fontFamily: 'var(--font-heading)' }}>
-            3. Xe Vắng Chủ - Nỗi ám ảnh của người mua xe cũ
-          </h2>
-          <p>
-            Mua xe qua nhiều đời chủ, giờ không tìm thấy chủ cũ để rút hồ sơ thu hồi biển số? Đừng lo lắng! Theo quy định hiện hành, cơ quan công an có cơ chế giải quyết cho các trường hợp xe chuyển quyền sở hữu qua nhiều tổ chức, cá nhân. Tuy nhiên, thủ tục này đòi hỏi bạn phải am hiểu luật, chuẩn bị hồ sơ cam kết và thời gian xác minh có thể kéo dài 30 ngày.
-          </p>
-
-          <h2 style={{ fontSize: '2rem', color: 'var(--brand-teal)', marginTop: '2rem', marginBottom: '1rem', fontFamily: 'var(--font-heading)' }}>
-            4. Trút bỏ gánh nặng thủ tục cùng SGM
-          </h2>
-          <div style={{ backgroundColor: 'var(--bg-secondary)', padding: '2rem', border: '1px solid var(--brand-teal)', marginTop: '2rem' }}>
-            <p style={{ marginBottom: '1.5rem' }}>
-              Việc tự tháo biển số, chà số khung số máy và chầu chực tại cơ quan công an để làm thủ tục thu hồi tốn rất nhiều mồ hôi và công sức. Đặc biệt là các ca "xe vắng chủ", sai lệch số khung.
-            </p>
-            <p style={{ fontWeight: 700, color: 'var(--brand-red)', marginBottom: '1.5rem' }}>
-              SGM cung cấp dịch vụ xử lý thu hồi đăng ký, rút hồ sơ trọn gói siêu tốc. Cam kết hợp pháp, giải quyết dứt điểm các ca khó, xe vắng chủ.
-            </p>
-            <div style={{ textAlign: 'center' }}>
-              <Link href="/#tu-van" className="btn btn-teal">Gửi Yêu Cầu Hỗ Trợ &rarr;</Link>
-            </div>
-          </div>
-
-        </article>
-      </div>
-    </main>
-  );
-}
+import LeadForm from "@/components/LeadForm";
+import TrackedAnchor from "@/components/TrackedAnchor";
+export const metadata:Metadata={title:"Dịch vụ thu hồi đăng ký, biển số xe",description:"Hỗ trợ kiểm tra và thực hiện thủ tục thu hồi đăng ký, biển số ô tô, xe máy tại TP.HCM và các tỉnh.",alternates:{canonical:"/thu-tuc-thu-hoi-dang-ky"}};
+const faqs=[["Khi nào cần làm thủ tục thu hồi?","Việc thu hồi phụ thuộc trường hợp chuyển quyền sở hữu, chuyển tỉnh và các trường hợp khác theo quy định hiện hành. SGM sẽ kiểm tra tình trạng cụ thể trước khi tư vấn."],["Không liên hệ được người đứng tên có nhận hồ sơ không?","SGM tiếp nhận thông tin để đánh giá, nhưng không thể khẳng định khả năng thực hiện khi chưa xem giấy tờ và nguồn gốc chuyển nhượng."],["Giá đã gồm lệ phí nhà nước chưa?","Chưa. Bảng giá là phí dịch vụ tham khảo. Các khoản thuế, lệ phí hoặc nghĩa vụ tài chính với cơ quan nhà nước được thông báo riêng."]];
+export default function Page(){return <main><section className="service-hero"><div className="container service-hero-grid"><div><span className="eyebrow">Thu hồi đăng ký, biển số</span><h1>Kiểm tra đúng trường hợp trước khi làm thủ tục thu hồi</h1><p className="section-lead">SGM hỗ trợ hồ sơ ô tô, xe máy tại TP.HCM và các tỉnh. Trường hợp thiếu giấy tờ hoặc qua nhiều người sử dụng cần được xem xét riêng.</p><div className="hero-actions"><TrackedAnchor className="btn btn-primary" href="tel:0704104104" eventName="call_click" placement="service_withdrawal_hero">Gọi 0704 104 104</TrackedAnchor><Link className="btn btn-outline" href="#tu-van-thu-hoi">Đăng ký nhận tư vấn</Link></div></div><aside className="service-aside"><strong>SGM hỗ trợ kiểm tra</strong><ul className="check-list"><li>Loại xe và nơi đang đăng ký</li><li>Thông tin người đứng tên</li><li>Giấy tờ chuyển quyền sở hữu</li><li>Tình trạng đăng ký và biển số</li></ul></aside></div></section>
+<section className="section"><div className="container grid-2"><div><span className="eyebrow">Trường hợp thường gặp</span><h2 className="section-heading">Mỗi hồ sơ cần một cách kiểm tra khác nhau</h2><ul className="check-list"><li>Chuyển quyền sở hữu ô tô hoặc xe máy</li><li>Sang tên xe đi tỉnh khác</li><li>Xe qua nhiều người sử dụng</li><li>Thông tin giấy tờ chưa thống nhất</li></ul></div><div className="notice"><strong>SGM không tiếp nhận vô điều kiện</strong><p style={{marginTop:8}}>Hồ sơ có dấu hiệu giả mạo, tranh chấp, nguồn gốc không rõ ràng hoặc không đáp ứng yêu cầu của cơ quan có thẩm quyền sẽ bị từ chối.</p></div></div></section>
+<section className="section section-soft"><div className="container"><span className="eyebrow">Quy trình dự kiến</span><h2 className="section-heading">Từng bước thực hiện đều được giải thích rõ</h2><div className="grid-4 steps" style={{marginTop:38}}><div className="step"><h3>Tiếp nhận</h3><p>Ghi nhận tình trạng xe và những giấy tờ bạn đang có.</p></div><div className="step"><h3>Kiểm tra</h3><p>Xác định điều kiện thực hiện, giấy tờ cần bổ sung và nơi làm thủ tục.</p></div><div className="step"><h3>Hướng dẫn và báo phí</h3><p>Giải thích quy trình, tách rõ phí dịch vụ và các khoản nộp cho cơ quan nhà nước.</p></div><div className="step"><h3>Thực hiện và theo dõi</h3><p>SGM thực hiện phần việc đã nhận và cập nhật tiến độ cho bạn.</p></div></div></div></section>
+<section className="section"><div className="container"><span className="eyebrow">Chi phí tham khảo</span><h2 className="section-heading">Bảng giá dịch vụ thu hồi</h2><div className="price-table-wrap" style={{marginTop:30}}><table className="price-table"><thead><tr><th>Dịch vụ</th><th>TP.HCM</th><th>Tỉnh khác</th></tr></thead><tbody><tr><td>Thu hồi hồ sơ ô tô</td><td>Từ 2.500.000 ₫</td><td>Từ 2.800.000 ₫</td></tr><tr><td>Thu hồi hồ sơ xe máy</td><td>Từ 1.500.000 ₫</td><td>Từ 1.800.000–2.000.000 ₫</td></tr></tbody></table></div><p className="price-note">Giá tham khảo cho hồ sơ thông thường, giấy tờ đầy đủ; có thể thay đổi khoảng 10–20% tuỳ loại xe, địa phương và tình trạng hồ sơ. Chưa gồm thuế trước bạ, lệ phí cấp biển số và khoản phải nộp cho cơ quan nhà nước.</p></div></section>
+<section className="section section-soft" id="tu-van-thu-hoi"><div className="container"><div className="lead-shell"><div className="lead-intro"><span className="eyebrow" style={{color:"var(--gold)"}}>Kiểm tra trước khi đi lại</span><h2>Hãy để SGM xem tình trạng hồ sơ trước</h2><p>Bạn không cần tải giấy tờ lên website. Nhân viên SGM sẽ liên hệ, tìm hiểu hồ sơ và hướng dẫn kênh gửi giấy tờ phù hợp.</p></div><LeadForm defaultService="thu-hoi"/></div></div></section>
+<section className="section"><div className="container"><h2 className="section-heading center">Câu hỏi thường gặp</h2><div className="faq" style={{maxWidth:850,margin:"34px auto 0"}}>{faqs.map(([q,a])=><details key={q}><summary>{q}</summary><p>{a}</p></details>)}</div></div></section></main>}
