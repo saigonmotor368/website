@@ -2,7 +2,7 @@
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { FormEvent, useState } from "react";
-import { trackEvent } from "@/lib/tracking";
+import { trackEvent, trackGoogleAdsLeadConversion } from "@/lib/tracking";
 
 export default function LeadForm({ defaultService = "" }: { defaultService?: string }) {
   const router = useRouter();
@@ -98,6 +98,7 @@ export default function LeadForm({ defaultService = "" }: { defaultService?: str
         service: body.service,
         vehicle_type: body.vehicleType,
       });
+      trackGoogleAdsLeadConversion(result.leadId);
       router.push(`/thank-you?lead=${encodeURIComponent(result.leadId)}`);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Đã có lỗi xảy ra. Anh/chị vui lòng gọi 0704 104 104 để được hỗ trợ.");
