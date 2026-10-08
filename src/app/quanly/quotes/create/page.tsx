@@ -42,6 +42,7 @@ export default function CreateQuotePage() {
   const [loadQuoteError, setLoadQuoteError] = useState("");
   const [pdfQuoteData, setPdfQuoteData] = useState<QuoteData | null>(null);
   const [pendingPdf, setPendingPdf] = useState(false);
+  const [pdfAction, setPdfAction] = useState<"issue" | "download">("issue");
   const [showPreview, setShowPreview] = useState(false);
 
   // Step 1: Customer state
@@ -355,11 +356,17 @@ export default function CreateQuotePage() {
         if (cancelled) return;
 
         if (success) {
-          alert(`Đã phát hành báo giá ${pdfQuoteData.quoteNumber} và tải file PDF chính thức.`);
-          router.push("/quanly/quotes");
-          router.refresh();
+          if (pdfAction === "issue") {
+            alert(`Đã phát hành báo giá ${pdfQuoteData.quoteNumber} và tải file PDF chính thức.`);
+            router.push("/quanly/quotes");
+            router.refresh();
+          } else {
+            alert(`Đã tải lại báo giá ${pdfQuoteData.quoteNumber}.`);
+          }
         } else {
-          alert("Báo giá đã được phát hành nhưng chưa thể tạo file PDF. Anh/chị có thể bấm phát hành lại để tải PDF.");
+          alert(pdfAction === "issue"
+            ? "Báo giá đã được phát hành nhưng chưa thể tạo file PDF. Anh/chị có thể bấm Tải lại PDF để thử lại."
+            : "Chưa thể tạo file PDF. Anh/chị vui lòng thử lại.");
         }
       } finally {
         if (!cancelled) {
@@ -373,7 +380,7 @@ export default function CreateQuotePage() {
     return () => {
       cancelled = true;
     };
-  }, [pdfQuoteData, pendingPdf, router]);
+  }, [pdfAction, pdfQuoteData, pendingPdf, router]);
 
   const handleSaveQuote = async (status: "draft" | "issued") => {
     if (!customerName.trim()) {
@@ -440,6 +447,7 @@ export default function CreateQuotePage() {
 
         if (status === "issued") {
           waitForPdf = true;
+          setPdfAction("issue");
           setShowPreview(false);
           setPdfQuoteData(buildPdfQuoteData(savedNumber, "issued"));
           setPendingPdf(true);
@@ -458,6 +466,28 @@ export default function CreateQuotePage() {
       if (!waitForPdf) setSaving(false);
     }
   };
+
+  const handleDownloadIssuedPdf = () => {
+    if (!quoteNumber) {
+      alert("Chưa có mã báo giá để tải PDF.");
+      return;
+    }
+
+    setSaving(true);
+    setPdfAction("download");
+    setPdfQuoteData(buildPdfQuoteData(quoteNumber, "issued"));
+    setPendingPdf(true);
+  };
+
+  const handlePrimaryPdfAction = () => {
+    if (editId && quoteStatus === "issued") {
+      handleDownloadIssuedPdf();
+      return;
+    }
+    void handleSaveQuote("issued");
+  };
+
+  const isIssuedQuote = Boolean(editId && quoteStatus === "issued");
 
   if (loadingQuote) {
     return (
@@ -508,19 +538,21 @@ export default function CreateQuotePage() {
           >
             Xem trước
           </button>
+          {!isIssuedQuote && (
+            <button
+              onClick={() => void handleSaveQuote("draft")}
+              disabled={saving}
+              className="quanly-btn-secondary"
+            >
+              Lưu bản nháp
+            </button>
+          )}
           <button
-            onClick={() => void handleSaveQuote("draft")}
-            disabled={saving}
-            className="quanly-btn-secondary"
-          >
-            Lưu bản nháp
-          </button>
-          <button
-            onClick={() => void handleSaveQuote("issued")}
+            onClick={handlePrimaryPdfAction}
             disabled={saving}
             className="quanly-btn-gold"
           >
-            {saving ? "Đang xử lý..." : "✓ Phát hành & tải PDF"}
+            {saving ? "Đang xử lý..." : isIssuedQuote ? "↻ Tải lại PDF" : "✓ Phát hành & tải PDF"}
           </button>
         </div>
       </div>
@@ -1011,19 +1043,21 @@ export default function CreateQuotePage() {
         <Link href="/quanly/quotes" className="quanly-btn-secondary">
           Hủy bỏ
         </Link>
+        {!isIssuedQuote && (
+          <button
+            onClick={() => void handleSaveQuote("draft")}
+            disabled={saving}
+            className="quanly-btn-secondary"
+          >
+            Lưu bản nháp
+          </button>
+        )}
         <button
-          onClick={() => void handleSaveQuote("draft")}
-          disabled={saving}
-          className="quanly-btn-secondary"
-        >
-          Lưu bản nháp
-        </button>
-        <button
-          onClick={() => void handleSaveQuote("issued")}
+          onClick={handlePrimaryPdfAction}
           disabled={saving}
           className="quanly-btn-gold"
         >
-          {saving ? "Đang xử lý..." : "✓ Phát Hành Báo Giá & Xuất PDF"}
+          {saving ? "Đang xử lý..." : isIssuedQuote ? "↻ Tải lại báo giá PDF" : "✓ Phát Hành Báo Giá & Xuất PDF"}
         </button>
       </div>
 
@@ -1046,7 +1080,7 @@ export default function CreateQuotePage() {
             <QuotePreview
               quoteData={buildPdfQuoteData(quoteNumber || "BẢN NHÁP", quoteStatus)}
               onPrev={() => setShowPreview(false)}
-              onNext={() => void handleSaveQuote("issued")}
+              onNext={handlePrimaryPdfAction}
             />
           </div>
         </div>
