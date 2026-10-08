@@ -55,7 +55,7 @@ export default function ManagementSidebar({ open, onClose, userRole }: SidebarPr
             alt="Saigon Motor"
             width={38}
             height={38}
-            className="object-contain drop-shadow"
+            className="object-contain"
           />
           <div className="flex-1 min-w-0">
             <span className="block font-bold text-white text-sm tracking-wide leading-tight">

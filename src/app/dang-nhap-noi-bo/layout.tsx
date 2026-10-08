@@ -1,10 +1,8 @@
 import type { Metadata, Viewport } from "next";
-import ManagementShell from "./components/ManagementShell";
-import "./quanly.css";
 
 export const metadata: Metadata = {
-  title: "Quản lý nội bộ",
-  description: "Hệ thống quản lý hồ sơ nội bộ Saigon Motor.",
+  title: "Đăng nhập nội bộ",
+  description: "Đăng nhập hệ thống quản lý hồ sơ Saigon Motor.",
   manifest: "/quanly.webmanifest",
   appleWebApp: {
     capable: true,
@@ -20,6 +18,6 @@ export const viewport: Viewport = {
   viewportFit: "cover",
 };
 
-export default function ManagementLayout({ children }: { children: React.ReactNode }) {
-  return <ManagementShell>{children}</ManagementShell>;
+export default function InternalLoginLayout({ children }: { children: React.ReactNode }) {
+  return children;
 }

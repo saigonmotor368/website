@@ -2,11 +2,28 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import LeadForm from "@/components/LeadForm";
 import PremiumHero from "@/components/PremiumHero";
+import { OG_IMAGE, serializeJsonLd, SITE_URL } from "@/lib/seo";
+
+const pageTitle = "Dịch vụ sang tên, thu hồi hồ sơ xe tại TP.HCM";
+const pageDescription =
+  "Saigon Motor hỗ trợ sang tên xe, thu hồi đăng ký và biển số ô tô, xe máy tại TP.HCM và các tỉnh. Kiểm tra hồ sơ, báo phí rõ ràng.";
 
 export const metadata: Metadata = {
-  title: "Dịch vụ sang tên, thu hồi hồ sơ xe",
-  description: "Saigon Motor hỗ trợ sang tên, thu hồi đăng ký và biển số ô tô, xe máy tại TP.HCM và các tỉnh. Kiểm tra hồ sơ trước khi báo phí.",
+  title: pageTitle,
+  description: pageDescription,
   alternates: { canonical: "/" },
+  openGraph: {
+    title: `${pageTitle} | Saigon Motor`,
+    description: pageDescription,
+    url: SITE_URL,
+    images: [{ url: OG_IMAGE, width: 1200, height: 630, alt: "Saigon Motor - Dịch vụ hồ sơ xe" }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: `${pageTitle} | Saigon Motor`,
+    description: pageDescription,
+    images: [OG_IMAGE],
+  },
 };
 
 const faqs = [
@@ -16,8 +33,19 @@ const faqs = [
   ["Tôi có cần gửi ảnh giấy tờ ngay trên website không?", "Không. Biểu mẫu trên website chỉ yêu cầu thông tin cơ bản. Sau khi trao đổi, nhân viên SGM sẽ hướng dẫn anh/chị gửi giấy tờ qua kênh phù hợp."],
 ];
 
+const faqSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: faqs.map(([question, answer]) => ({
+    "@type": "Question",
+    name: question,
+    acceptedAnswer: { "@type": "Answer", text: answer },
+  })),
+};
+
 export default function Home() {
   return <main>
+    <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: serializeJsonLd(faqSchema) }} />
     <PremiumHero />
     <section className="trust-strip" aria-label="Điểm tin cậy"><div className="container trust-grid">
       <div className="trust-item"><strong>15 năm kinh nghiệm thực tế</strong><span>Đội ngũ am hiểu quy trình hồ sơ xe</span></div>

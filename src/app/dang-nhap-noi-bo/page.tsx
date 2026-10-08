@@ -162,17 +162,31 @@ function AuthForm() {
   return (
     <div
       style={{
-        width: "min(440px, 100%)",
+        width: 440,
+        maxWidth: "calc(100vw - 32px)",
+        minWidth: 0,
         background: "#171c27",
         border: "1px solid #303744",
         borderRadius: 24,
-        padding: 36,
+        padding: "clamp(22px, 6vw, 36px)",
         color: "white",
-        boxShadow: "0 20px 60px rgba(0,0,0,0.45)",
+        boxShadow: "0 14px 36px rgba(0,0,0,0.22)",
       }}
     >
       <div style={{ textAlign: "center", marginBottom: 26 }}>
-        <Image src="/logo_sgm.png" alt="Saigon Motor" width={84} height={84} priority />
+        <span
+          style={{
+            width: 96,
+            height: 96,
+            display: "inline-grid",
+            placeItems: "center",
+            overflow: "hidden",
+            borderRadius: 22,
+            background: "#ffffff",
+          }}
+        >
+          <Image src="/logo_sgm.png" alt="Saigon Motor" width={82} height={82} priority />
+        </span>
         <h1 style={{ color: "#d8aa55", marginTop: 12, fontSize: "1.45rem", fontWeight: 800 }}>
           {mode === "login" && "Cổng nội bộ SGM"}
           {mode === "forgot" && "Quên mật khẩu"}
@@ -201,6 +215,8 @@ function AuthForm() {
                 border: "1px solid #3d4656",
                 background: "#0d1117",
                 color: "white",
+                width: "100%",
+                minWidth: 0,
               }}
             />
           </label>
@@ -238,6 +254,8 @@ function AuthForm() {
                 border: "1px solid #3d4656",
                 background: "#0d1117",
                 color: "white",
+                width: "100%",
+                minWidth: 0,
               }}
             />
           </label>
@@ -284,6 +302,8 @@ function AuthForm() {
                 border: "1px solid #3d4656",
                 background: "#0d1117",
                 color: "white",
+                width: "100%",
+                minWidth: 0,
               }}
             />
           </label>
@@ -356,6 +376,8 @@ function AuthForm() {
                 border: "1px solid #3d4656",
                 background: "#0d1117",
                 color: "white",
+                width: "100%",
+                minWidth: 0,
               }}
             />
           </label>
@@ -373,6 +395,8 @@ function AuthForm() {
                 border: "1px solid #3d4656",
                 background: "#0d1117",
                 color: "white",
+                width: "100%",
+                minWidth: 0,
               }}
             />
           </label>
@@ -446,10 +470,40 @@ export default function LoginPage() {
         display: "grid",
         placeItems: "center",
         background: "#0d1117",
-        padding: 20,
+        padding: "max(16px, env(safe-area-inset-top)) 16px max(16px, env(safe-area-inset-bottom))",
       }}
     >
-      <Suspense fallback={<div style={{ color: "white" }}>Đang tải...</div>}>
+      <Suspense
+        fallback={
+          <div
+            role="status"
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              gap: 14,
+              color: "#cbd5e1",
+              textAlign: "center",
+            }}
+          >
+            <div
+              style={{
+                width: 112,
+                height: 112,
+                display: "grid",
+                placeItems: "center",
+                overflow: "hidden",
+                borderRadius: 26,
+                background: "#ffffff",
+              }}
+            >
+              <Image src="/logo_sgm.png" alt="Saigon Motor" width={98} height={98} priority />
+            </div>
+            <strong style={{ color: "white", letterSpacing: ".08em" }}>SAIGON MOTOR</strong>
+            <span style={{ fontSize: ".86rem" }}>Đang mở hệ thống quản lý...</span>
+          </div>
+        }
+      >
         <AuthForm />
       </Suspense>
     </main>
