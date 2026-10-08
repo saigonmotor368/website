@@ -1,1 +1,0 @@
-"use client";import { useRouter } from "next/navigation";export default function LogoutButton(){const router=useRouter();return <button onClick={async()=>{await fetch("/api/auth/logout",{method:"POST"});router.replace("/dang-nhap-noi-bo");router.refresh()}} className="text-xs text-gray-400 hover:text-red-400" title="Đăng xuất">Đăng xuất</button>}

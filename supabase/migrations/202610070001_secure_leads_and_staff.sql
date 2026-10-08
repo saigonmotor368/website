@@ -45,11 +45,12 @@ create index if not exists leads_created_at_idx on public.leads(created_at desc)
 create index if not exists leads_phone_idx on public.leads(phone);
 create index if not exists leads_status_idx on public.leads(status);
 create index if not exists leads_service_idx on public.leads(service);
+create index if not exists leads_ip_hash_created_at_idx on public.leads(ip_hash, created_at desc);
 
 create table if not exists public.lead_events (
   id uuid primary key default gen_random_uuid(),
   lead_id uuid not null references public.leads(id) on delete cascade,
-  event_name text not null check (event_name in ('lead_created','contacted','qualified','file_received','completed','lost')),
+  event_name text not null check (event_name in ('lead_created','contacted','qualified','file_received','completed','lost','assigned','email_resent')),
   actor_id uuid references auth.users(id) on delete set null,
   occurred_at timestamptz not null default now(),
   metadata jsonb not null default '{}'::jsonb
@@ -84,7 +85,16 @@ create policy "Active staff can update quotes" on public.quotes for update to au
 drop policy if exists "Owner can delete quotes" on public.quotes;
 create policy "Owner can delete quotes" on public.quotes for delete to authenticated using (exists(select 1 from public.staff_profiles s where s.user_id=auth.uid() and s.is_active=true and s.role='owner'));
 
--- After creating the two Supabase Auth users, add their UUIDs manually:
--- insert into public.staff_profiles(user_id,full_name,role) values
--- ('OWNER_AUTH_UUID','Lương Thế Bằng','owner'),
--- ('STAFF_AUTH_UUID','Nhân viên hồ sơ','staff');
+-- Hướng dẫn cấp quyền sau khi tạo 2 user trong Supabase Auth (chỉ chạy sau khi được duyệt):
+-- User 1: saigonmotor68@gmail.com -> Chủ hệ thống nội bộ Phạm Xuân Định (role: owner)
+-- User 2: xuandinh.avg@gmail.com -> Nhân viên xử lý hồ sơ Nguyễn Đình Mẫn (role: staff)
+--
+-- Lấy UUID tương ứng từ bảng auth.users rồi thực hiện:
+-- insert into public.staff_profiles(user_id, full_name, role) values
+--   ('OWNER_AUTH_UUID', 'Phạm Xuân Định', 'owner'),
+--   ('STAFF_AUTH_UUID', 'Nguyễn Đình Mẫn', 'staff')
+-- on conflict (user_id) do update set
+--   full_name = excluded.full_name,
+--   role = excluded.role,
+--   is_active = true,
+--   updated_at = now();

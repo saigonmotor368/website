@@ -16,7 +16,7 @@ export default function Footer() {
           <li><strong>Mã số doanh nghiệp:</strong> 0316339254</li>
           <li><strong>Người đại diện:</strong> Lương Thế Bằng</li>
           <li><strong>Địa chỉ:</strong> 745 Phạm Văn Đồng, Khu phố 8, phường Hiệp Bình, TP. Hồ Chí Minh</li>
-          <li><strong>Email:</strong> <a href="mailto:saigommotor68@gmail.com">saigommotor68@gmail.com</a></li>
+          <li><strong>Email:</strong> <a href="mailto:saigonmotor68@gmail.com">saigonmotor68@gmail.com</a></li>
           <li><strong>Hotline/Zalo:</strong> <a href="tel:0704104104" onClick={() => trackEvent("call_click", { placement: "footer" })}>0704 104 104</a></li>
         </ul>
         <div className="social-links">

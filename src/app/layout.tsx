@@ -18,7 +18,7 @@ export const metadata: Metadata = {
 
 const localBusiness = {
   "@context": "https://schema.org", "@type": "LocalBusiness", name: "Saigon Motor - Công ty TNHH Ô tô Xe máy 368",
-  image: `${siteUrl}/logo_sgm.png`, "@id": siteUrl, url: siteUrl, telephone: "+84704104104", email: "saigommotor68@gmail.com", priceRange: "₫₫",
+  image: `${siteUrl}/logo_sgm.png`, "@id": siteUrl, url: siteUrl, telephone: "+84704104104", email: "saigonmotor68@gmail.com", priceRange: "₫₫",
   areaServed: ["TP. Hồ Chí Minh", "Việt Nam"],
   address: { "@type": "PostalAddress", streetAddress: "745 Phạm Văn Đồng, Khu phố 8, phường Hiệp Bình", addressLocality: "TP. Hồ Chí Minh", postalCode: "700000", addressCountry: "VN" },
   geo: { "@type": "GeoCoordinates", latitude: 10.8437212, longitude: 106.7448224 },
