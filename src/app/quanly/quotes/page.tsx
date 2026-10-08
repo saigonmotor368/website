@@ -165,10 +165,10 @@ export default function QuanlyQuotesPage() {
           <table className="w-full text-left text-sm text-gray-300">
             <thead className="text-xs uppercase text-gray-500 bg-black/30 border-b border-gray-800">
               <tr>
-                <th className="px-5 py-3.5">Mã báo giá</th>
+                <th className="px-5 py-3.5 whitespace-nowrap">Mã báo giá</th>
                 <th className="px-5 py-3.5">Khách hàng</th>
                 <th className="px-5 py-3.5">Phương tiện</th>
-                <th className="px-5 py-3.5">Trạng thái</th>
+                <th className="px-5 py-3.5 whitespace-nowrap">Trạng thái</th>
                 <th className="px-5 py-3.5">Tổng tiền</th>
                 <th className="px-5 py-3.5">Ngày tạo</th>
                 <th className="px-5 py-3.5 text-right">Thao tác</th>
@@ -205,8 +205,15 @@ export default function QuanlyQuotesPage() {
                   const badge = statusBadges[q.status] || statusBadges.issued;
                   return (
                     <tr key={q.id} className="hover:bg-white/[0.02]">
-                      <td className="px-5 py-4 font-mono font-bold text-[#d4af37]">
-                        {q.quote_number}
+                      <td className="px-5 py-4 font-mono font-bold">
+                        <Link
+                          href={`/quanly/quotes/create?edit=${q.id}`}
+                          className="inline-flex whitespace-nowrap rounded text-[#d4af37] underline-offset-4 transition hover:text-[#f1cf55] hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#d4af37]/70"
+                          title={`Mở chi tiết báo giá ${q.quote_number}`}
+                          aria-label={`Mở chi tiết báo giá ${q.quote_number}`}
+                        >
+                          {q.quote_number}
+                        </Link>
                       </td>
                       <td className="px-5 py-4">
                         <div className="font-semibold text-white">{q.customer_name}</div>
@@ -220,7 +227,7 @@ export default function QuanlyQuotesPage() {
                       <td className="px-5 py-4 text-xs">
                         {q.vehicle_plate ? (
                           <>
-                            <span className="font-mono px-2 py-0.5 rounded bg-black/40 border border-gray-700 text-gray-200">
+                            <span className="inline-flex whitespace-nowrap font-mono px-2 py-0.5 rounded bg-black/40 border border-gray-700 text-gray-200">
                               {q.vehicle_plate}
                             </span>
                             {q.vehicle_desc && (
@@ -233,9 +240,9 @@ export default function QuanlyQuotesPage() {
                           <span className="text-gray-500 italic">Không có xe cụ thể</span>
                         )}
                       </td>
-                      <td className="px-5 py-4 text-xs">
+                      <td className="px-5 py-4 text-xs whitespace-nowrap">
                         <span
-                          className={`px-2.5 py-1 rounded-full font-medium ${badge.bg} ${badge.text} border border-current/20`}
+                          className={`inline-flex items-center whitespace-nowrap px-2.5 py-1 rounded-full font-medium leading-none ${badge.bg} ${badge.text} border border-current/20`}
                         >
                           {badge.label}
                         </span>
@@ -251,14 +258,6 @@ export default function QuanlyQuotesPage() {
                       </td>
                       <td className="px-5 py-4 text-right">
                         <div className="flex items-center justify-end gap-1.5 flex-wrap">
-                          <Link
-                            href={`/quanly/quotes/create?edit=${q.id}`}
-                            className="text-xs px-2.5 py-1 rounded bg-gray-800 text-gray-300 hover:text-white hover:bg-gray-700"
-                            title="Chỉnh sửa hoặc xuất PDF A4"
-                          >
-                            Xem / Sửa
-                          </Link>
-
                           {q.case_id ? (
                             <Link
                               href={`/quanly/cases/${q.case_id}`}
