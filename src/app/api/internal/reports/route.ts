@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { getCurrentStaff } from "@/lib/staff-auth";
 import { SupabaseEntities } from "@/lib/supabase-entities";
+import { getSupabaseAdmin } from "@/lib/supabase-admin";
 
 export async function GET() {
   const staff = await getCurrentStaff();
@@ -9,9 +10,16 @@ export async function GET() {
   }
 
   try {
-    const metrics = await SupabaseEntities.getFinancialMetrics();
-    const cases = await SupabaseEntities.getCases();
-    const invoices = await SupabaseEntities.getInvoices();
+    const admin = getSupabaseAdmin();
+    const [metrics, costsResult] = await Promise.all([
+      SupabaseEntities.getFinancialMetrics(),
+      admin
+        .from("case_costs")
+        .select("*, case:cases(case_number, customer:customers(name))")
+        .order("created_at", { ascending: false }),
+    ]);
+
+    if (costsResult.error) throw costsResult.error;
 
     // 50/50 Profit Split calculation as a configured business rule
     // (Doanh thu đã phát hành - Chi phí thực tế đã duyệt)
@@ -33,25 +41,23 @@ export async function GET() {
       },
     ];
 
-    // Compile all real costs across cases from Supabase
-    const allCosts = [];
-    for (const c of cases) {
-      for (const cost of c.costs || []) {
-        allCosts.push({
-          ...cost,
-          case_number: c.case_number,
-          customer_name: c.customer.name,
-        });
-      }
-    }
+    const allCosts = (costsResult.data || []).map((cost) => {
+      const caseData = Array.isArray(cost.case) ? cost.case[0] : cost.case;
+      const customer = Array.isArray(caseData?.customer)
+        ? caseData.customer[0]
+        : caseData?.customer;
+
+      return {
+        ...cost,
+        case_number: caseData?.case_number || "",
+        customer_name: customer?.name || "Khách hàng",
+      };
+    });
 
     return NextResponse.json({
       metrics,
       profitAllocations,
-      recentInvoices: invoices.slice(0, 10),
-      costs: allCosts.sort(
-        (a, b) => new Date(b.created_at || 0).getTime() - new Date(a.created_at || 0).getTime()
-      ),
+      costs: allCosts,
     });
   } catch (err) {
     console.error("Lỗi tính toán báo cáo tài chính từ Supabase:", err);

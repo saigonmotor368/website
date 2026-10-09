@@ -50,6 +50,7 @@ export default function InvoicesListPage() {
 
   useEffect(() => {
     let ignore = false;
+    const controller = new AbortController();
     async function loadInvoices() {
       setLoading(true);
       try {
@@ -57,21 +58,25 @@ export default function InvoicesListPage() {
         if (statusFilter) params.set("status", statusFilter);
         if (searchQuery) params.set("q", searchQuery);
 
-        const res = await fetch(`/api/internal/invoices?${params.toString()}`);
+        const res = await fetch(`/api/internal/invoices?${params.toString()}`, {
+          signal: controller.signal,
+        });
         if (res.ok) {
           const data = await res.json();
           if (!ignore) setInvoices(data);
         }
       } catch (err) {
-        console.warn("Lỗi tải phiếu thanh toán:", err);
+        if (!controller.signal.aborted) console.warn("Lỗi tải phiếu thanh toán:", err);
       } finally {
         if (!ignore) setLoading(false);
       }
     }
 
-    loadInvoices();
+    const timer = window.setTimeout(() => void loadInvoices(), searchQuery ? 300 : 0);
     return () => {
       ignore = true;
+      controller.abort();
+      window.clearTimeout(timer);
     };
   }, [statusFilter, searchQuery]);
 

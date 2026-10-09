@@ -65,6 +65,7 @@ export default function CasesListPage() {
 
   useEffect(() => {
     let ignore = false;
+    const controller = new AbortController();
     async function loadCases() {
       setLoading(true);
       try {
@@ -72,21 +73,25 @@ export default function CasesListPage() {
         if (statusFilter) params.set("status", statusFilter);
         if (searchQuery) params.set("q", searchQuery);
 
-        const res = await fetch(`/api/internal/cases?${params.toString()}`);
+        const res = await fetch(`/api/internal/cases?${params.toString()}`, {
+          signal: controller.signal,
+        });
         if (res.ok) {
           const data = await res.json();
           if (!ignore) setCases(data);
         }
       } catch (err) {
-        console.warn("Lỗi tải hồ sơ:", err);
+        if (!controller.signal.aborted) console.warn("Lỗi tải hồ sơ:", err);
       } finally {
         if (!ignore) setLoading(false);
       }
     }
 
-    loadCases();
+    const timer = window.setTimeout(() => void loadCases(), searchQuery ? 300 : 0);
     return () => {
       ignore = true;
+      controller.abort();
+      window.clearTimeout(timer);
     };
   }, [statusFilter, searchQuery]);
 

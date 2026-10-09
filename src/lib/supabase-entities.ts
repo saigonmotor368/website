@@ -521,21 +521,22 @@ export const SupabaseEntities = {
   // ==========================================
   // 3. CASES (Tables: cases, case_items, case_vehicles, case_documents, case_files, case_costs)
   // ==========================================
-  async getCases(filters?: { status?: string; q?: string }): Promise<CaseRecord[]> {
+  async getCases(filters?: { status?: string; q?: string; limit?: number }): Promise<CaseRecord[]> {
     const admin = getSupabaseAdmin();
 
     let query = admin
       .from("cases")
       .select(`
-        *,
-        customer:customers(*),
-        items:case_items(*),
-        case_vehicles(*, vehicle:vehicles(*)),
-        documents:case_documents(*),
-        files:case_files(*),
-        costs:case_costs(*)
+        id, case_number, quote_id, customer_id, status, received_at, completed_at,
+        notes, estimated_amount, final_amount, is_locked, locked_at, assigned_to,
+        created_at, updated_at,
+        customer:customers(id, type, name, company_name, phone, zalo_name, email, tax_id, address, notes),
+        items:case_items(id, case_id, service_name, quoted_price, adjusted_price, quantity, adjustment_reason, final_price, sort_order),
+        case_vehicles(id, case_id, vehicle_id, fleet_description, vehicle_count, vehicle:vehicles(license_plate, owner_name, brand, model, engine_number, chassis_number)),
+        documents:case_documents(id, case_id, document_name, status, note, verified_by, verified_at)
       `)
-      .order("created_at", { ascending: false });
+      .order("created_at", { ascending: false })
+      .limit(filters?.limit || 100);
 
     if (filters?.status) {
       query = query.eq("status", filters.status);
@@ -831,19 +832,20 @@ export const SupabaseEntities = {
   // ==========================================
   // 5. INVOICES (Tables: invoices, invoice_items, payments)
   // ==========================================
-  async getInvoices(filters?: { status?: string; caseId?: string; q?: string }): Promise<InvoiceRecord[]> {
+  async getInvoices(filters?: { status?: string; caseId?: string; q?: string; limit?: number }): Promise<InvoiceRecord[]> {
     const admin = getSupabaseAdmin();
 
     let query = admin
       .from("invoices")
       .select(`
-        *,
-        customer:customers(*),
-        items:invoice_items(*),
-        payments(*),
+        id, invoice_number, case_id, customer_id, status, issued_at, due_date,
+        total_amount, notes, created_by, created_at, updated_at,
+        customer:customers(id, type, name, company_name, phone, tax_id, address),
+        payments(id, invoice_id, payment_date, amount, payment_method, reference_code, notes),
         case:cases(case_number)
       `)
-      .order("created_at", { ascending: false });
+      .order("created_at", { ascending: false })
+      .limit(filters?.limit || 100);
 
     if (filters?.status) {
       query = query.eq("status", filters.status);
@@ -1105,10 +1107,15 @@ export const SupabaseEntities = {
   async getFinancialMetrics() {
     const admin = getSupabaseAdmin();
 
+    const [invoiceResult, costResult, caseResult, quoteResult] = await Promise.all([
+      admin.from("invoices").select("id, total_amount, status"),
+      admin.from("case_costs").select("amount").eq("status", "approved"),
+      admin.from("cases").select("status"),
+      admin.from("quotes").select("*", { count: "exact", head: true }),
+    ]);
+
     // 1. Invoices
-    const { data: invRows, error: invErr } = await admin
-      .from("invoices")
-      .select("id, total_amount, status");
+    const { data: invRows, error: invErr } = invoiceResult;
     if (invErr) throw new Error(`Lỗi tính doanh thu: ${invErr.message}`);
 
     const validInvoices = (invRows || []).filter((i) => i.status === "issued");
@@ -1129,10 +1136,7 @@ export const SupabaseEntities = {
     const pendingDebt = Math.max(0, issuedRevenue - collectedMoney);
 
     // 3. Approved Costs
-    const { data: costRows, error: costErr } = await admin
-      .from("case_costs")
-      .select("amount")
-      .eq("status", "approved");
+    const { data: costRows, error: costErr } = costResult;
     if (costErr) throw new Error(`Lỗi tính chi phí đã duyệt: ${costErr.message}`);
     const approvedCosts = (costRows || []).reduce((sum, c) => sum + Number(c.amount || 0), 0);
 
@@ -1140,11 +1144,11 @@ export const SupabaseEntities = {
     const netProfit = Math.max(0, issuedRevenue - approvedCosts);
 
     // 5. Counts
-    const { data: caseRows } = await admin.from("cases").select("status");
+    const { data: caseRows } = caseResult;
     const activeCases = (caseRows || []).filter((c) => c.status === "new" || c.status === "processing").length;
     const completedCases = (caseRows || []).filter((c) => c.status === "completed").length;
 
-    const { count: quotesCount } = await admin.from("quotes").select("*", { count: "exact", head: true });
+    const { count: quotesCount } = quoteResult;
 
     return {
       totalQuotes: quotesCount || 0,

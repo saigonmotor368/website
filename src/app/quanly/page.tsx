@@ -52,33 +52,15 @@ export default function QuanlyDashboardPage() {
     let ignore = false;
     async function loadDashboard() {
       try {
-        const [reportsRes, quotesRes, casesRes] = await Promise.all([
-          fetch("/api/internal/reports"),
-          fetch("/api/internal/quotes"),
-          fetch("/api/internal/cases"),
-        ]);
+        const response = await fetch("/api/internal/dashboard", { cache: "no-store" });
 
         if (ignore) return;
 
-        if (reportsRes.ok) {
-          const repData = await reportsRes.json();
-          if (repData.metrics) {
-            setMetrics(repData.metrics);
-          }
-        }
-
-        if (quotesRes.ok) {
-          const qData = await quotesRes.json();
-          if (Array.isArray(qData)) {
-            setRecentQuotes(qData.slice(0, 5));
-          }
-        }
-
-        if (casesRes.ok) {
-          const cData = await casesRes.json();
-          if (Array.isArray(cData)) {
-            setRecentCases(cData.slice(0, 5));
-          }
+        if (response.ok) {
+          const data = await response.json();
+          if (data.metrics) setMetrics(data.metrics);
+          if (Array.isArray(data.recentQuotes)) setRecentQuotes(data.recentQuotes);
+          if (Array.isArray(data.recentCases)) setRecentCases(data.recentCases);
         }
       } catch (err) {
         console.error("Lỗi nạp dữ liệu dashboard từ Supabase:", err);
