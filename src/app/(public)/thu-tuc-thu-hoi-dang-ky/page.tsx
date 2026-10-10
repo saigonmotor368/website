@@ -1,16 +1,18 @@
 import type { Metadata } from "next";
-import Link from "next/link";
-import LeadForm from "@/components/LeadForm";
-import TrackedAnchor from "@/components/TrackedAnchor";
-import { OG_IMAGE, serializeJsonLd, SITE_URL } from "@/lib/seo";
-const pageTitle="Dịch vụ thu hồi đăng ký, biển số xe";
-const pageDescription="Saigon Motor hỗ trợ thủ tục thu hồi đăng ký, biển số ô tô và xe máy tại TP.HCM cùng các tỉnh. Kiểm tra hồ sơ trước khi báo phí.";
-export const metadata:Metadata={title:pageTitle,description:pageDescription,alternates:{canonical:"/thu-tuc-thu-hoi-dang-ky"},openGraph:{title:`${pageTitle} | Saigon Motor`,description:pageDescription,url:`${SITE_URL}/thu-tuc-thu-hoi-dang-ky`,images:[{url:OG_IMAGE,width:1200,height:630,alt:"Dịch vụ thu hồi đăng ký, biển số xe - Saigon Motor"}]},twitter:{card:"summary_large_image",title:`${pageTitle} | Saigon Motor`,description:pageDescription,images:[OG_IMAGE]}};
-const faqs=[["Khi nào cần làm thủ tục thu hồi?","Việc thu hồi phụ thuộc trường hợp chuyển quyền sở hữu, chuyển tỉnh và các trường hợp khác theo quy định hiện hành. SGM sẽ kiểm tra tình trạng cụ thể trước khi tư vấn."],["Không liên hệ được người đứng tên có nhận hồ sơ không?","SGM tiếp nhận thông tin để đánh giá, nhưng không thể khẳng định khả năng thực hiện khi chưa xem giấy tờ và nguồn gốc chuyển nhượng."],["Giá đã gồm lệ phí nhà nước chưa?","Chưa. Bảng giá là phí dịch vụ tham khảo. Các khoản thuế, lệ phí hoặc nghĩa vụ tài chính với cơ quan nhà nước được thông báo riêng."]];
-const faqSchema={"@context":"https://schema.org","@type":"FAQPage",mainEntity:faqs.map(([question,answer])=>({"@type":"Question",name:question,acceptedAnswer:{"@type":"Answer",text:answer}}))};
-export default function Page(){return <main><script type="application/ld+json" dangerouslySetInnerHTML={{__html:serializeJsonLd(faqSchema)}}/><section className="service-hero"><div className="container service-hero-grid"><div><span className="eyebrow">Thu hồi đăng ký, biển số</span><h1>Kiểm tra đúng trường hợp trước khi làm thủ tục thu hồi</h1><p className="section-lead">SGM hỗ trợ hồ sơ ô tô, xe máy tại TP.HCM và các tỉnh. Trường hợp thiếu giấy tờ hoặc qua nhiều người sử dụng cần được xem xét riêng.</p><div className="hero-actions"><TrackedAnchor className="btn btn-primary" href="tel:0704104104" eventName="call_click" placement="service_withdrawal_hero">Gọi 0704 104 104</TrackedAnchor><Link className="btn btn-outline" href="#tu-van-thu-hoi">Đăng ký nhận tư vấn</Link></div></div><aside className="service-aside"><strong>SGM hỗ trợ kiểm tra</strong><ul className="check-list"><li>Loại xe và nơi đang đăng ký</li><li>Thông tin người đứng tên</li><li>Giấy tờ chuyển quyền sở hữu</li><li>Tình trạng đăng ký và biển số</li></ul></aside></div></section>
-<section className="section"><div className="container grid-2"><div><span className="eyebrow">Trường hợp thường gặp</span><h2 className="section-heading">Mỗi hồ sơ cần một cách kiểm tra khác nhau</h2><ul className="check-list"><li>Chuyển quyền sở hữu ô tô hoặc xe máy</li><li>Sang tên xe đi tỉnh khác</li><li>Xe qua nhiều người sử dụng</li><li>Thông tin giấy tờ chưa thống nhất</li></ul></div><div className="notice"><strong>SGM không tiếp nhận vô điều kiện</strong><p style={{marginTop:8}}>Hồ sơ có dấu hiệu giả mạo, tranh chấp, nguồn gốc không rõ ràng hoặc không đáp ứng yêu cầu của cơ quan có thẩm quyền sẽ bị từ chối.</p></div></div></section>
-<section className="section section-soft"><div className="container"><span className="eyebrow">Quy trình dự kiến</span><h2 className="section-heading">Từng bước thực hiện đều được giải thích rõ</h2><div className="grid-4 steps" style={{marginTop:38}}><div className="step"><h3>Tiếp nhận</h3><p>Ghi nhận tình trạng xe và những giấy tờ anh/chị đang có.</p></div><div className="step"><h3>Kiểm tra</h3><p>Xác định điều kiện thực hiện, giấy tờ cần bổ sung và nơi làm thủ tục.</p></div><div className="step"><h3>Hướng dẫn và báo phí</h3><p>Giải thích quy trình, tách rõ phí dịch vụ và các khoản nộp cho cơ quan nhà nước.</p></div><div className="step"><h3>Thực hiện và theo dõi</h3><p>SGM thực hiện phần việc đã nhận và cập nhật tiến độ cho anh/chị.</p></div></div></div></section>
-<section className="section"><div className="container"><span className="eyebrow">Chi phí tham khảo</span><h2 className="section-heading">Bảng giá dịch vụ thu hồi</h2><div className="price-table-wrap" style={{marginTop:30}}><table className="price-table"><thead><tr><th>Dịch vụ</th><th>TP.HCM</th><th>Tỉnh khác</th></tr></thead><tbody><tr><td>Thu hồi hồ sơ ô tô</td><td>Từ 2.500.000 ₫</td><td>Từ 2.800.000 ₫</td></tr><tr><td>Thu hồi hồ sơ xe máy</td><td>Từ 1.500.000 ₫</td><td>Từ 1.800.000–2.000.000 ₫</td></tr></tbody></table></div><p className="price-note">Giá tham khảo cho hồ sơ thông thường, giấy tờ đầy đủ; có thể thay đổi khoảng 10–20% tuỳ loại xe, địa phương và tình trạng hồ sơ. Chưa gồm thuế trước bạ, lệ phí cấp biển số và khoản phải nộp cho cơ quan nhà nước.</p></div></section>
-<section className="section section-soft" id="tu-van-thu-hoi"><div className="container"><div className="lead-shell"><div className="lead-intro"><span className="eyebrow" style={{color:"var(--gold)"}}>Kiểm tra trước khi đi lại</span><h2>Hãy để SGM xem tình trạng hồ sơ trước</h2><p>Anh/chị không cần tải giấy tờ lên website. Nhân viên SGM sẽ liên hệ, tìm hiểu hồ sơ và hướng dẫn kênh gửi giấy tờ phù hợp.</p></div><LeadForm defaultService="thu-hoi"/></div></div></section>
-<section className="section"><div className="container"><h2 className="section-heading center">Câu hỏi thường gặp</h2><div className="faq" style={{maxWidth:850,margin:"34px auto 0"}}>{faqs.map(([q,a])=><details key={q}><summary>{q}</summary><p>{a}</p></details>)}</div></div></section></main>}
+import ServicePageTemplate from "@/components/ServicePageTemplate";
+import { getPublicService } from "@/data/public-services";
+import { OG_IMAGE, SITE_URL } from "@/lib/seo";
+
+const service = getPublicService("thu-tuc-thu-hoi-dang-ky")!;
+
+export const metadata: Metadata = {
+  title: service.metaTitle,
+  description: service.metaDescription,
+  alternates: { canonical: `/${service.slug}` },
+  openGraph: { title: `${service.metaTitle} | Saigon Motor`, description: service.metaDescription, url: `${SITE_URL}/${service.slug}`, images: [{ url: OG_IMAGE, width: 1200, height: 630, alt: service.name }] },
+  twitter: { card: "summary_large_image", title: service.metaTitle, description: service.metaDescription, images: [OG_IMAGE] },
+};
+
+export default function Page() {
+  return <ServicePageTemplate service={service} />;
+}

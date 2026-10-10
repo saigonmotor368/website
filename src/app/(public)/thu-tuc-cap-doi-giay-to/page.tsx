@@ -1,1 +1,0 @@
-import type { Metadata } from "next";import Notice from "@/components/ContentReviewNotice";export const metadata:Metadata={title:"Thủ tục cấp đổi giấy tờ xe",robots:{index:false,follow:false}};export default function Page(){return <Notice title="Thủ tục cấp đổi giấy tờ xe"/>}

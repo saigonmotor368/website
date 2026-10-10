@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getCurrentStaff } from "@/lib/staff-auth";
 import { getSupabaseAdmin } from "@/lib/supabase-admin";
+import { publicServiceOptions, serviceCategories } from "@/data/public-service-index";
 
 export async function GET(request: NextRequest) {
   const staff = await getCurrentStaff();
@@ -11,6 +12,7 @@ export async function GET(request: NextRequest) {
   const url = new URL(request.url);
   const status = url.searchParams.get("status");
   const service = url.searchParams.get("service");
+  const serviceGroup = url.searchParams.get("service_group");
   const source = url.searchParams.get("source");
   const assignedTo = url.searchParams.get("assigned_to");
 
@@ -26,6 +28,12 @@ export async function GET(request: NextRequest) {
 
   if (status) query = query.eq("status", status);
   if (service) query = query.eq("service", service);
+  if (!service && serviceGroup && serviceCategories.some((category) => category.id === serviceGroup)) {
+    const slugs = publicServiceOptions
+      .filter((item) => item.category === serviceGroup)
+      .map((item) => item.slug);
+    query = query.in("service", slugs);
+  }
   if (source) query = query.eq("utm_source", source);
   if (assignedTo === "unassigned") {
     query = query.is("assigned_to", null);

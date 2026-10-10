@@ -2,6 +2,7 @@
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { FormEvent, useState } from "react";
+import { getPublicServiceOption, publicServiceOptions, serviceCategories } from "@/data/public-service-index";
 import { trackEvent, trackGoogleAdsLeadConversion } from "@/lib/tracking";
 
 export default function LeadForm({ defaultService = "" }: { defaultService?: string }) {
@@ -20,6 +21,7 @@ export default function LeadForm({ defaultService = "" }: { defaultService?: str
     const name = String(form.get("name") || "").trim();
     const phone = String(form.get("phone") || "").replace(/[\s.()-]/g, "");
     const service = String(form.get("service") || "");
+    const serviceEntry = getPublicServiceOption(service);
     const vehicleType = String(form.get("vehicleType") || "");
     const processingLocation = String(form.get("processingLocation") || "").trim();
     const message = String(form.get("message") || "").trim();
@@ -95,8 +97,11 @@ export default function LeadForm({ defaultService = "" }: { defaultService?: str
       }
       trackEvent("lead_submit_success", {
         lead_id: result.leadId,
-        service: body.service,
+        service_slug: body.service,
+        service_group: serviceEntry?.category || "other",
         vehicle_type: body.vehicleType,
+        page_path: pathname,
+        placement: "lead_form",
       });
       trackGoogleAdsLeadConversion(result.leadId);
       router.push(`/thank-you?lead=${encodeURIComponent(result.leadId)}`);
@@ -147,10 +152,15 @@ export default function LeadForm({ defaultService = "" }: { defaultService?: str
           <label htmlFor="lead-service">Dịch vụ cần hỗ trợ</label>
           <select id="lead-service" name="service" required defaultValue={defaultService}>
             <option value="" disabled>Chọn dịch vụ</option>
-            <option value="sang-ten">Sang tên xe</option>
-            <option value="thu-hoi">Thu hồi đăng ký, biển số</option>
-            <option value="dang-ky">Đăng ký xe</option>
-            <option value="khac">Hồ sơ khác</option>
+            {serviceCategories.map((category) => (
+              <optgroup key={category.id} label={category.name}>
+                {publicServiceOptions
+                  .filter((serviceItem) => serviceItem.category === category.id)
+                  .map((serviceItem) => (
+                    <option key={serviceItem.slug} value={serviceItem.slug}>{serviceItem.name}</option>
+                  ))}
+              </optgroup>
+            ))}
           </select>
         </div>
         <div className="field">

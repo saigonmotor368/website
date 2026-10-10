@@ -36,13 +36,6 @@ export async function sendLeadNotificationEmail(
   }
 
   try {
-    const serviceLabels: Record<string, string> = {
-      "sang-ten": "Sang tên xe",
-      "thu-hoi": "Thu hồi đăng ký, biển số",
-      "dang-ky": "Đăng ký xe mới",
-      khac: "Thủ tục khác",
-    };
-
     const vehicleLabels: Record<string, string> = {
       oto: "Ô tô",
       "xe-may": "Xe máy",
@@ -58,12 +51,12 @@ export async function sendLeadNotificationEmail(
       body: JSON.stringify({
         from,
         to: [to],
-        subject: `[Yêu cầu mới] ${lead.name} - ${lead.phone} (${serviceLabels[lead.service] || lead.service})`,
+        subject: `[Yêu cầu mới] ${lead.name} - ${lead.phone} (${getServiceLabel(lead.service)})`,
         text: [
           `Mã hồ sơ: ${lead.id}`,
           `Họ và tên: ${lead.name}`,
           `Số điện thoại: ${lead.phone}`,
-          `Dịch vụ quan tâm: ${serviceLabels[lead.service] || lead.service}`,
+          `Dịch vụ quan tâm: ${getServiceLabel(lead.service)}`,
           `Loại xe: ${vehicleLabels[lead.vehicle_type] || lead.vehicle_type}`,
           `Nơi làm thủ tục: ${lead.processing_location}`,
           `Ghi chú: ${lead.message || "Không ghi chú"}`,
@@ -84,3 +77,4 @@ export async function sendLeadNotificationEmail(
     return { sent: false, error: msg };
   }
 }
+import { getServiceLabel } from "@/data/public-service-index";

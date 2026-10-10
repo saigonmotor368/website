@@ -1,1 +1,0 @@
-import type { Metadata } from "next";import Notice from "@/components/ContentReviewNotice";export const metadata:Metadata={title:"Kiểm tra phạt nguội",robots:{index:false,follow:false}};export default function Page(){return <Notice title="Hướng dẫn kiểm tra phạt nguội"/>}

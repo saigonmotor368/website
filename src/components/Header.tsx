@@ -1,10 +1,15 @@
 "use client";
 import Image from "next/image";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useState } from "react";
+import { getPublicServiceOption, publicServiceOptions, serviceCategories } from "@/data/public-service-index";
 import { trackEvent } from "@/lib/tracking";
 export default function Header() {
   const [open, setOpen] = useState(false);
+  const pathname = usePathname();
+  const service = getPublicServiceOption(pathname.replace(/^\//, ""));
+  const trackingContext = { page_path: pathname, ...(service ? { service_slug: service.slug, service_group: service.category } : {}) };
   const close = () => setOpen(false);
 
   return (
@@ -27,15 +32,33 @@ export default function Header() {
               </button>
             </div>
           )}
-          <Link href="/#dich-vu" onClick={close}>Dịch vụ</Link>
+          <div className="service-nav-menu">
+            <Link className="service-nav-trigger" href="/dich-vu" onClick={close}>Dịch vụ <span aria-hidden="true">⌄</span></Link>
+            <div className="service-nav-panel">
+              <div className="service-nav-panel-head">
+                <div><strong>Dịch vụ hồ sơ xe</strong><span>Chọn đúng thủ tục anh/chị đang cần</span></div>
+                <Link href="/dich-vu" onClick={close}>Xem tất cả →</Link>
+              </div>
+              <div className="service-nav-groups">
+                {serviceCategories.map((category) => (
+                  <div key={category.id}>
+                    <strong>{category.name}</strong>
+                    {publicServiceOptions.filter((service) => service.category === category.id).slice(0, 3).map((service) => (
+                      <Link key={service.slug} href={`/${service.slug}`} onClick={close}>{service.shortName}</Link>
+                    ))}
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
           <Link href="/#quy-trinh" onClick={close}>Quy trình</Link>
           <Link href="/#bang-gia" onClick={close}>Bảng giá</Link>
           <Link href="/phap-ly-cam-ket" onClick={close}>Thông tin pháp lý</Link>
-          <a className="btn btn-primary mobile-menu-cta" href="tel:0704104104" onClick={() => { trackEvent("call_click", { placement: "mobile_menu" }); close(); }}>
+          <a className="btn btn-primary mobile-menu-cta" href="tel:0704104104" onClick={() => { trackEvent("call_click", { ...trackingContext, placement: "mobile_menu" }); close(); }}>
             Gọi 0704 104 104
           </a>
         </nav>
-        <a className="btn btn-primary header-cta" href="tel:0704104104" onClick={() => trackEvent("call_click", { placement: "header" })}>Gọi 0704 104 104</a>
+        <a className="btn btn-primary header-cta" href="tel:0704104104" onClick={() => trackEvent("call_click", { ...trackingContext, placement: "header" })}>Gọi 0704 104 104</a>
         <button className="menu-toggle" type="button" onClick={() => setOpen(!open)} aria-label={open ? "Đóng menu" : "Mở menu"} aria-expanded={open} aria-controls="main-navigation">
           <span aria-hidden="true">{open ? "✕" : "☰"}</span>
         </button>

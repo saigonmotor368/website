@@ -2,11 +2,12 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import LeadForm from "@/components/LeadForm";
 import PremiumHero from "@/components/PremiumHero";
+import { serviceCategories } from "@/data/public-services";
 import { OG_IMAGE, serializeJsonLd, SITE_URL } from "@/lib/seo";
 
-const pageTitle = "Dịch vụ sang tên, thu hồi hồ sơ xe tại TP.HCM";
+const pageTitle = "Dịch vụ hồ sơ pháp lý ô tô, xe máy tại TP.HCM";
 const pageDescription =
-  "Saigon Motor hỗ trợ sang tên xe, thu hồi đăng ký và biển số ô tô, xe máy tại TP.HCM và các tỉnh. Kiểm tra hồ sơ, báo phí rõ ràng.";
+  "Saigon Motor hỗ trợ đăng ký, sang tên, cấp lại giấy tờ, phạt nguội, đăng kiểm và hồ sơ xe kinh doanh vận tải tại TP.HCM và các tỉnh.";
 
 export const metadata: Metadata = {
   title: pageTitle,
@@ -55,11 +56,18 @@ export default function Home() {
     </div></section>
 
     <section className="section" id="dich-vu"><div className="container">
-      <div className="center"><span className="eyebrow">Dịch vụ trọng tâm</span><h2 className="section-heading">Dịch vụ phù hợp với từng nhu cầu về giấy tờ xe</h2><p className="section-lead">SGM kiểm tra tình trạng giấy tờ, hướng dẫn quy trình và báo chi phí minh bạch trước khi tiếp nhận hồ sơ.</p></div>
-      <div className="grid-2" style={{ marginTop: 40 }}>
-        <article className="card service-card"><div className="icon-chip">01</div><h3>Sang tên ô tô, xe máy</h3><p>SGM kiểm tra giấy tờ mua bán, thông tin đăng ký và hướng dẫn các bước sang tên xe cùng tỉnh hoặc khác tỉnh.</p><ul className="service-points"><li>Kiểm tra những giấy tờ anh/chị đang có</li><li>Làm rõ phần việc của SGM và phần anh/chị cần phối hợp</li><li>Báo chi phí trước khi bắt đầu thực hiện</li></ul><div className="price">Ô tô từ 5 triệu đồng</div><small>Chi phí dịch vụ tham khảo tại TP.HCM</small><Link className="btn btn-outline" href="/thu-tuc-sang-ten-xe">Xem dịch vụ sang tên</Link></article>
-        <article className="card service-card"><div className="icon-chip">02</div><h3>Thu hồi đăng ký, biển số</h3><p>SGM hỗ trợ thủ tục thu hồi khi chuyển quyền sở hữu, chuyển xe đi tỉnh khác hoặc thuộc trường hợp phải thu hồi theo quy định.</p><ul className="service-points"><li>Tiếp nhận hồ sơ ô tô và xe máy</li><li>Hỗ trợ tại TP.HCM và các tỉnh</li><li>Kiểm tra riêng những hồ sơ phức tạp</li></ul><div className="price">Xe máy từ 1,5 triệu đồng</div><small>Chi phí dịch vụ tham khảo tại TP.HCM</small><Link className="btn btn-outline" href="/thu-tuc-thu-hoi-dang-ky">Xem dịch vụ thu hồi</Link></article>
+      <div className="center"><span className="eyebrow">Dịch vụ hồ sơ xe</span><h2 className="section-heading">Một nơi để anh/chị tìm đúng thủ tục đang cần</h2><p className="section-lead">SGM hỗ trợ hồ sơ pháp lý cho ô tô, xe máy và xe kinh doanh vận tải. Mỗi trường hợp đều được kiểm tra trước, hướng dẫn rõ quy trình và báo chi phí trước khi tiếp nhận.</p></div>
+      <div className="home-service-groups" style={{ marginTop: 40 }}>
+        {serviceCategories.map((category) => (
+          <Link className="home-service-group" href={`/dich-vu#${category.id}`} key={category.id}>
+            <span className="icon-chip" aria-hidden="true">{category.icon}</span>
+            <h3>{category.name}</h3>
+            <p>{category.description}</p>
+            <span className="service-card-link">Xem các dịch vụ <span aria-hidden="true">→</span></span>
+          </Link>
+        ))}
       </div>
+      <div className="center" style={{ marginTop: 30 }}><Link className="btn btn-primary" href="/dich-vu">Xem tất cả dịch vụ</Link></div>
     </div></section>
 
     <section className="section section-soft" id="quy-trinh"><div className="container"><span className="eyebrow">Quy trình làm việc</span><h2 className="section-heading">Hồ sơ của anh/chị được xử lý như thế nào?</h2><div className="grid-4 steps" style={{ marginTop: 42 }}>

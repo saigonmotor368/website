@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { publicServiceOptions, serviceCategories } from "@/data/public-service-index";
 
 interface StaffMember {
   user_id: string;
@@ -54,12 +55,9 @@ const statusLabels: Record<string, string> = {
   lost: "Không phù hợp",
 };
 
-const serviceLabels: Record<string, string> = {
-  "sang-ten": "Sang tên",
-  "thu-hoi": "Thu hồi",
-  "dang-ky": "Đăng ký",
-  khac: "Khác",
-};
+const serviceLabels: Record<string, string> = Object.fromEntries(
+  publicServiceOptions.map((service) => [service.slug, service.name])
+);
 
 const vehicleLabels: Record<string, string> = {
   oto: "Ô tô",
@@ -85,6 +83,7 @@ export default function LeadsPage() {
 
   // Filters
   const [statusFilter, setStatusFilter] = useState("");
+  const [serviceGroupFilter, setServiceGroupFilter] = useState("");
   const [serviceFilter, setServiceFilter] = useState("");
   const [sourceFilter, setSourceFilter] = useState("");
   const [assignedFilter, setAssignedFilter] = useState("");
@@ -108,6 +107,7 @@ export default function LeadsPage() {
     setLoading(true);
     const qs = new URLSearchParams();
     if (statusFilter) qs.set("status", statusFilter);
+    if (serviceGroupFilter) qs.set("service_group", serviceGroupFilter);
     if (serviceFilter) qs.set("service", serviceFilter);
     if (sourceFilter) qs.set("source", sourceFilter);
     if (assignedFilter) qs.set("assigned_to", assignedFilter);
@@ -132,6 +132,7 @@ export default function LeadsPage() {
     let ignore = false;
     const qs = new URLSearchParams();
     if (statusFilter) qs.set("status", statusFilter);
+    if (serviceGroupFilter) qs.set("service_group", serviceGroupFilter);
     if (serviceFilter) qs.set("service", serviceFilter);
     if (sourceFilter) qs.set("source", sourceFilter);
     if (assignedFilter) qs.set("assigned_to", assignedFilter);
@@ -153,7 +154,7 @@ export default function LeadsPage() {
     return () => {
       ignore = true;
     };
-  }, [statusFilter, serviceFilter, sourceFilter, assignedFilter]);
+  }, [statusFilter, serviceGroupFilter, serviceFilter, sourceFilter, assignedFilter]);
 
   const updateLead = async (
     id: string,
@@ -290,7 +291,7 @@ export default function LeadsPage() {
 
       {/* Filter Toolbar */}
       <div className="bg-[#1a1d27] border border-gray-800 rounded-xl p-4 mb-6 shadow-lg">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
           <div>
             <label className="block text-xs font-medium text-gray-400 mb-1">Trạng thái hồ sơ</label>
             <select
@@ -308,6 +309,23 @@ export default function LeadsPage() {
           </div>
 
           <div>
+            <label className="block text-xs font-medium text-gray-400 mb-1">Nhóm dịch vụ</label>
+            <select
+              value={serviceGroupFilter}
+              onChange={(e) => {
+                setServiceGroupFilter(e.target.value);
+                setServiceFilter("");
+              }}
+              className="w-full bg-[#11151d] border border-gray-700 rounded-lg px-3 py-2 text-sm text-gray-200 focus:outline-none focus:border-[#D4AF37]"
+            >
+              <option value="">Tất cả nhóm</option>
+              {serviceCategories.map((category) => (
+                <option key={category.id} value={category.id}>{category.name}</option>
+              ))}
+            </select>
+          </div>
+
+          <div>
             <label className="block text-xs font-medium text-gray-400 mb-1">Dịch vụ</label>
             <select
               value={serviceFilter}
@@ -315,10 +333,11 @@ export default function LeadsPage() {
               className="w-full bg-[#11151d] border border-gray-700 rounded-lg px-3 py-2 text-sm text-gray-200 focus:outline-none focus:border-[#D4AF37]"
             >
               <option value="">Tất cả dịch vụ</option>
-              <option value="sang-ten">Sang tên xe</option>
-              <option value="thu-hoi">Thu hồi đăng ký, biển số</option>
-              <option value="dang-ky">Đăng ký mới</option>
-              <option value="khac">Khác</option>
+              {publicServiceOptions
+                .filter((service) => !serviceGroupFilter || service.category === serviceGroupFilter)
+                .map((service) => (
+                  <option key={service.slug} value={service.slug}>{service.name}</option>
+                ))}
             </select>
           </div>
 

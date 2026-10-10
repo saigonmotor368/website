@@ -2,8 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import crypto from "crypto";
 import { getSupabaseAdmin } from "@/lib/supabase-admin";
 import { sendLeadNotificationEmail } from "@/lib/lead-notify";
+import { publicServiceSlugs } from "@/data/public-service-index";
 
-const allowedServices = new Set(["sang-ten", "thu-hoi", "dang-ky", "khac"]);
 const allowedVehicles = new Set(["oto", "xe-may", "khac"]);
 
 const clean = (value: unknown, max: number) =>
@@ -55,7 +55,7 @@ export async function POST(request: NextRequest) {
 
   const name = clean(raw.name, 80);
   const phone = clean(raw.phone, 30).replace(/[\s.()-]/g, "");
-  const service = clean(raw.service, 30);
+  const service = clean(raw.service, 80);
   const vehicleType = clean(raw.vehicleType, 30);
   const processingLocation = clean(raw.processingLocation, 120);
   const message = clean(raw.message, 1000);
@@ -63,7 +63,7 @@ export async function POST(request: NextRequest) {
   if (
     name.length < 2 ||
     !/^(0[35789])[0-9]{8}$/.test(phone) ||
-    !allowedServices.has(service) ||
+    !publicServiceSlugs.has(service) ||
     !allowedVehicles.has(vehicleType) ||
     processingLocation.length < 2 ||
     raw.consent !== true

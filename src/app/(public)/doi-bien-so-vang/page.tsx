@@ -1,1 +1,28 @@
-import type { Metadata } from "next";import Notice from "@/components/ContentReviewNotice";export const metadata:Metadata={title:"Đổi biển số vàng",robots:{index:false,follow:false}};export default function Page(){return <Notice title="Thủ tục đổi biển số vàng"/>}
+import type { Metadata } from "next";
+import ServicePageTemplate from "@/components/ServicePageTemplate";
+import { getPublicService } from "@/data/public-services";
+import { OG_IMAGE, SITE_URL } from "@/lib/seo";
+
+const service = getPublicService("doi-bien-so-vang")!;
+
+export const metadata: Metadata = {
+  title: service.metaTitle,
+  description: service.metaDescription,
+  alternates: { canonical: `/${service.slug}` },
+  openGraph: {
+    title: `${service.metaTitle} | Saigon Motor`,
+    description: service.metaDescription,
+    url: `${SITE_URL}/${service.slug}`,
+    images: [{ url: OG_IMAGE, width: 1200, height: 630, alt: service.name }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: service.metaTitle,
+    description: service.metaDescription,
+    images: [OG_IMAGE],
+  },
+};
+
+export default function Page() {
+  return <ServicePageTemplate service={service} />;
+}
