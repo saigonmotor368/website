@@ -58,7 +58,17 @@ export async function POST(request: NextRequest) {
   const service = clean(raw.service, 80);
   const vehicleType = clean(raw.vehicleType, 30);
   const processingLocation = clean(raw.processingLocation, 120);
-  const message = clean(raw.message, 1000);
+  const customerType = clean(raw.customerType, 30);
+  const preferredTime = clean(raw.preferredTime, 80);
+  const contactPreference = clean(raw.contactPreference, 30);
+  const baseMessage = clean(raw.message, 1000);
+  const messageParts = [
+    customerType ? `Loại khách hàng: ${customerType}` : "",
+    contactPreference ? `Kênh liên hệ mong muốn: ${contactPreference}` : "",
+    preferredTime ? `Khung giờ thuận tiện: ${preferredTime}` : "",
+    baseMessage,
+  ].filter(Boolean);
+  const message = messageParts.join("\n").slice(0, 1000);
 
   if (
     name.length < 2 ||

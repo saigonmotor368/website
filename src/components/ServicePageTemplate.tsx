@@ -87,7 +87,7 @@ export default function ServicePageTemplate({ service }: { service: PublicServic
         <div className="step"><h3>Tiếp nhận thông tin</h3><p>SGM ghi nhận tình trạng xe, nhu cầu và những giấy tờ anh/chị đang có.</p></div>
         <div className="step"><h3>Kiểm tra hồ sơ</h3><p>Đối chiếu trường hợp áp dụng, nơi thực hiện và tài liệu cần bổ sung.</p></div>
         <div className="step"><h3>Hướng dẫn, báo phí</h3><p>Làm rõ quy trình, phí dịch vụ và khoản nộp cho cơ quan có thẩm quyền.</p></div>
-        <div className="step"><h3>Thực hiện, theo dõi</h3><p>SGM thực hiện phần việc đã nhận và cập nhật khi cần khách hàng phối hợp.</p></div>
+        <div className="step"><h3>Thực hiện, theo dõi</h3><p>SGM chuẩn bị hồ sơ, thực hiện phần việc đã nhận hoặc được ủy quyền hợp lệ, cập nhật tiến độ và bàn giao kết quả.</p></div>
       </div>
     </div></section>
 

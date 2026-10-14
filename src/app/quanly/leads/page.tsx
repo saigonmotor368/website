@@ -2,7 +2,14 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { publicServiceOptions, serviceCategories } from "@/data/public-service-index";
+import {
+  CONSULTATION_SERVICE_NAME,
+  CONSULTATION_SERVICE_SLUG,
+  PRE_PURCHASE_REVIEW_SERVICE_NAME,
+  PRE_PURCHASE_REVIEW_SERVICE_SLUG,
+  publicServiceOptions,
+  serviceCategories,
+} from "@/data/public-service-index";
 
 interface StaffMember {
   user_id: string;
@@ -58,6 +65,8 @@ const statusLabels: Record<string, string> = {
 const serviceLabels: Record<string, string> = Object.fromEntries(
   publicServiceOptions.map((service) => [service.slug, service.name])
 );
+serviceLabels[CONSULTATION_SERVICE_SLUG] = CONSULTATION_SERVICE_NAME;
+serviceLabels[PRE_PURCHASE_REVIEW_SERVICE_SLUG] = PRE_PURCHASE_REVIEW_SERVICE_NAME;
 
 const vehicleLabels: Record<string, string> = {
   oto: "Ô tô",
@@ -333,6 +342,12 @@ export default function LeadsPage() {
               className="w-full bg-[#11151d] border border-gray-700 rounded-lg px-3 py-2 text-sm text-gray-200 focus:outline-none focus:border-[#D4AF37]"
             >
               <option value="">Tất cả dịch vụ</option>
+              {!serviceGroupFilter ? (
+                <>
+                  <option value={CONSULTATION_SERVICE_SLUG}>{CONSULTATION_SERVICE_NAME}</option>
+                  <option value={PRE_PURCHASE_REVIEW_SERVICE_SLUG}>{PRE_PURCHASE_REVIEW_SERVICE_NAME}</option>
+                </>
+              ) : null}
               {publicServiceOptions
                 .filter((service) => !serviceGroupFilter || service.category === serviceGroupFilter)
                 .map((service) => (

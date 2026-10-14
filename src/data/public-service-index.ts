@@ -2,6 +2,11 @@ export type ServiceCategoryId = "registration" | "documents" | "violations" | "t
 export type ServiceAudience = "individual" | "business";
 export type ServiceVehicle = "car" | "motorbike" | "commercial";
 
+export const CONSULTATION_SERVICE_SLUG = "tu-van-ho-so-xe";
+export const CONSULTATION_SERVICE_NAME = "Hỗ trợ hồ sơ và thủ tục xe";
+export const PRE_PURCHASE_REVIEW_SERVICE_SLUG = "kiem-tra-ho-so-xe-truoc-giao-dich";
+export const PRE_PURCHASE_REVIEW_SERVICE_NAME = "Kiểm tra hồ sơ xe trước giao dịch";
+
 export const serviceCategories = [
   { id: "registration" as const, name: "Đăng ký, sang tên và thu hồi", icon: "01", description: "Hỗ trợ hồ sơ đăng ký lần đầu, chuyển quyền sở hữu, di chuyển xe và thu hồi đăng ký, biển số." },
   { id: "documents" as const, name: "Giấy đăng ký và biển số", icon: "02", description: "Cấp đổi, cấp lại cà vẹt, biển số và cập nhật thông tin của chủ xe hoặc phương tiện." },
@@ -31,12 +36,18 @@ export const publicServiceOptions = [
   { slug: "giay-phep-kinh-doanh-van-tai", name: "Giấy phép kinh doanh vận tải", shortName: "Giấy phép vận tải", category: "transport", featured: false },
 ] as const satisfies ReadonlyArray<{ slug: string; name: string; shortName: string; category: ServiceCategoryId; featured: boolean }>;
 
-export const publicServiceSlugs = new Set<string>(publicServiceOptions.map((service) => service.slug));
+export const publicServiceSlugs = new Set<string>([
+  ...publicServiceOptions.map((service) => service.slug),
+  CONSULTATION_SERVICE_SLUG,
+  PRE_PURCHASE_REVIEW_SERVICE_SLUG,
+]);
 
 export function getPublicServiceOption(slug: string) {
   return publicServiceOptions.find((service) => service.slug === slug);
 }
 
 export function getServiceLabel(slug: string) {
+  if (slug === CONSULTATION_SERVICE_SLUG) return CONSULTATION_SERVICE_NAME;
+  if (slug === PRE_PURCHASE_REVIEW_SERVICE_SLUG) return PRE_PURCHASE_REVIEW_SERVICE_NAME;
   return getPublicServiceOption(slug)?.name || "Hồ sơ khác";
 }
