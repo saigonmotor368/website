@@ -32,6 +32,8 @@ export default function QuanlyQuotesPage() {
   const [statusFilter, setStatusFilter] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
   const [updatingId, setUpdatingId] = useState<string | null>(null);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [canDeleteQuotes, setCanDeleteQuotes] = useState(false);
   const [loadError, setLoadError] = useState("");
 
   const loadQuotes = async (status = "", q = "") => {
@@ -44,6 +46,7 @@ export default function QuanlyQuotesPage() {
       const res = await fetch(`/api/internal/quotes?${qs.toString()}`, {
         cache: "no-store",
       });
+      setCanDeleteQuotes(res.headers.get("x-can-delete-quotes") === "true");
       if (res.ok) {
         const data = await res.json();
         setQuotes(data || []);
@@ -78,6 +81,31 @@ export default function QuanlyQuotesPage() {
       console.error("Lỗi cập nhật trạng thái báo giá:", err);
     } finally {
       setUpdatingId(null);
+    }
+  };
+
+  const handleDeleteRejectedQuote = async (quote: QuoteListItem) => {
+    if (quote.status !== "rejected" || quote.case_id) return;
+    const confirmed = window.confirm(
+      `Xóa báo giá ${quote.quote_number} của ${quote.customer_name}?\n\nChỉ báo giá bị từ chối mới được xóa. Thao tác này không thể hoàn tác.`
+    );
+    if (!confirmed) return;
+
+    setDeletingId(quote.id);
+    try {
+      const res = await fetch(`/api/internal/quotes/${encodeURIComponent(quote.id)}`, {
+        method: "DELETE",
+      });
+      const data = await res.json().catch(() => null);
+      if (!res.ok) {
+        window.alert(data?.error || "Không thể xóa báo giá.");
+        return;
+      }
+      setQuotes((current) => current.filter((item) => item.id !== quote.id));
+    } catch {
+      window.alert("Không thể kết nối để xóa báo giá. Danh sách chưa bị thay đổi.");
+    } finally {
+      setDeletingId(null);
     }
   };
 
@@ -295,6 +323,17 @@ export default function QuanlyQuotesPage() {
                                 ✕ Từ chối
                               </button>
                             </>
+                          )}
+                          {q.status === "rejected" && canDeleteQuotes && (
+                            <button
+                              type="button"
+                              disabled={deletingId === q.id || Boolean(q.case_id)}
+                              onClick={() => void handleDeleteRejectedQuote(q)}
+                              className="text-[11px] px-2 py-1 rounded bg-rose-950/40 border border-rose-800/40 text-rose-300 hover:bg-rose-900/60 disabled:cursor-not-allowed disabled:opacity-50"
+                              title={q.case_id ? "Báo giá đã gắn với hồ sơ, không thể xóa" : "Xóa báo giá bị khách từ chối"}
+                            >
+                              {deletingId === q.id ? "Đang xóa..." : "🗑 Xóa"}
+                            </button>
                           )}
                         </div>
                       </td>

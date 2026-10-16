@@ -35,8 +35,8 @@ export default function QuotePreview({ quoteData, onNext, onPrev }: Step4Props) 
       <div className="flex justify-center overflow-x-auto rounded-xl bg-gray-900 p-3 sm:p-6">
         <div 
           id="quote-preview" 
-          className="relative bg-white p-8 text-[12px] leading-[1.35] text-black shadow-2xl"
-          style={{ width: '794px', minHeight: '1123px', fontFamily: 'Arial, sans-serif' }} // A4 dimensions at 96dpi
+          className="relative bg-white p-8 text-[13px] leading-[1.4] text-black shadow-2xl"
+          style={{ width: '794px', minHeight: '1123px', fontFamily: 'var(--font-be-vietnam), Arial, sans-serif' }} // A4 dimensions at 96dpi
         >
           {/* Watermark mờ */}
           <div className="absolute inset-0 flex items-center justify-center opacity-5 pointer-events-none z-0">
@@ -59,13 +59,8 @@ export default function QuotePreview({ quoteData, onNext, onPrev }: Step4Props) 
               </div>
               <div className="text-right shrink-0">
                 <h2 className="mb-1 whitespace-nowrap text-[22px] font-black uppercase tracking-tight text-gray-900">BÁO GIÁ DỊCH VỤ</h2>
-                <p className="text-[11px] text-gray-600">Số: <span className="font-semibold text-gray-900">{quoteData.quoteNumber}</span></p>
-                <p className="text-[11px] text-gray-600">Ngày: <span className="font-semibold text-gray-900">{dateStr}</span></p>
-                {quoteData.status === "issued" && (
-                  <p className="mt-1.5 inline-block rounded border border-emerald-600 px-2 py-0.5 text-[9px] font-bold uppercase tracking-wide text-emerald-700">
-                    Bản chính thức
-                  </p>
-                )}
+                  <p className="text-[12px] text-gray-600">Số: <span className="font-semibold text-gray-900">{quoteData.quoteNumber}</span></p>
+                  <p className="text-[12px] text-gray-600">Ngày: <span className="font-semibold text-gray-900">{dateStr}</span></p>
               </div>
             </div>
 
@@ -115,42 +110,42 @@ export default function QuotePreview({ quoteData, onNext, onPrev }: Step4Props) 
                 <tbody>
                   {quoteData.services.map((service, idx) => (
                     <tr key={service.id}>
-                      <td className="border border-gray-300 px-2 py-1.5 text-center text-[10px]">{idx + 1}</td>
+                      <td className="border border-gray-300 px-2 py-1.5 text-center text-[11px]">{idx + 1}</td>
                       <td className="border border-gray-300 px-2 py-1.5">
-                        <p className="text-[11px] font-semibold">{service.name}</p>
-                        {service.note && <p className="mt-0.5 text-[9px] italic leading-[1.2] text-gray-500">{service.note}</p>}
+                        <p className="text-[12px] font-semibold">{service.name}</p>
+                        {service.note && <p className="mt-0.5 text-[10px] italic leading-[1.25] text-gray-500">{service.note}</p>}
                       </td>
-                      <td className="border border-gray-300 px-2 py-1.5 text-right text-[10px] whitespace-nowrap">{formatMoney(service.price)}</td>
-                      <td className="border border-gray-300 px-2 py-1.5 text-center text-[10px]">{service.quantity}</td>
-                      <td className="border border-gray-300 px-2 py-1.5 text-right text-[10px] font-medium whitespace-nowrap">{formatMoney(service.price * service.quantity)}</td>
+                      <td className="border border-gray-300 px-2 py-1.5 text-right text-[11px] whitespace-nowrap">{formatMoney(service.price)}</td>
+                      <td className="border border-gray-300 px-2 py-1.5 text-center text-[11px]">{service.quantity}</td>
+                      <td className="border border-gray-300 px-2 py-1.5 text-right text-[11px] font-medium whitespace-nowrap">{formatMoney(service.price * service.quantity)}</td>
                     </tr>
                   ))}
                   
                   {quoteData.vatRate > 0 && (
                     <>
                       <tr>
-                        <td colSpan={4} className="border border-gray-300 px-2 py-1.5 text-right text-[10px] font-medium text-gray-700">Cộng tiền dịch vụ:</td>
-                        <td className="border border-gray-300 px-2 py-1.5 text-right text-[10px] font-medium whitespace-nowrap">{formatMoney(subtotal)}</td>
+                      <td colSpan={4} className="border border-gray-300 px-2 py-1.5 text-right text-[11px] font-medium text-gray-700">Cộng tiền dịch vụ:</td>
+                      <td className="border border-gray-300 px-2 py-1.5 text-right text-[11px] font-medium whitespace-nowrap">{formatMoney(subtotal)}</td>
                       </tr>
                       <tr>
-                        <td colSpan={4} className="border border-gray-300 px-2 py-1.5 text-right text-[10px] font-medium text-gray-700">Thuế GTGT ({quoteData.vatRate}%):</td>
-                        <td className="border border-gray-300 px-2 py-1.5 text-right text-[10px] font-medium whitespace-nowrap">{formatMoney(vatAmount)}</td>
+                        <td colSpan={4} className="border border-gray-300 px-2 py-1.5 text-right text-[11px] font-medium text-gray-700">Thuế GTGT ({quoteData.vatRate}%):</td>
+                        <td className="border border-gray-300 px-2 py-1.5 text-right text-[11px] font-medium whitespace-nowrap">{formatMoney(vatAmount)}</td>
                       </tr>
                     </>
                   )}
                   
                   {quoteData.includeRegistrationFee && registrationFee > 0 && (
                     <tr>
-                      <td colSpan={4} className="border border-gray-300 px-2 py-1.5 text-right text-[10px] font-medium text-gray-700">
+                      <td colSpan={4} className="border border-gray-300 px-2 py-1.5 text-right text-[11px] font-medium text-gray-700">
                         Lệ phí trước bạ (Ước tính xe cũ {regFeePercent}%):
                       </td>
-                      <td className="border border-gray-300 px-2 py-1.5 text-right text-[10px] font-medium whitespace-nowrap">{formatMoney(registrationFee)}</td>
+                      <td className="border border-gray-300 px-2 py-1.5 text-right text-[11px] font-medium whitespace-nowrap">{formatMoney(registrationFee)}</td>
                     </tr>
                   )}
 
                   <tr className="bg-gray-50 font-bold">
-                    <td colSpan={4} className="border border-gray-300 px-2 py-2 text-right text-[11px] uppercase text-gray-800">Tổng cộng thanh toán:</td>
-                    <td className="border border-gray-300 px-2 py-2 text-right text-[14px] text-[#9a7610] whitespace-nowrap">{formatMoney(totalAmount)}</td>
+                    <td colSpan={4} className="border border-gray-300 px-2 py-2 text-right text-[12px] uppercase text-gray-800">Tổng cộng thanh toán:</td>
+                    <td className="border border-gray-300 px-2 py-2 text-right text-[15px] text-[#9a7610] whitespace-nowrap">{formatMoney(totalAmount)}</td>
                   </tr>
                 </tbody>
               </table>
@@ -172,9 +167,9 @@ export default function QuotePreview({ quoteData, onNext, onPrev }: Step4Props) 
                   {quoteData.documents.map((doc, idx) => (
                     <tr key={doc.id}>
                       <td className="border border-gray-300 px-2 py-1.5 text-center text-[10px]">{idx + 1}</td>
-                      <td className="border border-gray-300 px-2 py-1.5 text-[10px] font-medium">{doc.name}</td>
-                      <td className="border border-gray-300 px-2 py-1.5 text-center text-[10px]">{doc.quantity} bản</td>
-                      <td className="border border-gray-300 px-2 py-1.5 text-[10px] italic text-gray-600">{doc.note}</td>
+                      <td className="border border-gray-300 px-2 py-1.5 text-[11px] font-medium">{doc.name}</td>
+                      <td className="border border-gray-300 px-2 py-1.5 text-center text-[11px]">{doc.quantity} bản</td>
+                      <td className="border border-gray-300 px-2 py-1.5 text-[11px] italic text-gray-600">{doc.note}</td>
                     </tr>
                   ))}
                   {quoteData.documents.length === 0 && (
@@ -188,7 +183,7 @@ export default function QuotePreview({ quoteData, onNext, onPrev }: Step4Props) 
             {quoteData.note && (
               <div className="mb-4">
                 <h3 className="mb-1 text-[11px] font-bold text-gray-800">Ghi chú:</h3>
-                <div className="whitespace-pre-wrap border-l-2 border-[#b7962f] bg-gray-50 p-2.5 text-[10px] italic text-gray-700">
+                <div className="whitespace-pre-wrap border-l-2 border-[#b7962f] bg-gray-50 p-2.5 text-[11px] italic text-gray-700">
                   {quoteData.note}
                 </div>
               </div>

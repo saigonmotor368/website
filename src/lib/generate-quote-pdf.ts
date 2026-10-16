@@ -1,11 +1,11 @@
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 
-export const generateQuotePdf = async (elementId: string, filename: string = 'BaoGia_SaigonMotor.pdf') => {
+const captureQuoteCanvas = async (elementId: string) => {
   const element = document.getElementById(elementId);
   if (!element) {
     console.error(`Element with id ${elementId} not found`);
-    return false;
+    return null;
   }
 
   try {
@@ -18,8 +18,22 @@ export const generateQuotePdf = async (elementId: string, filename: string = 'Ba
       backgroundColor: '#ffffff'
     });
 
+    return canvas;
+  } catch (error) {
+    console.error('Error rendering quote:', error);
+    return null;
+  } finally {
+    element.classList.remove('pdf-exporting');
+  }
+};
+
+export const generateQuotePdf = async (elementId: string, filename: string = 'BaoGia_SaigonMotor.pdf') => {
+  try {
+    const canvas = await captureQuoteCanvas(elementId);
+    if (!canvas) return false;
+
     const imgData = canvas.toDataURL('image/png');
-    
+
     // Khổ A4 (210 x 297 mm)
     const pdf = new jsPDF({
       orientation: 'portrait',
@@ -51,7 +65,33 @@ export const generateQuotePdf = async (elementId: string, filename: string = 'Ba
   } catch (error) {
     console.error('Error generating PDF:', error);
     return false;
-  } finally {
-    element.classList.remove('pdf-exporting');
+  }
+};
+
+export const generateQuoteImage = async (
+  elementId: string,
+  filename: string = 'BaoGia_SaigonMotor.jpg'
+) => {
+  try {
+    const canvas = await captureQuoteCanvas(elementId);
+    if (!canvas) return false;
+
+    const blob = await new Promise<Blob | null>((resolve) =>
+      canvas.toBlob(resolve, 'image/jpeg', 0.94)
+    );
+    if (!blob) return false;
+
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = filename;
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    window.setTimeout(() => URL.revokeObjectURL(url), 1000);
+    return true;
+  } catch (error) {
+    console.error('Error generating quote image:', error);
+    return false;
   }
 };

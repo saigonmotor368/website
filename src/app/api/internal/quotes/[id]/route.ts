@@ -346,3 +346,94 @@ export async function PUT(
     issuedAt: status === "issued" ? now : null,
   });
 }
+
+export async function DELETE(
+  _request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  const staff = await getCurrentStaff();
+  if (!staff) {
+    return NextResponse.json({ error: "Chưa đăng nhập" }, { status: 401 });
+  }
+  if (staff.profile.role !== "owner") {
+    return NextResponse.json({ error: "Chỉ chủ hệ thống được xóa báo giá." }, { status: 403 });
+  }
+
+  const { id } = await params;
+  const admin = getSupabaseAdmin();
+  const { data: quote, error: quoteError } = await admin
+    .from("quotes")
+    .select("id, quote_number, status, total_amount")
+    .eq("id", id)
+    .maybeSingle();
+
+  if (quoteError) {
+    console.error("Không thể kiểm tra báo giá trước khi xóa:", quoteError);
+    return NextResponse.json({ error: "Không thể kiểm tra báo giá." }, { status: 500 });
+  }
+  if (!quote) {
+    return NextResponse.json({ error: "Không tìm thấy báo giá." }, { status: 404 });
+  }
+  if (quote.status !== "rejected") {
+    return NextResponse.json(
+      { error: "Chỉ được xóa báo giá đã được đánh dấu là khách hàng từ chối." },
+      { status: 409 }
+    );
+  }
+
+  const { data: linkedCases, error: casesError } = await admin
+    .from("cases")
+    .select("id, case_number")
+    .eq("quote_id", id)
+    .limit(1);
+
+  if (casesError) {
+    console.error("Không thể kiểm tra hồ sơ liên kết với báo giá:", casesError);
+    return NextResponse.json({ error: "Không thể kiểm tra hồ sơ liên quan." }, { status: 500 });
+  }
+  if (linkedCases?.length) {
+    return NextResponse.json(
+      { error: `Báo giá đang liên kết với hồ sơ ${linkedCases[0].case_number}; không thể xóa.` },
+      { status: 409 }
+    );
+  }
+
+  const { data: deletedQuote, error: deleteError } = await admin
+    .from("quotes")
+    .delete()
+    .eq("id", id)
+    .eq("status", "rejected")
+    .select("id, quote_number")
+    .maybeSingle();
+
+  if (deleteError) {
+    console.error("Không thể xóa báo giá bị từ chối:", deleteError);
+    return NextResponse.json({ error: "Không thể xóa báo giá." }, { status: 500 });
+  }
+  if (!deletedQuote) {
+    return NextResponse.json(
+      { error: "Trạng thái báo giá vừa thay đổi. Hãy tải lại danh sách rồi thử lại." },
+      { status: 409 }
+    );
+  }
+
+  try {
+    const { SupabaseEntities } = await import("@/lib/supabase-entities");
+    await SupabaseEntities.logAudit({
+      action: "delete_rejected_quote",
+      entityType: "quote",
+      entityId: id,
+      actorId: staff.user.id,
+      actorName: staff.profile.full_name || staff.user.email,
+      oldData: {
+        quote_number: quote.quote_number,
+        status: quote.status,
+        total_amount: quote.total_amount,
+      },
+    });
+  } catch {
+    // The deletion is complete; audit logging must not make the client retry it.
+  }
+
+  return NextResponse.json({ ok: true, id, quoteNumber: deletedQuote.quote_number });
+}

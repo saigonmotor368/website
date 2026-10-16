@@ -99,7 +99,11 @@ export async function GET(request: NextRequest) {
         );
       }
 
-      return NextResponse.json(filtered);
+      return NextResponse.json(filtered, {
+        headers: {
+          "x-can-delete-quotes": staff.profile.role === "owner" ? "true" : "false",
+        },
+      });
     }
   } catch (err) {
     console.error("Lỗi truy vấn quotes:", err);

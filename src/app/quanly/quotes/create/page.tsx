@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import type { QuoteData } from "../quote-types";
 import QuotePreview from "../components/QuotePreview";
-import { generateQuotePdf } from "@/lib/generate-quote-pdf";
+import { generateQuoteImage, generateQuotePdf } from "@/lib/generate-quote-pdf";
 
 interface ServiceItem {
   id: string;
@@ -43,6 +43,7 @@ export default function CreateQuotePage() {
   const [pdfQuoteData, setPdfQuoteData] = useState<QuoteData | null>(null);
   const [pendingPdf, setPendingPdf] = useState(false);
   const [pdfAction, setPdfAction] = useState<"issue" | "download">("issue");
+  const [exportFormat, setExportFormat] = useState<"pdf" | "image">("pdf");
   const [showPreview, setShowPreview] = useState(false);
 
   // Step 1: Customer state
@@ -351,8 +352,10 @@ export default function CreateQuotePage() {
           .replace(/Đ/g, "D")
           .replace(/[^a-zA-Z0-9]+/g, "_")
           .replace(/^_+|_+$/g, "");
-        const filename = `BaoGia_${pdfQuoteData.quoteNumber}_${safeCustomer || "KhachHang"}.pdf`;
-        const success = await generateQuotePdf("quote-preview", filename);
+        const filenameBase = `BaoGia_${pdfQuoteData.quoteNumber}_${safeCustomer || "KhachHang"}`;
+        const success = exportFormat === "image"
+          ? await generateQuoteImage("quote-preview", `${filenameBase}.jpg`)
+          : await generateQuotePdf("quote-preview", `${filenameBase}.pdf`);
         if (cancelled) return;
 
         if (success) {
@@ -360,13 +363,17 @@ export default function CreateQuotePage() {
             alert(`Đã phát hành báo giá ${pdfQuoteData.quoteNumber} và tải file PDF chính thức.`);
             router.push("/quanly/quotes");
             router.refresh();
+          } else if (exportFormat === "image") {
+            alert(`Đã tải ảnh báo giá ${pdfQuoteData.quoteNumber} để gửi khách qua Zalo.`);
           } else {
             alert(`Đã tải lại báo giá ${pdfQuoteData.quoteNumber}.`);
           }
         } else {
           alert(pdfAction === "issue"
-            ? "Báo giá đã được phát hành nhưng chưa thể tạo file PDF. Anh/chị có thể bấm Tải lại PDF để thử lại."
-            : "Chưa thể tạo file PDF. Anh/chị vui lòng thử lại.");
+            ? "Báo giá đã được phát hành nhưng chưa thể tạo file PDF. Anh/chị có thể tải lại PDF để thử lại."
+            : exportFormat === "image"
+              ? "Chưa thể tạo ảnh báo giá. Anh/chị vui lòng thử lại."
+              : "Chưa thể tạo file PDF. Anh/chị vui lòng thử lại.");
         }
       } finally {
         if (!cancelled) {
@@ -380,7 +387,7 @@ export default function CreateQuotePage() {
     return () => {
       cancelled = true;
     };
-  }, [pdfAction, pdfQuoteData, pendingPdf, router]);
+  }, [exportFormat, pdfAction, pdfQuoteData, pendingPdf, router]);
 
   const handleSaveQuote = async (status: "draft" | "issued") => {
     if (!customerName.trim()) {
@@ -448,6 +455,7 @@ export default function CreateQuotePage() {
         if (status === "issued") {
           waitForPdf = true;
           setPdfAction("issue");
+          setExportFormat("pdf");
           setShowPreview(false);
           setPdfQuoteData(buildPdfQuoteData(savedNumber, "issued"));
           setPendingPdf(true);
@@ -467,7 +475,7 @@ export default function CreateQuotePage() {
     }
   };
 
-  const handleDownloadIssuedPdf = () => {
+  const handleDownloadIssuedQuote = (format: "pdf" | "image") => {
     if (!quoteNumber) {
       alert("Chưa có mã báo giá để tải PDF.");
       return;
@@ -475,13 +483,14 @@ export default function CreateQuotePage() {
 
     setSaving(true);
     setPdfAction("download");
+    setExportFormat(format);
     setPdfQuoteData(buildPdfQuoteData(quoteNumber, "issued"));
     setPendingPdf(true);
   };
 
   const handlePrimaryPdfAction = () => {
     if (editId && quoteStatus === "issued") {
-      handleDownloadIssuedPdf();
+      handleDownloadIssuedQuote("pdf");
       return;
     }
     void handleSaveQuote("issued");
@@ -529,7 +538,7 @@ export default function CreateQuotePage() {
             )}
           </div>
         </div>
-        <div className="flex items-center gap-3">
+        <div className="flex flex-wrap items-center gap-3">
           <button
             type="button"
             onClick={() => setShowPreview(true)}
@@ -547,13 +556,33 @@ export default function CreateQuotePage() {
               Lưu bản nháp
             </button>
           )}
-          <button
-            onClick={handlePrimaryPdfAction}
-            disabled={saving}
-            className="quanly-btn-gold"
-          >
-            {saving ? "Đang xử lý..." : isIssuedQuote ? "↻ Tải lại PDF" : "✓ Phát hành & tải PDF"}
-          </button>
+          {isIssuedQuote ? (
+            <>
+              <button
+                onClick={() => handleDownloadIssuedQuote("pdf")}
+                disabled={saving}
+                className="quanly-btn-gold"
+              >
+                {saving ? "Đang xử lý..." : "↻ Tải PDF"}
+              </button>
+              <button
+                onClick={() => handleDownloadIssuedQuote("image")}
+                disabled={saving}
+                className="quanly-btn-secondary"
+                title="Tải ảnh JPG gọn nhẹ để gửi qua Zalo"
+              >
+                {saving ? "Đang xử lý..." : "▧ Tải ảnh gửi Zalo"}
+              </button>
+            </>
+          ) : (
+            <button
+              onClick={handlePrimaryPdfAction}
+              disabled={saving}
+              className="quanly-btn-gold"
+            >
+              {saving ? "Đang xử lý..." : "✓ Phát hành & tải PDF"}
+            </button>
+          )}
         </div>
       </div>
 
@@ -1039,7 +1068,7 @@ export default function CreateQuotePage() {
       </div>
 
       {/* Action Footer */}
-      <div className="flex justify-end gap-4 pt-4 border-t border-gray-800">
+      <div className="flex flex-wrap justify-end gap-4 pt-4 border-t border-gray-800">
         <Link href="/quanly/quotes" className="quanly-btn-secondary">
           Hủy bỏ
         </Link>
@@ -1052,13 +1081,33 @@ export default function CreateQuotePage() {
             Lưu bản nháp
           </button>
         )}
-        <button
-          onClick={handlePrimaryPdfAction}
-          disabled={saving}
-          className="quanly-btn-gold"
-        >
-          {saving ? "Đang xử lý..." : isIssuedQuote ? "↻ Tải lại báo giá PDF" : "✓ Phát Hành Báo Giá & Xuất PDF"}
-        </button>
+        {isIssuedQuote ? (
+          <>
+            <button
+              onClick={() => handleDownloadIssuedQuote("pdf")}
+              disabled={saving}
+              className="quanly-btn-gold"
+            >
+              {saving ? "Đang xử lý..." : "↻ Tải lại PDF"}
+            </button>
+            <button
+              onClick={() => handleDownloadIssuedQuote("image")}
+              disabled={saving}
+              className="quanly-btn-secondary"
+              title="Tải ảnh JPG gọn nhẹ để gửi qua Zalo"
+            >
+              {saving ? "Đang xử lý..." : "▧ Tải ảnh gửi Zalo"}
+            </button>
+          </>
+        ) : (
+          <button
+            onClick={handlePrimaryPdfAction}
+            disabled={saving}
+            className="quanly-btn-gold"
+          >
+            {saving ? "Đang xử lý..." : "✓ Phát hành báo giá & xuất PDF"}
+          </button>
+        )}
       </div>
 
       {showPreview && (

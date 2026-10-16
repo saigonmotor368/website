@@ -164,6 +164,16 @@ export default function InvoiceDetailPage({ params }: { params: Promise<{ id: st
     }
   }
 
+  function handlePrintInvoice() {
+    document.body.classList.add("invoice-printing");
+    window.addEventListener(
+      "afterprint",
+      () => document.body.classList.remove("invoice-printing"),
+      { once: true }
+    );
+    window.print();
+  }
+
   if (loading) {
     return (
       <div className="quanly-content-container text-center py-20 text-gray-400">
@@ -228,7 +238,7 @@ export default function InvoiceDetailPage({ params }: { params: Promise<{ id: st
           )}
 
           <button
-            onClick={() => window.print()}
+            onClick={handlePrintInvoice}
             className="px-3 py-1.5 rounded-lg bg-gray-800 text-xs font-semibold text-gray-200 hover:text-white border border-gray-700 transition flex items-center gap-1"
           >
             <span>🖨</span> In phiếu (A4)
@@ -247,7 +257,7 @@ export default function InvoiceDetailPage({ params }: { params: Promise<{ id: st
       </div>
 
       {/* Printable Invoice Sheet */}
-      <div className="bg-[#121620] print:bg-white print:text-black border border-gray-800 print:border-none rounded-2xl p-6 sm:p-10 shadow-2xl space-y-6">
+      <div id="invoice-print-area" className="bg-[#121620] print:bg-white print:text-black border border-gray-800 print:border-none rounded-2xl p-6 sm:p-10 shadow-2xl space-y-6">
         {/* Header with Saigon Motor Branding */}
         <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-6 border-b border-gray-800 print:border-gray-300 pb-6">
           <div className="flex items-center gap-3">
