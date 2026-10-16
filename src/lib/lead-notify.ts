@@ -39,7 +39,7 @@ export async function sendLeadNotificationEmail(
     const vehicleLabels: Record<string, string> = {
       oto: "Ô tô",
       "xe-may": "Xe máy",
-      khac: "Khác",
+      khac: "Loại xe khác",
     };
 
     const response = await fetch("https://api.resend.com/emails", {
@@ -51,15 +51,15 @@ export async function sendLeadNotificationEmail(
       body: JSON.stringify({
         from,
         to: [to],
-        subject: `[Yêu cầu mới] ${lead.name} - ${lead.phone} (${getServiceLabel(lead.service)})`,
+        subject: `[Khách mới] ${getServiceLabel(lead.service)} - ${lead.name} - ${lead.phone}`,
         text: [
-          `Mã hồ sơ: ${lead.id}`,
-          `Họ và tên: ${lead.name}`,
+          `Mã yêu cầu: ${lead.id}`,
+          `Khách: ${lead.name}`,
           `Số điện thoại: ${lead.phone}`,
-          `Dịch vụ quan tâm: ${getServiceLabel(lead.service)}`,
+          `Dịch vụ cần: ${getServiceLabel(lead.service)}`,
           `Loại xe: ${vehicleLabels[lead.vehicle_type] || lead.vehicle_type}`,
           `Nơi làm thủ tục: ${lead.processing_location}`,
-          `Ghi chú: ${lead.message || "Không ghi chú"}`,
+          `Khách ghi chú: ${lead.message || "(không có)"}`,
         ].join("\n"),
       }),
     });

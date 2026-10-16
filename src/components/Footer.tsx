@@ -15,7 +15,7 @@ export default function Footer() {
     <div className="footer-grid">
       <div>
         <span className="eyebrow" style={{ color: "var(--gold)" }}>Saigon Motor</span>
-        <h2 style={{ marginTop: 10 }}>Cần hỗ trợ thủ tục giấy tờ xe? Hãy trao đổi trực tiếp với SGM.</h2>
+        <h2 style={{ marginTop: 10 }}>Quý khách cần hỗ trợ thủ tục giấy tờ xe? Chúng tôi luôn sẵn lòng lắng nghe và trao đổi trực tiếp.</h2>
         <ul className="footer-info">
           <li><strong>Pháp nhân:</strong> Công ty TNHH Ô tô Xe máy 368</li>
           <li><strong>Mã số doanh nghiệp:</strong> 0316339254</li>
@@ -36,13 +36,13 @@ export default function Footer() {
       </div>
     </div>
     <div className="footer-services">
-      <div><strong>Dịch vụ thường được quan tâm</strong><Link href="/dich-vu">Xem tất cả dịch vụ →</Link></div>
+      <div><strong>Dịch vụ được nhiều quý khách quan tâm</strong><Link href="/dich-vu">Xem tất cả dịch vụ →</Link></div>
       <nav aria-label="Dịch vụ nổi bật">
         {publicServiceOptions.filter((service) => service.featured).slice(0, 8).map((service) => (
           <Link href={`/${service.slug}`} key={service.slug}>{service.shortName}</Link>
         ))}
       </nav>
     </div>
-    <div className="footer-bottom"><span>© {new Date().getFullYear()} Saigon Motor. Thông tin trên website mang tính tham khảo và không thay thế hướng dẫn của cơ quan có thẩm quyền.</span><span><Link href="/phap-ly-cam-ket">Nguyên tắc phục vụ</Link> · <Link href="/chinh-sach-bao-mat">Chính sách bảo mật</Link></span></div>
+    <div className="footer-bottom"><span>© {new Date().getFullYear()} Saigon Motor. Thông tin trên website chỉ mang tính tham khảo và không thay thế hướng dẫn của cơ quan có thẩm quyền.</span><span><Link href="/phap-ly-cam-ket">Nguyên tắc phục vụ</Link> · <Link href="/chinh-sach-bao-mat">Chính sách bảo mật</Link></span></div>
   </div></footer>;
 }

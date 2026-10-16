@@ -4,7 +4,7 @@ export const LEGAL_NAME = "Công ty TNHH Ô tô Xe máy 368";
 export const OG_IMAGE = `${SITE_URL}/og-saigon-motor.jpg`;
 
 export const defaultDescription =
-  "Saigon Motor hỗ trợ sang tên xe, thu hồi đăng ký và biển số ô tô, xe máy tại TP.HCM và các tỉnh. Kiểm tra hồ sơ, báo phí rõ ràng.";
+  "Saigon Motor hỗ trợ sang tên xe, thu hồi đăng ký, biển số ô tô, xe máy tại TP.HCM và các tỉnh. Kiểm tra hồ sơ chu đáo, báo phí rõ ràng trước khi thực hiện.";
 
 export const localBusinessSchema = {
   "@context": "https://schema.org",

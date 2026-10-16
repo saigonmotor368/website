@@ -39,18 +39,18 @@ export async function POST(request: NextRequest) {
   try {
     raw = await request.json();
   } catch {
-    return NextResponse.json({ error: "Dữ liệu gửi lên không hợp lệ." }, { status: 400 });
+    return NextResponse.json({ error: "Thông tin gửi lên chưa hợp lệ. Quý khách vui lòng tải lại trang và gửi lại." }, { status: 400 });
   }
 
   // Honeypot check
   if (clean(raw.website, 100)) {
-    return NextResponse.json({ error: "Yêu cầu không hợp lệ." }, { status: 400 });
+    return NextResponse.json({ error: "Chúng tôi chưa nhận được yêu cầu này. Quý khách vui lòng tải lại trang và gửi lại." }, { status: 400 });
   }
 
   // Submission timing check (reject forms filled under 1.5 seconds)
   const started = Number(raw.formStartedAt);
   if (!Number.isFinite(started) || Date.now() - started < 1500) {
-    return NextResponse.json({ error: "Anh/chị vui lòng kiểm tra lại thông tin trước khi gửi." }, { status: 400 });
+    return NextResponse.json({ error: "Quý khách vui lòng kiểm tra lại thông tin trước khi gửi." }, { status: 400 });
   }
 
   const name = clean(raw.name, 80);
@@ -79,7 +79,7 @@ export async function POST(request: NextRequest) {
     raw.consent !== true
   ) {
     return NextResponse.json(
-      { error: "Anh/chị vui lòng điền đủ thông tin, kiểm tra số điện thoại và xác nhận đồng ý trước khi gửi." },
+      { error: "Thông tin chưa đầy đủ. Quý khách vui lòng điền đủ các mục, kiểm tra số điện thoại và đánh dấu vào ô đồng ý trước khi gửi." },
       { status: 400 }
     );
   }
@@ -94,7 +94,7 @@ export async function POST(request: NextRequest) {
     // Rate limit check in Supabase
     if (await isRateLimited(supabase, ipHash)) {
       return NextResponse.json(
-        { error: "Anh/chị đã gửi nhiều yêu cầu trong thời gian ngắn. Vui lòng gọi 0704 104 104 nếu cần hỗ trợ ngay." },
+        { error: "Quý khách đã gửi nhiều yêu cầu trong thời gian ngắn. Nếu cần hỗ trợ gấp, quý khách vui lòng gọi 0704 104 104." },
         { status: 429 }
       );
     }
@@ -111,7 +111,7 @@ export async function POST(request: NextRequest) {
 
     if (existing) {
       return NextResponse.json(
-        { error: "SGM đã nhận yêu cầu gần đây của anh/chị. Chúng tôi sẽ liên hệ sớm." },
+        { error: "SGM đã nhận được yêu cầu quý khách vừa gửi. Chúng tôi sẽ liên hệ lại trong thời gian sớm nhất." },
         { status: 429 }
       );
     }
@@ -180,7 +180,7 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     console.error("Lead creation failed:", error);
     return NextResponse.json(
-      { error: "SGM chưa nhận được thông tin. Anh/chị vui lòng gọi 0704 104 104 để được hỗ trợ." },
+      { error: "Rất tiếc, SGM chưa nhận được thông tin của quý khách. Quý khách vui lòng gọi 0704 104 104 để được hỗ trợ trực tiếp." },
       { status: 500 }
     );
   }

@@ -46,10 +46,10 @@ export default function PremiumHero() {
             15 năm kinh nghiệm thực tế
           </motion.div>
           <h1>
-            <span className="hero-title-main">Anh/chị đang gặp khó khăn với thủ tục giấy tờ xe?</span>
-            <span className="hero-title-accent">SGM đồng hành kiểm tra hồ sơ, hướng dẫn quy trình và đề xuất hướng xử lý phù hợp.</span>
+            <span className="hero-title-main">Thủ tục giấy tờ xe khiến quý khách băn khoăn?</span>
+            <span className="hero-title-accent">Saigon Motor kiểm tra hồ sơ và hướng dẫn quý khách từng bước.</span>
           </h1>
-          <p className="hero-copy">Đội ngũ Saigon Motor kiểm tra kỹ tình trạng giấy tờ, hướng dẫn rõ các bước và đề xuất phương án xử lý phù hợp cho từng ca — kể cả những hồ sơ phức tạp cần thẩm định cẩn trọng.</p>
+          <p className="hero-copy">Chúng tôi xem xét kỹ tình trạng giấy tờ, trao đổi rõ những việc cần làm và báo chi phí trước khi tiếp nhận. Dù hồ sơ phức tạp đến đâu, SGM cũng kiểm tra cẩn trọng ngay từ đầu.</p>
           <div className="hero-actions">
             <TrackedAnchor className="btn btn-primary hero-call" href="tel:0704104104" eventName="call_click" placement="hero">
               <span className="call-icon">↗</span> Gọi 0704 104 104
@@ -57,7 +57,7 @@ export default function PremiumHero() {
             <Link className="btn btn-glass" href="#tu-van">Nhận tư vấn hồ sơ</Link>
           </div>
           <div className="hero-meta">
-            <span>Hotline 24/7</span><span>Kiểm tra trước khi tiếp nhận</span><span>Chi phí minh bạch</span>
+            <span>Hotline 24/7</span><span>Kiểm tra trước khi tiếp nhận</span><span>Báo phí rõ ràng</span>
           </div>
         </motion.div>
 

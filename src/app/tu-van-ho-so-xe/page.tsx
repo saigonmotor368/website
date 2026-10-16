@@ -11,9 +11,9 @@ const PAGE_PATH = "/tu-van-ho-so-xe";
 const PAGE_URL = `${SITE_URL}${PAGE_PATH}`;
 const GOOGLE_ADS_ID = "AW-18352281213";
 const LEGAL_NAME = "Công ty TNHH Ô tô Xe máy 368";
-const title = "Hỗ trợ hồ sơ và thủ tục xe tại TP.HCM";
+const title = "Hỗ trợ hồ sơ, thủ tục xe tại TP.HCM rõ ràng";
 const description =
-  "Saigon Motor kiểm tra tình trạng hồ sơ, báo rõ phần việc và chi phí, đồng thời hỗ trợ khách hàng thực hiện thủ tục theo thỏa thuận hoặc ủy quyền hợp lệ. SGM là đơn vị tư nhân, không phải cơ quan nhà nước.";
+  "Saigon Motor kiểm tra hồ sơ xe và báo phí rõ ràng trước khi thực hiện. Chúng tôi là đơn vị dịch vụ tư nhân, không phải cơ quan nhà nước.";
 
 export const metadata: Metadata = {
   title,
@@ -37,34 +37,34 @@ const trackingData = {
 
 const faqs = [
   {
-    question: "SGM có phải cơ quan đăng ký xe không?",
+    question: "Saigon Motor có phải là cơ quan đăng ký xe không?",
     answer:
-      `Không. Saigon Motor là đơn vị dịch vụ tư nhân thuộc ${LEGAL_NAME}. SGM hỗ trợ khách hàng chuẩn bị hồ sơ và thực hiện thủ tục trong phạm vi pháp luật cho phép. Việc tiếp nhận, phê duyệt và cấp giấy đăng ký, biển số hoặc giấy tờ khác thuộc cơ quan có thẩm quyền.`,
+      `Không. Chúng tôi là đơn vị dịch vụ tư nhân thuộc ${LEGAL_NAME}. SGM hỗ trợ quý khách chuẩn bị hồ sơ và thực hiện thủ tục trong phạm vi pháp luật cho phép. Việc tiếp nhận, phê duyệt hồ sơ và cấp giấy đăng ký, biển số hay các giấy tờ khác thuộc thẩm quyền của cơ quan nhà nước.`,
   },
   {
-    question: "SGM chỉ tư vấn hay có nhận thực hiện hồ sơ?",
+    question: "SGM chỉ tư vấn hay có tiếp nhận thực hiện hồ sơ?",
     answer:
-      "SGM không chỉ dừng ở việc tư vấn. Sau khi kiểm tra hồ sơ và thống nhất phương án, SGM có thể nhận chuẩn bị, hoàn thiện và thực hiện các công việc đã thỏa thuận. Ở những khâu pháp luật cho phép ủy quyền, SGM có thể đại diện anh/chị làm việc theo hợp đồng dịch vụ hoặc giấy ủy quyền hợp lệ. Nếu quy định yêu cầu chủ xe trực tiếp ký, xuất trình bản gốc hoặc có mặt, SGM sẽ thông báo trước để anh/chị sắp xếp.",
+      "Có. Sau khi kiểm tra hồ sơ và thống nhất phương án cùng quý khách, SGM có thể chuẩn bị, hoàn thiện hồ sơ và đảm nhận những phần việc hai bên đã thỏa thuận. Ở những khâu pháp luật cho phép ủy quyền, chúng tôi có thể thay mặt quý khách làm việc theo hợp đồng dịch vụ hoặc giấy ủy quyền hợp lệ. Trường hợp quy định yêu cầu chủ xe trực tiếp ký, xuất trình bản gốc hoặc có mặt, SGM sẽ thông báo trước để quý khách thuận tiện sắp xếp.",
   },
   {
     question: "Trong trường hợp nào SGM có thể đại diện cho tôi?",
     answer:
-      "SGM chỉ đại diện anh/chị khi hai bên đã thống nhất rõ phạm vi công việc, anh/chị cung cấp giấy ủy quyền hợp lệ nếu thủ tục yêu cầu và quy định hiện hành cho phép người được ủy quyền thực hiện công việc đó.",
+      "SGM chỉ thay mặt quý khách khi hội đủ ba điều kiện: hai bên đã thống nhất rõ phạm vi công việc; quý khách cung cấp giấy ủy quyền hợp lệ nếu thủ tục yêu cầu; và quy định hiện hành cho phép người được ủy quyền thực hiện công việc đó.",
   },
   {
-    question: "Chi phí dịch vụ được tính như thế nào?",
+    question: "Chi phí dịch vụ gồm những khoản nào?",
     answer:
-      "Chi phí được tách thành phí dịch vụ của SGM, lệ phí hoặc thuế phải nộp theo thông báo của cơ quan có thẩm quyền và những khoản có thể phát sinh theo tình trạng thực tế của hồ sơ. SGM sẽ thông báo rõ trước khi tiếp nhận.",
+      "Chi phí gồm ba phần: phí dịch vụ của SGM; lệ phí hoặc thuế nộp theo thông báo của cơ quan có thẩm quyền; và những khoản có thể phát sinh tùy tình trạng thực tế của hồ sơ. Chúng tôi thông báo rõ từng khoản trước khi tiếp nhận hồ sơ để quý khách chủ động cân nhắc.",
   },
   {
     question: "SGM có bảo đảm hồ sơ được chấp thuận không?",
     answer:
-      "SGM chịu trách nhiệm thực hiện đúng phạm vi dịch vụ đã thống nhất, cập nhật tiến độ và thông báo khi hồ sơ cần bổ sung. Việc chấp thuận hồ sơ và thời gian giải quyết do cơ quan có thẩm quyền quyết định, vì vậy SGM không hứa trước kết quả.",
+      "SGM chịu trách nhiệm thực hiện đúng phần việc đã thống nhất, cập nhật tiến độ và thông báo cho quý khách khi hồ sơ cần bổ sung. Việc chấp thuận hồ sơ và thời gian giải quyết do cơ quan có thẩm quyền quyết định, vì vậy chúng tôi không hứa trước kết quả.",
   },
   {
-    question: "Tôi có phải gửi ảnh giấy tờ trên website không?",
+    question: "Tôi có cần gửi ảnh giấy tờ qua website không?",
     answer:
-      "Không. Biểu mẫu chỉ tiếp nhận thông tin mô tả ban đầu. Nếu cần xem giấy tờ để kiểm tra kỹ hơn, nhân viên sẽ thống nhất với anh/chị kênh gửi phù hợp.",
+      "Không cần. Tại biểu mẫu, quý khách chỉ cần mô tả ngắn gọn tình trạng hồ sơ. Nếu cần xem giấy tờ để kiểm tra kỹ hơn, nhân viên SGM sẽ trao đổi với quý khách về cách gửi thuận tiện nhất.",
   },
 ];
 
@@ -145,12 +145,12 @@ export default function ConsultationLandingPage() {
           <div className={styles.heroInner}>
             <div className={styles.heroCopy}>
               <span className={styles.eyebrow}>Dịch vụ hỗ trợ hồ sơ xe</span>
-              <h1>Anh/chị cần làm thủ tục giấy tờ xe nhưng chưa biết bắt đầu từ đâu?</h1>
+              <h1>Đồng hành cùng quý khách trong từng bước hồ sơ, thủ tục xe</h1>
               <p className={styles.heroLead}>
-                Saigon Motor kiểm tra tình trạng hồ sơ, hướng dẫn bổ sung giấy tờ còn thiếu và nhận thực hiện những phần việc hai bên đã thống nhất. Ở những khâu pháp luật cho phép ủy quyền, SGM có thể đại diện anh/chị làm việc theo hợp đồng dịch vụ hoặc giấy ủy quyền hợp lệ.
+                Saigon Motor kiểm tra hồ sơ xe, chỉ rõ những giấy tờ còn thiếu và tiếp nhận thực hiện các phần việc hai bên đã thống nhất. Ở những khâu pháp luật cho phép ủy quyền, chúng tôi có thể thay mặt quý khách làm việc theo hợp đồng dịch vụ hoặc giấy ủy quyền hợp lệ, giúp quý khách giảm bớt thời gian đi lại.
               </p>
               <div className={styles.heroActions}>
-                <a className={styles.primaryButton} href="#dang-ky">Gửi thông tin để SGM kiểm tra</a>
+                <a className={styles.primaryButton} href="#dang-ky">Gửi thông tin để SGM kiểm tra hồ sơ</a>
                 <TrackedAnchor
                   className={styles.secondaryButton}
                   href="https://zalo.me/0704104104"
@@ -160,22 +160,22 @@ export default function ConsultationLandingPage() {
                   placement="consultation_hero"
                   eventData={trackingData}
                 >
-                  Nhắn Zalo cho SGM
+                  Trao đổi qua Zalo
                 </TrackedAnchor>
               </div>
               <div className={styles.privateNotice}>
-                <strong>Thông tin minh bạch</strong>
-                <p>Saigon Motor là đơn vị dịch vụ tư nhân thuộc {LEGAL_NAME}, không phải cơ quan nhà nước. SGM hỗ trợ chuẩn bị và thực hiện hồ sơ trong phạm vi pháp luật cho phép; cơ quan có thẩm quyền là đơn vị tiếp nhận hành chính, xem xét và cấp kết quả.</p>
+                <strong>Điều quý khách nên biết</strong>
+                <p>Saigon Motor là đơn vị dịch vụ tư nhân, không phải cơ quan nhà nước. Chúng tôi hỗ trợ quý khách chuẩn bị, rà soát hồ sơ xe và thay mặt quý khách thực hiện những phần việc được ủy quyền. Quý khách vẫn có thể tự thực hiện thủ tục trực tiếp tại cơ quan có thẩm quyền.</p>
               </div>
             </div>
 
             <div className={styles.reviewCard} aria-label="Phạm vi công việc SGM đảm nhận">
-              <div className={styles.reviewTop}><span>Phạm vi dịch vụ</span><strong>Thống nhất trước khi tiếp nhận</strong></div>
+              <div className={styles.reviewTop}><span>Phạm vi dịch vụ</span><strong>Thống nhất rõ trước khi tiếp nhận hồ sơ</strong></div>
               <ol>
-                <li><span>01</span><div><strong>Kiểm tra hồ sơ</strong><p>Xem tình trạng xe, thông tin chủ xe và giấy tờ đang có.</p></div></li>
-                <li><span>02</span><div><strong>Thống nhất công việc và chi phí</strong><p>Nêu rõ phần việc SGM đảm nhận, nội dung anh/chị cần phối hợp và từng khoản chi phí dự kiến.</p></div></li>
-                <li><span>03</span><div><strong>Chuẩn bị và thực hiện hồ sơ</strong><p>Hoàn thiện hồ sơ và đại diện anh/chị ở những khâu được phép ủy quyền.</p></div></li>
-                <li><span>04</span><div><strong>Theo dõi tiến độ và bàn giao</strong><p>Cập nhật quá trình xử lý và bàn giao kết quả do cơ quan có thẩm quyền cấp.</p></div></li>
+                <li><span>01</span><div><strong>Kiểm tra hồ sơ</strong><p>Xem xét tình trạng xe, thông tin chủ xe và những giấy tờ quý khách đang có.</p></div></li>
+                <li><span>02</span><div><strong>Báo phí rõ ràng</strong><p>Nêu rõ phần việc SGM đảm nhận, phần quý khách cần phối hợp và từng khoản chi phí dự kiến.</p></div></li>
+                <li><span>03</span><div><strong>Thực hiện hồ sơ</strong><p>Hoàn thiện hồ sơ và thay mặt quý khách ở những khâu được phép ủy quyền.</p></div></li>
+                <li><span>04</span><div><strong>Bàn giao kết quả</strong><p>Cập nhật tiến độ và bàn giao kết quả do cơ quan có thẩm quyền cấp.</p></div></li>
               </ol>
               <div className={styles.reviewFoot}>Cơ quan có thẩm quyền xem xét và quyết định kết quả hồ sơ</div>
             </div>
@@ -186,22 +186,22 @@ export default function ConsultationLandingPage() {
           <div>
             <span>Đội ngũ có <strong>15 năm</strong> kinh nghiệm thực tế</span>
             <span>Mã số doanh nghiệp <strong>0316339254</strong></span>
-            <span>Phục vụ <strong>cá nhân và doanh nghiệp</strong> tại TP.HCM</span>
+            <span>Phục vụ khách hàng <strong>cá nhân và doanh nghiệp</strong> tại TP.HCM</span>
           </div>
         </section>
 
         <section className={styles.section} id="truong-hop">
           <div className={styles.sectionInner}>
             <div className={styles.sectionIntro}>
-              <span className={styles.eyebrow}>Trường hợp SGM thường hỗ trợ</span>
-              <h2>Anh/chị đang bận, chưa rõ quy trình hoặc hồ sơ có điểm cần tháo gỡ?</h2>
-              <p>SGM kiểm tra từng trường hợp trước khi đề xuất phương án. Khi hai bên đã thống nhất cách thực hiện, phạm vi công việc và chi phí, SGM sẽ nhận thực hiện những phần việc đã thỏa thuận thay vì chỉ hướng dẫn anh/chị tự xử lý.</p>
+              <span className={styles.eyebrow}>Những trường hợp SGM thường hỗ trợ</span>
+              <h2>Thời gian eo hẹp hay hồ sơ còn điểm chưa rõ, SGM sẵn lòng đồng hành cùng quý khách</h2>
+              <p>Chúng tôi xem xét kỹ từng trường hợp trước khi đề xuất hướng xử lý. Khi hai bên đã thống nhất phương án, phạm vi công việc và chi phí, SGM trực tiếp thực hiện những phần việc đã thỏa thuận, thay vì chỉ hướng dẫn để quý khách tự xoay xở.</p>
             </div>
             <div className={styles.caseGrid}>
-              <article><span>01</span><h3>Mua bán, tặng cho hoặc nhận thừa kế xe</h3><p>Kiểm tra thông tin chủ xe, giấy đăng ký và chứng từ giao dịch, sau đó hỗ trợ chuẩn bị hồ sơ cho bước tiếp theo.</p></article>
-              <article><span>02</span><h3>Xe đã qua nhiều lần mua bán</h3><p>Xác định giấy tờ còn thiếu trong từng lần chuyển nhượng, nội dung cần xác minh và phương án hoàn thiện hồ sơ trước khi thực hiện.</p></article>
-              <article><span>03</span><h3>Thông tin trên các giấy tờ không khớp</h3><p>Đối chiếu tên, địa chỉ và đặc điểm xe; hướng dẫn bổ sung và hỗ trợ hoàn thiện hồ sơ sau khi đã xác định hướng xử lý.</p></article>
-              <article><span>04</span><h3>Doanh nghiệp cần xử lý nhiều xe</h3><p>Rà soát hồ sơ pháp nhân, người có thẩm quyền ký và danh sách phương tiện; thống nhất đầu mối liên hệ và tiến độ cho từng xe.</p></article>
+              <article><span>01</span><h3>Mua bán, tặng cho hoặc nhận thừa kế xe</h3><p>Kiểm tra thông tin chủ xe, giấy đăng ký và giấy tờ giao dịch, sau đó hỗ trợ quý khách chuẩn bị hồ sơ cho bước tiếp theo.</p></article>
+              <article><span>02</span><h3>Xe đã qua nhiều lần mua bán</h3><p>Xác định giấy tờ còn thiếu qua từng lần chuyển nhượng, những điểm cần xác minh và hướng hoàn thiện hồ sơ trước khi bắt đầu thực hiện.</p></article>
+              <article><span>03</span><h3>Thông tin trên các giấy tờ không khớp</h3><p>Đối chiếu tên, địa chỉ và đặc điểm xe; chỉ rõ phần cần bổ sung và hỗ trợ hoàn thiện hồ sơ khi đã xác định được hướng xử lý.</p></article>
+              <article><span>04</span><h3>Doanh nghiệp cần hoàn thiện hồ sơ cho nhiều xe</h3><p>Rà soát hồ sơ pháp nhân, người có thẩm quyền ký và danh sách phương tiện; thống nhất đầu mối liên hệ và tiến độ cho từng xe.</p></article>
             </div>
           </div>
         </section>
@@ -210,33 +210,33 @@ export default function ConsultationLandingPage() {
           <div className={styles.sectionInner}>
             <div className={styles.sectionIntro}>
               <span className={styles.eyebrow}>Quy trình làm việc</span>
-              <h2>Thống nhất rõ phần việc và chi phí trước khi tiếp nhận hồ sơ</h2>
+              <h2>Quý khách nắm rõ phần việc và chi phí trước khi giao hồ sơ</h2>
             </div>
             <div className={styles.processGrid}>
-              <div><span>1</span><h3>Tiếp nhận nhu cầu</h3><p>Ghi nhận tình trạng xe, chủ xe, giấy tờ đang có và việc anh/chị cần hoàn tất.</p></div>
-              <div><span>2</span><h3>Kiểm tra hồ sơ</h3><p>Đối chiếu thông tin, xác định giấy tờ còn thiếu, rủi ro và nội dung cần xác minh.</p></div>
-              <div><span>3</span><h3>Thống nhất phương án</h3><p>Giải thích quy trình, phần việc SGM đảm nhận, phần anh/chị cần phối hợp và chi phí dự kiến.</p></div>
-              <div><span>4</span><h3>Chuẩn bị và thực hiện</h3><p>SGM hoàn thiện hồ sơ và thực hiện những công việc đã thỏa thuận hoặc được ủy quyền hợp lệ.</p></div>
-              <div><span>5</span><h3>Theo dõi và bàn giao</h3><p>Cập nhật tiến độ, báo yêu cầu bổ sung nếu có và bàn giao kết quả do cơ quan có thẩm quyền cấp.</p></div>
+              <div><span>1</span><h3>Tiếp nhận thông tin</h3><p>Ghi nhận tình trạng xe, thông tin chủ xe, giấy tờ hiện có và thủ tục quý khách cần hoàn tất.</p></div>
+              <div><span>2</span><h3>Kiểm tra hồ sơ</h3><p>Đối chiếu thông tin, xác định giấy tờ còn thiếu, những điểm tiềm ẩn rủi ro và nội dung cần xác minh.</p></div>
+              <div><span>3</span><h3>Báo phí rõ ràng</h3><p>Giải thích quy trình, nêu rõ phần việc SGM đảm nhận, phần quý khách cần phối hợp và chi phí dự kiến.</p></div>
+              <div><span>4</span><h3>Thực hiện hồ sơ</h3><p>Chúng tôi hoàn thiện hồ sơ và thực hiện những công việc đã thỏa thuận hoặc được ủy quyền hợp lệ.</p></div>
+              <div><span>5</span><h3>Bàn giao kết quả</h3><p>Cập nhật tiến độ, thông báo khi hồ sơ cần bổ sung và bàn giao kết quả do cơ quan có thẩm quyền cấp.</p></div>
             </div>
             <div className={styles.scopeBox}>
               <div>
-                <strong>SGM thực hiện theo thỏa thuận</strong>
+                <strong>Phần việc SGM đảm nhận</strong>
                 <ul>
                   <li>Kiểm tra giấy tờ và đánh giá sơ bộ tình trạng hồ sơ.</li>
-                  <li>Thông báo rõ phí dịch vụ, lệ phí nhà nước và khoản có thể phát sinh trước khi tiếp nhận.</li>
+                  <li>Thông báo rõ phí dịch vụ, lệ phí nhà nước và các khoản có thể phát sinh trước khi tiếp nhận hồ sơ.</li>
                   <li>Chuẩn bị, sắp xếp và hoàn thiện hồ sơ trong phạm vi đã thống nhất.</li>
-                  <li>Đại diện anh/chị thực hiện những công việc được phép ủy quyền, trên cơ sở hồ sơ ủy quyền hợp lệ.</li>
+                  <li>Thay mặt quý khách thực hiện những công việc được phép ủy quyền, khi đã có giấy ủy quyền hợp lệ.</li>
                   <li>Theo dõi tiến độ, thông báo khi cần bổ sung và bàn giao kết quả do cơ quan có thẩm quyền cấp.</li>
                 </ul>
               </div>
               <div>
-                <strong>Anh/chị cần phối hợp</strong>
+                <strong>Quý khách cần phối hợp</strong>
                 <ul>
                   <li>Cung cấp đầy đủ, trung thực thông tin về xe, chủ xe và nguồn gốc giấy tờ.</li>
-                  <li>Ký hợp đồng dịch vụ và giấy ủy quyền khi phương án thực hiện yêu cầu.</li>
+                  <li>Ký hợp đồng dịch vụ và giấy ủy quyền khi phương án thực hiện cần đến.</li>
                   <li>Trực tiếp ký, xuất trình bản gốc hoặc có mặt ở những bước quy định bắt buộc chủ xe thực hiện.</li>
-                  <li>Thực hiện các nghĩa vụ về lệ phí, thuế theo thông báo của cơ quan có thẩm quyền.</li>
+                  <li>Nộp lệ phí, thuế theo thông báo của cơ quan có thẩm quyền.</li>
                 </ul>
               </div>
               <div>
@@ -249,7 +249,7 @@ export default function ConsultationLandingPage() {
               </div>
             </div>
             <p className={styles.legalNote}>
-              Theo giấy xác nhận đăng ký doanh nghiệp, {LEGAL_NAME} có đăng ký ngành 8299 với nội dung “Hỗ trợ đăng ký xe cơ giới”. Đây là phạm vi ngành nghề doanh nghiệp đã đăng ký, không phải văn bản ủy quyền hoặc chỉ định của cơ quan nhà nước. SGM chỉ đại diện khách hàng khi có thỏa thuận phù hợp, giấy ủy quyền hợp lệ và quy định pháp luật cho phép.
+              Theo giấy xác nhận đăng ký doanh nghiệp, {LEGAL_NAME} có đăng ký ngành 8299 với nội dung “Hỗ trợ đăng ký xe cơ giới”. Đây là ngành nghề công ty đã đăng ký kinh doanh, không phải văn bản ủy quyền hay chỉ định của cơ quan nhà nước. SGM chỉ đại diện quý khách khi hai bên đã thỏa thuận, quý khách có giấy ủy quyền hợp lệ và pháp luật cho phép.
             </p>
           </div>
         </section>
@@ -257,13 +257,13 @@ export default function ConsultationLandingPage() {
         <section className={styles.section} id="dang-ky">
           <div className={`${styles.sectionInner} ${styles.formLayout}`}>
             <div className={styles.formSide}>
-              <span className={styles.eyebrow}>Trao đổi trường hợp của anh/chị</span>
-              <h2>Anh/chị chỉ cần mô tả ngắn tình trạng hồ sơ</h2>
-              <p>SGM sẽ liên hệ để hỏi kỹ hơn, sau đó thông báo phương án, phạm vi công việc và chi phí dự kiến. Anh/chị chưa cần tải ảnh giấy tờ lên website và chỉ giao hồ sơ khi đã đồng ý với phương án.</p>
+              <span className={styles.eyebrow}>Chia sẻ trường hợp của quý khách</span>
+              <h2>Quý khách chỉ cần mô tả ngắn gọn tình trạng hồ sơ</h2>
+              <p>Chúng tôi sẽ liên hệ lại để trao đổi kỹ hơn. Quý khách chưa cần tải ảnh giấy tờ lên website và chỉ giao hồ sơ khi đã đồng ý với phương án SGM đề xuất.</p>
               <div className={styles.contactCard}>
                 <span>Hotline/Zalo</span>
                 <strong>0704 104 104</strong>
-                <small>Hotline nhận cuộc gọi 24/7. Yêu cầu qua form được xử lý trong khung giờ làm việc.</small>
+                <small>Hotline nhận cuộc gọi 24/7. Với yêu cầu gửi qua biểu mẫu, SGM phản hồi trong giờ làm việc.</small>
               </div>
             </div>
             <ConsultationLeadForm />
@@ -274,7 +274,7 @@ export default function ConsultationLandingPage() {
           <div className={styles.narrowInner}>
             <div className={styles.sectionIntro}>
               <span className={styles.eyebrow}>Câu hỏi thường gặp</span>
-              <h2>Những điều anh/chị nên biết trước khi giao hồ sơ</h2>
+              <h2>Đôi điều quý khách nên biết trước khi giao hồ sơ</h2>
             </div>
             <div className={styles.faqList}>
               {faqs.map((item) => (
@@ -291,8 +291,8 @@ export default function ConsultationLandingPage() {
           <div className={styles.sectionInner}>
             <div>
               <span className={styles.eyebrow}>Nguồn chính thức</span>
-              <h2>Anh/chị có thể tự tra cứu và thực hiện thủ tục</h2>
-              <p>Sử dụng dịch vụ của SGM là lựa chọn của anh/chị, không phải yêu cầu bắt buộc. Dù tự thực hiện hay giao SGM hỗ trợ, anh/chị vẫn nên đối chiếu thông tin tại cổng chính thức của cơ quan có thẩm quyền.</p>
+              <h2>Quý khách hoàn toàn có thể tự tra cứu và thực hiện thủ tục</h2>
+              <p>Sử dụng dịch vụ của SGM là lựa chọn của quý khách, không phải yêu cầu bắt buộc. Dù tự thực hiện hay giao SGM hỗ trợ, quý khách vẫn nên đối chiếu thông tin trên cổng chính thức của cơ quan có thẩm quyền.</p>
             </div>
             <div className={styles.sourceLinks}>
               <a href="https://dichvucong.bocongan.gov.vn/bocongan/bothutuc/listThuTuc?linh_vuc=PT_GIAO_THONG&muc_do=MUC_DO_3" target="_blank" rel="noopener noreferrer">Cổng Dịch vụ công Bộ Công an <span>↗</span></a>
@@ -304,7 +304,7 @@ export default function ConsultationLandingPage() {
 
       <footer className={styles.footer}>
         <div className={styles.footerInner}>
-          <div><strong>Saigon Motor</strong><p>Nhánh dịch vụ của {LEGAL_NAME}</p></div>
+          <div><strong>Saigon Motor</strong><p>Đơn vị dịch vụ thuộc {LEGAL_NAME}</p></div>
           <div><span>MST 0316339254</span><span>745 Phạm Văn Đồng, Khu phố 8, phường Hiệp Bình, TP. Hồ Chí Minh</span></div>
           <div><Link href="/phap-ly-cam-ket">Thông tin pháp lý</Link><Link href="/chinh-sach-bao-mat">Chính sách bảo mật</Link></div>
         </div>

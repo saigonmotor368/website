@@ -15,10 +15,11 @@ export default function PolicyDisclaimerBanner() {
       }}
     >
       <div style={{ maxWidth: "1200px", margin: "0 auto" }}>
-        <strong style={{ color: "#f59e0b" }}>Thông báo minh bạch:</strong> Saigon Motor là dịch vụ tư nhân thuộc{" "}
-        <strong style={{ color: "#fff" }}>Công ty TNHH Ô tô Xe máy 368</strong> (MST: 0316339254), hỗ trợ chuẩn bị và rà
-        soát hồ sơ xe theo ủy quyền. Chúng tôi <strong>không phải cơ quan đăng ký xe của nhà nước</strong>. Khách hàng
-        có thể tự thực hiện thủ tục trực tiếp tại cơ quan có thẩm quyền.
+        <strong style={{ color: "#f59e0b" }}>Xin quý khách lưu ý:</strong> Saigon Motor là đơn vị dịch vụ tư nhân thuộc{" "}
+        <strong style={{ color: "#fff" }}>Công ty TNHH Ô tô Xe máy 368</strong> (MST: 0316339254),{" "}
+        <strong>không phải cơ quan nhà nước</strong>. Chúng tôi hỗ trợ quý khách chuẩn bị, rà soát hồ sơ xe và thay mặt quý
+        khách thực hiện những phần việc được ủy quyền. Quý khách vẫn có thể tự thực hiện thủ tục trực tiếp tại cơ quan có
+        thẩm quyền.
       </div>
     </aside>
   );

@@ -17,8 +17,8 @@ export default function CookieConsent(){
   return (
     <aside className="cookie-banner" aria-label="Tuỳ chọn cookie">
       <div className="cookie-banner-content">
-        <strong>Quyền riêng tư của anh/chị</strong>
-        <p>SGM sử dụng cookie đo lường để đánh giá hiệu quả dịch vụ và nâng cao trải nghiệm. Nếu anh/chị từ chối, các cookie cần thiết để website hoạt động vẫn được duy trì.</p>
+        <strong>Quyền riêng tư của quý khách</strong>
+        <p>Saigon Motor sử dụng cookie đo lường để đánh giá hiệu quả của website và cải thiện trải nghiệm của quý khách. Nếu quý khách từ chối, website chỉ giữ lại các cookie cần thiết để hoạt động.</p>
       </div>
       <div className="cookie-actions">
         <button type="button" className="btn btn-secondary btn-sm" onClick={() => choose(true)}>Đồng ý</button>

@@ -5,7 +5,7 @@ export default function manifest(): MetadataRoute.Manifest {
     name: "Saigon Motor - Dịch vụ hồ sơ xe",
     short_name: "Saigon Motor",
     description:
-      "Hỗ trợ sang tên xe, thu hồi đăng ký và biển số ô tô, xe máy tại TP.HCM và các tỉnh.",
+      "Saigon Motor hỗ trợ sang tên xe, thu hồi đăng ký, biển số ô tô, xe máy tại TP.HCM và các tỉnh.",
     start_url: "/",
     display: "standalone",
     background_color: "#f6f8f7",

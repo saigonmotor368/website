@@ -38,8 +38,8 @@ export default function ServicesPage() {
             <Link href="/">Trang chủ</Link><span aria-hidden="true">/</span><span>Dịch vụ</span>
           </nav>
           <span className="eyebrow">Dịch vụ hồ sơ xe</span>
-          <h1>Chọn đúng dịch vụ cho hồ sơ của anh/chị</h1>
-          <p>Saigon Motor hỗ trợ hồ sơ pháp lý cho ô tô, xe máy và xe kinh doanh vận tải. Mỗi dịch vụ dưới đây trình bày rõ trường hợp áp dụng, giấy tờ cần chuẩn bị, quy trình và những khoản chi phí cần lưu ý.</p>
+          <h1>Chọn đúng dịch vụ cho hồ sơ của quý khách</h1>
+          <p>Saigon Motor hỗ trợ hồ sơ pháp lý cho ô tô, xe máy và xe kinh doanh vận tải. Mỗi dịch vụ đều nêu rõ trường hợp áp dụng, giấy tờ cần chuẩn bị, các bước thực hiện và những khoản phí quý khách cần lưu ý.</p>
           <div className="hero-actions">
             <Link className="btn btn-primary" href="#danh-sach-dich-vu">Xem danh sách dịch vụ</Link>
             <TrackedAnchor className="btn btn-outline" href="tel:0704104104" eventName="call_click" placement="services_hub_hero" eventData={{ page_path: "/dich-vu" }}>Gọi 0704 104 104</TrackedAnchor>
@@ -54,7 +54,7 @@ export default function ServicesPage() {
               <span className="eyebrow">Tra cứu theo nhu cầu</span>
               <h2 className="section-heading">Tất cả dịch vụ của Saigon Motor</h2>
             </div>
-            <p>Chọn loại phương tiện hoặc nhóm khách hàng để thu gọn danh sách. Những hồ sơ có giấy tờ chưa đầy đủ sẽ được kiểm tra riêng trước khi SGM tiếp nhận.</p>
+            <p>Quý khách có thể chọn loại xe hoặc nhóm khách hàng để thu gọn danh sách. Với hồ sơ còn thiếu giấy tờ, SGM sẽ kiểm tra riêng trước khi tiếp nhận.</p>
           </div>
           <ServiceDirectory />
         </div>
@@ -65,8 +65,8 @@ export default function ServicesPage() {
           <div className="lead-shell">
             <div className="lead-intro">
               <span className="eyebrow" style={{ color: "var(--gold)" }}>Chưa biết chọn dịch vụ nào?</span>
-              <h2>Hãy mô tả tình trạng hồ sơ để SGM kiểm tra</h2>
-              <p>Anh/chị cho biết loại xe, nơi đang đăng ký và những giấy tờ hiện có. Nhân viên SGM sẽ liên hệ để hướng dẫn bước tiếp theo.</p>
+              <h2>Chia sẻ tình trạng hồ sơ để SGM tư vấn đúng thủ tục</h2>
+              <p>Quý khách vui lòng cho biết loại xe, nơi đang đăng ký và những giấy tờ hiện có. Nhân viên SGM sẽ liên hệ để hướng dẫn bước tiếp theo.</p>
             </div>
             <LeadForm />
           </div>

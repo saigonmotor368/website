@@ -30,37 +30,37 @@ export default function LeadForm({ defaultService = "" }: { defaultService?: str
     const formStartedAt = Number(event.currentTarget.dataset.startedAt || 0);
 
     if (!name || name.length < 2) {
-      setError("Anh/chị vui lòng nhập họ và tên (tối thiểu 2 ký tự).");
+      setError("Quý khách vui lòng nhập họ và tên (ít nhất 2 ký tự).");
       setLoading(false);
       return;
     }
 
     if (!/^(0[35789])[0-9]{8}$/.test(phone)) {
-      setError("Số điện thoại chưa đúng định dạng (ví dụ: 0704104104 gồm 10 chữ số).");
+      setError("Số điện thoại chưa đúng định dạng. Quý khách vui lòng nhập đủ 10 chữ số, ví dụ 0704104104.");
       setLoading(false);
       return;
     }
 
     if (!service) {
-      setError("Anh/chị vui lòng chọn dịch vụ cần hỗ trợ.");
+      setError("Quý khách vui lòng chọn dịch vụ cần hỗ trợ.");
       setLoading(false);
       return;
     }
 
     if (!vehicleType) {
-      setError("Anh/chị vui lòng chọn loại phương tiện.");
+      setError("Quý khách vui lòng chọn loại xe.");
       setLoading(false);
       return;
     }
 
     if (!processingLocation || processingLocation.length < 2) {
-      setError("Anh/chị vui lòng cung cấp nơi dự kiến làm thủ tục.");
+      setError("Quý khách vui lòng cho biết nơi dự kiến làm thủ tục.");
       setLoading(false);
       return;
     }
 
     if (!consent) {
-      setError("Anh/chị vui lòng tick chọn đồng ý để SGM liên hệ tư vấn.");
+      setError("Quý khách vui lòng đánh dấu vào ô đồng ý để chúng tôi có thể liên hệ tư vấn.");
       setLoading(false);
       return;
     }
@@ -93,7 +93,7 @@ export default function LeadForm({ defaultService = "" }: { defaultService?: str
       });
       const result = await response.json();
       if (!response.ok || !result.ok || !result.leadId) {
-        throw new Error(result?.error || "SGM chưa nhận được thông tin. Anh/chị vui lòng thử lại.");
+        throw new Error(result?.error || "SGM chưa nhận được thông tin của quý khách. Quý khách vui lòng thử gửi lại.");
       }
       trackEvent("lead_submit_success", {
         lead_id: result.leadId,
@@ -106,7 +106,7 @@ export default function LeadForm({ defaultService = "" }: { defaultService?: str
       trackGoogleAdsLeadConversion(result.leadId);
       router.push(`/thank-you?lead=${encodeURIComponent(result.leadId)}`);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Đã có lỗi xảy ra. Anh/chị vui lòng gọi 0704 104 104 để được hỗ trợ.");
+      setError(err instanceof Error ? err.message : "Thông tin chưa gửi đi được. Quý khách vui lòng gọi 0704 104 104 để chúng tôi hỗ trợ trực tiếp.");
       setLoading(false);
     }
   }
@@ -132,7 +132,7 @@ export default function LeadForm({ defaultService = "" }: { defaultService?: str
             minLength={2}
             maxLength={80}
             autoComplete="name"
-            placeholder="Nhập họ và tên của anh/chị"
+            placeholder="Nhập họ và tên của quý khách"
           />
         </div>
         <div className="field">
@@ -188,7 +188,7 @@ export default function LeadForm({ defaultService = "" }: { defaultService?: str
             id="lead-message"
             name="message"
             maxLength={1000}
-            placeholder="Anh/chị có thể cho SGM biết xe đang đứng tên ai, hiện có những giấy tờ gì và đang gặp khó khăn ở bước nào."
+            placeholder="Ví dụ: xe đang đứng tên ai, quý khách hiện có những giấy tờ nào và đang gặp khó khăn ở bước nào."
           />
         </div>
         <div aria-hidden="true" style={{ position: "absolute", left: "-10000px" }}>
@@ -199,16 +199,16 @@ export default function LeadForm({ defaultService = "" }: { defaultService?: str
       <label className="consent">
         <input name="consent" type="checkbox" defaultChecked={false} required />
         <span>
-          Tôi đồng ý để Công ty TNHH Ô tô Xe máy 368 (Saigon Motor) liên hệ tư vấn theo yêu cầu đã gửi và xử lý thông tin cá nhân theo{" "}
+          Tôi đồng ý để Công ty TNHH Ô tô Xe máy 368 (Saigon Motor) sử dụng thông tin tôi cung cấp để liên hệ tư vấn và kiểm tra hồ sơ theo yêu cầu này, theo{" "}
           <Link href="/chinh-sach-bao-mat">Chính sách bảo mật</Link>. Tôi có thể rút lại sự đồng ý bất cứ lúc nào.
         </span>
       </label>
       {error ? <p className="form-error" role="alert">{error}</p> : null}
       <button className="btn btn-primary btn-block" type="submit" disabled={loading}>
-        {loading ? "Đang gửi thông tin..." : "Yêu cầu SGM gọi lại"}
+        {loading ? "Đang gửi thông tin..." : "Gửi yêu cầu tư vấn"}
       </button>
       <p className="form-note">
-        Nếu gửi thông tin từ 08:00–20:00, anh/chị thường sẽ nhận được cuộc gọi trong khoảng 15 phút. Yêu cầu gửi ngoài khung giờ này được ưu tiên xử lý vào sáng hôm sau.
+        Nếu quý khách gửi thông tin trong khung giờ 08:00–20:00, chúng tôi thường liên hệ lại trong khoảng 15 phút. Với yêu cầu gửi ngoài khung giờ này, SGM sẽ ưu tiên liên hệ vào sáng hôm sau.
       </p>
     </form>
   );

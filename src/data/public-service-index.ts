@@ -8,11 +8,11 @@ export const PRE_PURCHASE_REVIEW_SERVICE_SLUG = "kiem-tra-ho-so-xe-truoc-giao-di
 export const PRE_PURCHASE_REVIEW_SERVICE_NAME = "Kiểm tra hồ sơ xe trước giao dịch";
 
 export const serviceCategories = [
-  { id: "registration" as const, name: "Đăng ký, sang tên và thu hồi", icon: "01", description: "Hỗ trợ hồ sơ đăng ký lần đầu, chuyển quyền sở hữu, di chuyển xe và thu hồi đăng ký, biển số." },
-  { id: "documents" as const, name: "Giấy đăng ký và biển số", icon: "02", description: "Cấp đổi, cấp lại cà vẹt, biển số và cập nhật thông tin của chủ xe hoặc phương tiện." },
-  { id: "violations" as const, name: "Phạt nguội và tình trạng pháp lý", icon: "03", description: "Kiểm tra thông tin vi phạm, hướng dẫn chuẩn bị hồ sơ và hỗ trợ xử lý theo tình trạng thực tế." },
-  { id: "technical" as const, name: "Đăng kiểm, cải tạo và kỹ thuật", icon: "04", description: "Đăng kiểm, hồ sơ xe cải tạo, cập nhật đăng ký và hỗ trợ số khung, số máy." },
-  { id: "transport" as const, name: "Xe kinh doanh vận tải", icon: "05", description: "Hồ sơ giấy phép kinh doanh vận tải, phù hiệu và các thủ tục liên quan đến xe kinh doanh." },
+  { id: "registration" as const, name: "Đăng ký, sang tên và thu hồi", icon: "01", description: "Hồ sơ đăng ký xe lần đầu, sang tên, di chuyển xe và thu hồi đăng ký, biển số." },
+  { id: "documents" as const, name: "Giấy đăng ký và biển số", icon: "02", description: "Cấp đổi, cấp lại cà vẹt, biển số và thay đổi thông tin chủ xe hoặc thông tin xe." },
+  { id: "violations" as const, name: "Phạt nguội và tình trạng pháp lý", icon: "03", description: "Tra cứu thông tin vi phạm, hướng dẫn những giấy tờ cần chuẩn bị và hỗ trợ xử lý theo từng trường hợp." },
+  { id: "technical" as const, name: "Đăng kiểm, cải tạo và kỹ thuật", icon: "04", description: "Đăng kiểm, hồ sơ xe cải tạo, đổi cà vẹt sau cải tạo và cà số khung, số máy." },
+  { id: "transport" as const, name: "Xe kinh doanh vận tải", icon: "05", description: "Hồ sơ giấy phép kinh doanh vận tải, phù hiệu và các thủ tục khác của xe kinh doanh." },
 ] as const;
 
 export const publicServiceOptions = [

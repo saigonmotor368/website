@@ -66,7 +66,7 @@ export default function ServiceDirectory() {
                     <p>{service.intro}</p>
                   </div>
                   <Link className="service-card-link" href={`/${service.slug}`}>
-                    Xem hồ sơ và quy trình <span aria-hidden="true">→</span>
+                    Xem giấy tờ và quy trình <span aria-hidden="true">→</span>
                   </Link>
                 </article>
               ))}

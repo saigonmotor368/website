@@ -37,32 +37,32 @@ export default function FrameNumberLeadForm() {
     const website = String(form.get("website") || "");
 
     if (name.length < 2) {
-      setError("Anh/chị vui lòng nhập họ tên hoặc tên Zalo.");
+      setError("Quý khách vui lòng nhập họ tên hoặc tên Zalo.");
       setLoading(false);
       return;
     }
     if (!/^(0[35789])[0-9]{8}$/.test(phone)) {
-      setError("Số điện thoại chưa đúng định dạng, ví dụ 0704104104.");
+      setError("Số điện thoại chưa đúng định dạng. Quý khách vui lòng nhập đủ 10 chữ số, ví dụ 0704104104.");
       setLoading(false);
       return;
     }
     if (!vehicleType) {
-      setError("Anh/chị vui lòng chọn loại phương tiện.");
+      setError("Quý khách vui lòng chọn loại xe.");
       setLoading(false);
       return;
     }
     if (processingLocation.length < 2) {
-      setError("Anh/chị vui lòng cho biết khu vực đang để phương tiện.");
+      setError("Quý khách vui lòng cho biết khu vực đang để xe.");
       setLoading(false);
       return;
     }
     if (vehicleInfo.length < 2) {
-      setError("Anh/chị vui lòng cho biết dòng xe hoặc mô tả ngắn về phương tiện.");
+      setError("Quý khách vui lòng cho biết dòng xe hoặc mô tả ngắn về xe.");
       setLoading(false);
       return;
     }
     if (!consent) {
-      setError("Anh/chị vui lòng xác nhận đồng ý để SGM liên hệ báo phí và sắp xếp lịch hẹn.");
+      setError("Quý khách vui lòng đánh dấu vào ô đồng ý để SGM có thể liên hệ báo phí và sắp xếp lịch hẹn.");
       setLoading(false);
       return;
     }
@@ -102,7 +102,7 @@ export default function FrameNumberLeadForm() {
       });
       const result = await response.json();
       if (!response.ok || !result.ok || !result.leadId) {
-        throw new Error(result?.error || "SGM chưa nhận được thông tin. Anh/chị vui lòng thử lại.");
+        throw new Error(result?.error || "SGM chưa nhận được thông tin. Quý khách vui lòng thử lại.");
       }
 
       trackEvent("lead_submit_success", {
@@ -119,7 +119,7 @@ export default function FrameNumberLeadForm() {
       setError(
         submitError instanceof Error
           ? submitError.message
-          : "Đã có lỗi xảy ra. Anh/chị vui lòng gọi 0704 104 104 để được hỗ trợ.",
+          : "Thông tin chưa gửi được. Quý khách vui lòng gọi 0704 104 104 để SGM hỗ trợ trực tiếp.",
       );
       setLoading(false);
     }
@@ -128,9 +128,9 @@ export default function FrameNumberLeadForm() {
   return (
     <form className={styles.form} onSubmit={submit} noValidate>
       <div className={styles.formHeader}>
-        <span>Đặt lịch thực hiện</span>
-        <h2>Gửi thông tin phương tiện để SGM báo phí</h2>
-        <p>SGM sẽ kiểm tra loại xe, vị trí đóng số và khu vực đang để phương tiện trước khi xác nhận lịch hẹn.</p>
+        <span>Đặt lịch cà số</span>
+        <h2>Gửi thông tin xe để nhận báo phí</h2>
+        <p>SGM sẽ tìm hiểu loại xe, vị trí đóng số và nơi đang để xe, sau đó báo phí trước khi xác nhận lịch hẹn.</p>
       </div>
 
       <div className={styles.formGrid}>
@@ -143,20 +143,20 @@ export default function FrameNumberLeadForm() {
           <input name="phone" type="tel" inputMode="tel" autoComplete="tel" placeholder="0704 104 104" required />
         </label>
         <label>
-          <span>Loại phương tiện</span>
+          <span>Loại xe</span>
           <select name="vehicleType" defaultValue="" required>
-            <option value="" disabled>Chọn loại phương tiện</option>
+            <option value="" disabled>Chọn loại xe</option>
             <option value="oto">Ô tô</option>
             <option value="xe-may">Xe máy</option>
             <option value="khac">Xe tải hoặc loại khác</option>
           </select>
         </label>
         <label>
-          <span>Khu vực đang để phương tiện</span>
+          <span>Khu vực đang để xe</span>
           <input name="processingLocation" maxLength={120} placeholder="Ví dụ: TP. Thủ Đức" required />
         </label>
         <label className={styles.fullField}>
-          <span>Dòng xe hoặc mô tả phương tiện</span>
+          <span>Dòng xe hoặc mô tả ngắn về xe</span>
           <input name="vehicleInfo" maxLength={160} placeholder="Ví dụ: Ford Ranger 2020 hoặc Honda Vision" required />
         </label>
         <label className={styles.fullField}>
@@ -170,7 +170,7 @@ export default function FrameNumberLeadForm() {
         </label>
         <label className={styles.fullField}>
           <span>Ghi chú thêm</span>
-          <textarea name="note" maxLength={700} rows={4} placeholder="Ví dụ: Xe đang để trong hầm, số khung khó tiếp cận hoặc cần thực hiện trước thời gian cụ thể." />
+          <textarea name="note" maxLength={700} rows={4} placeholder="Ví dụ: Xe đang để trong hầm, số khung khó tiếp cận hoặc cần thực hiện trước một ngày cụ thể." />
         </label>
         <div aria-hidden="true" className={styles.honeypot}>
           <label htmlFor="frame-number-website">Website</label>
@@ -181,7 +181,7 @@ export default function FrameNumberLeadForm() {
       <label className={styles.consent}>
         <input name="consent" type="checkbox" required />
         <span>
-          Tôi đồng ý để Công ty TNHH Ô tô Xe máy 368 sử dụng thông tin tôi cung cấp nhằm liên hệ, báo phí và sắp xếp lịch thực hiện, phù hợp với{" "}
+          Tôi đồng ý để Công ty TNHH Ô tô Xe máy 368 (Saigon Motor) sử dụng thông tin tôi cung cấp để liên hệ tư vấn và kiểm tra hồ sơ theo yêu cầu này, theo{" "}
           <Link href="/chinh-sach-bao-mat">Chính sách bảo mật</Link>. Tôi có thể rút lại sự đồng ý bất cứ lúc nào.
         </span>
       </label>
@@ -189,9 +189,9 @@ export default function FrameNumberLeadForm() {
       {error ? <p className={styles.formError} role="alert">{error}</p> : null}
 
       <button className={styles.submitButton} type="submit" disabled={loading}>
-        {loading ? "Đang gửi yêu cầu..." : "Gửi thông tin để SGM báo phí"}
+        {loading ? "Đang gửi yêu cầu..." : "Gửi thông tin để nhận báo phí"}
       </button>
-      <p className={styles.formNote}>SGM chỉ dùng thông tin để phản hồi yêu cầu này, không đưa số điện thoại của anh/chị vào danh sách nhận quảng cáo.</p>
+      <p className={styles.formNote}>SGM chỉ sử dụng thông tin này để phản hồi yêu cầu của quý khách và không đưa số điện thoại vào danh sách gửi quảng cáo.</p>
     </form>
   );
 }

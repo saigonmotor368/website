@@ -39,32 +39,32 @@ export default function ConsultationLeadForm() {
     const website = String(form.get("website") || "");
 
     if (name.length < 2) {
-      setError("Anh/chị vui lòng nhập họ tên hoặc tên thường dùng.");
+      setError("Quý khách vui lòng nhập họ tên hoặc tên thường gọi.");
       setLoading(false);
       return;
     }
     if (!/^(0[35789])[0-9]{8}$/.test(phone)) {
-      setError("Số điện thoại chưa đúng định dạng, ví dụ 0704104104.");
+      setError("Số điện thoại chưa đúng định dạng. Quý khách vui lòng nhập đủ 10 chữ số, ví dụ 0704104104.");
       setLoading(false);
       return;
     }
     if (!vehicleType || !customerType) {
-      setError("Anh/chị vui lòng chọn loại khách hàng và loại phương tiện.");
+      setError("Quý khách vui lòng chọn loại khách hàng và loại xe.");
       setLoading(false);
       return;
     }
     if (processingLocation.length < 2) {
-      setError("Anh/chị vui lòng cho biết địa phương cần thực hiện thủ tục.");
+      setError("Quý khách vui lòng cho biết nơi cần thực hiện thủ tục.");
       setLoading(false);
       return;
     }
     if (message.length < 10) {
-      setError("Anh/chị vui lòng mô tả ngắn tình trạng giấy tờ đang có.");
+      setError("Quý khách vui lòng mô tả ngắn gọn giấy tờ hiện có để SGM kiểm tra trước.");
       setLoading(false);
       return;
     }
     if (!consent) {
-      setError("Anh/chị vui lòng xác nhận đồng ý để SGM liên hệ và kiểm tra hồ sơ.");
+      setError("Quý khách vui lòng đánh dấu đồng ý để SGM liên hệ và kiểm tra hồ sơ.");
       setLoading(false);
       return;
     }
@@ -100,7 +100,7 @@ export default function ConsultationLeadForm() {
       });
       const result = await response.json();
       if (!response.ok || !result.ok || !result.leadId) {
-        throw new Error(result?.error || "SGM chưa nhận được thông tin. Anh/chị vui lòng thử lại.");
+        throw new Error(result?.error || "SGM chưa nhận được thông tin. Quý khách vui lòng thử lại.");
       }
 
       trackEvent("lead_submit_success", {
@@ -117,7 +117,7 @@ export default function ConsultationLeadForm() {
       setError(
         submitError instanceof Error
           ? submitError.message
-          : "Đã có lỗi xảy ra. Anh/chị vui lòng gọi 0704 104 104 để được hỗ trợ.",
+          : "Thông tin chưa gửi được. Quý khách vui lòng gọi 0704 104 104 để SGM hỗ trợ trực tiếp.",
       );
       setLoading(false);
     }
@@ -132,7 +132,7 @@ export default function ConsultationLeadForm() {
       <div className={styles.formHeader}>
         <span>Gửi thông tin hồ sơ</span>
         <h2>Mô tả tình trạng hồ sơ để SGM kiểm tra</h2>
-        <p>SGM sẽ liên hệ để trao đổi kỹ hơn về giấy tờ anh/chị đang có, sau đó thông báo phương án, phạm vi công việc và chi phí dự kiến để anh/chị cân nhắc.</p>
+        <p>Chúng tôi sẽ liên hệ để tìm hiểu thêm về giấy tờ quý khách đang có, sau đó thông báo phương án, phạm vi công việc và chi phí dự kiến để quý khách cân nhắc.</p>
       </div>
 
       <div className={styles.formGrid}>
@@ -153,27 +153,27 @@ export default function ConsultationLeadForm() {
           </select>
         </label>
         <label>
-          <span>Phương tiện</span>
+          <span>Loại xe</span>
           <select name="vehicleType" defaultValue="" required>
-            <option value="" disabled>Chọn loại phương tiện</option>
+            <option value="" disabled>Chọn loại xe</option>
             <option value="oto">Ô tô</option>
             <option value="xe-may">Xe máy</option>
             <option value="khac">Nhiều xe hoặc loại khác</option>
           </select>
         </label>
         <label>
-          <span>Địa phương thực hiện thủ tục</span>
+          <span>Nơi cần thực hiện thủ tục</span>
           <input name="processingLocation" maxLength={120} placeholder="Ví dụ: TP. Hồ Chí Minh" required />
         </label>
         <label>
-          <span>Kênh liên hệ phù hợp</span>
+          <span>Kênh liên hệ mong muốn</span>
           <select name="contactPreference" defaultValue="Điện thoại">
             <option value="Điện thoại">Điện thoại</option>
             <option value="Zalo">Zalo</option>
           </select>
         </label>
         <label className={styles.fullField}>
-          <span>Thời gian thuận tiện để SGM liên hệ</span>
+          <span>Thời gian thuận tiện để trao đổi</span>
           <select name="preferredTime" defaultValue="">
             <option value="">Bất kỳ lúc nào trong giờ làm việc</option>
             <option value="08:00-11:30">08:00-11:30</option>
@@ -182,12 +182,12 @@ export default function ConsultationLeadForm() {
           </select>
         </label>
         <label className={styles.fullField}>
-          <span>Giấy tờ hiện có và thủ tục anh/chị cần hỗ trợ</span>
+          <span>Giấy tờ quý khách đang có và thủ tục cần hỗ trợ</span>
           <textarea
             name="message"
             maxLength={1000}
             rows={5}
-            placeholder="Ví dụ: Tôi mua lại một xe cũ, đang có giấy đăng ký và hợp đồng mua bán, cần hỗ trợ làm hồ sơ để xe đứng tên mình."
+            placeholder="Ví dụ: Tôi mua lại một xe cũ, hiện có giấy đăng ký và hợp đồng mua bán, cần hỗ trợ làm hồ sơ để xe đứng tên mình."
             required
           />
         </label>
@@ -200,7 +200,7 @@ export default function ConsultationLeadForm() {
       <label className={styles.consent}>
         <input name="consent" type="checkbox" required />
         <span>
-          Tôi đồng ý để Công ty TNHH Ô tô Xe máy 368 sử dụng thông tin tôi cung cấp nhằm liên hệ, kiểm tra hồ sơ và báo phương án dịch vụ theo yêu cầu, phù hợp với{" "}
+          Tôi đồng ý để Công ty TNHH Ô tô Xe máy 368 (Saigon Motor) sử dụng thông tin tôi cung cấp để liên hệ tư vấn và kiểm tra hồ sơ theo yêu cầu này, theo{" "}
           <Link href="/chinh-sach-bao-mat">Chính sách bảo mật</Link>. Tôi có thể rút lại sự đồng ý bất cứ lúc nào.
         </span>
       </label>
@@ -208,9 +208,9 @@ export default function ConsultationLeadForm() {
       {error ? <p className={styles.formError} role="alert">{error}</p> : null}
 
       <button className={styles.submitButton} type="submit" disabled={loading}>
-        {loading ? "Đang gửi yêu cầu..." : "Gửi yêu cầu kiểm tra hồ sơ"}
+        {loading ? "Đang gửi thông tin..." : "Gửi yêu cầu kiểm tra hồ sơ"}
       </button>
-      <p className={styles.formNote}>SGM chỉ dùng thông tin để phản hồi yêu cầu này, không đưa số điện thoại của anh/chị vào danh sách nhận quảng cáo.</p>
+      <p className={styles.formNote}>SGM chỉ sử dụng thông tin này để phản hồi yêu cầu của quý khách và không đưa số điện thoại vào danh sách nhận quảng cáo.</p>
     </form>
   );
 }

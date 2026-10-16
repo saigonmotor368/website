@@ -12,7 +12,7 @@ const PAGE_URL = `${SITE_URL}${PAGE_PATH}`;
 const GOOGLE_ADS_ID = "AW-18352281213";
 const title = "Cà số khung, số máy tận nơi tại TP.HCM";
 const description =
-  "Saigon Motor nhận cà số khung, số máy tận nơi cho ô tô và xe máy tại TP.HCM. Xe máy từ 300.000 đồng, ô tô từ 500.000 đồng; báo phí trước khi đặt lịch.";
+  "Saigon Motor cà số khung, số máy ô tô và xe máy tận nơi tại TP.HCM. Xe máy từ 300.000 đồng, ô tô từ 500.000 đồng, báo phí rõ ràng trước khi hẹn lịch.";
 
 export const metadata: Metadata = {
   title,
@@ -36,24 +36,24 @@ const trackingData = {
 
 const faqs = [
   {
-    question: "SGM có thể sắp xếp theo vị trí phương tiện không?",
+    question: "SGM có hỗ trợ cà số tận nơi quý khách để xe không?",
     answer:
-      "Có. SGM nhận cà số khung, số máy tận nơi tại TP.HCM. Trước khi xác nhận lịch, SGM sẽ hỏi loại xe, địa điểm đang để phương tiện và điều kiện thao tác. Khoản di chuyển phát sinh, nếu có, được thông báo trước.",
+      "Có. SGM hỗ trợ cà số khung, số máy tận nơi tại TP.HCM. Trước khi xác nhận lịch hẹn, chúng tôi sẽ hỏi quý khách về loại xe, nơi đang để xe và không gian thao tác tại đó. Nếu phát sinh chi phí đi lại, SGM sẽ thông báo trước để quý khách cân nhắc.",
   },
   {
     question: "Chi phí cà số khung, số máy được tính như thế nào?",
     answer:
-      "Mức tham khảo cho trường hợp thông thường tại TP.HCM là từ 300.000 đồng đối với xe máy và từ 500.000 đồng đối với ô tô. Chi phí có thể thay đổi theo vị trí phương tiện, khả năng tiếp cận vị trí đóng số và tình trạng bề mặt; SGM sẽ xác nhận trước khi anh/chị đặt lịch.",
+      "Với trường hợp thông thường tại TP.HCM, giá tham khảo từ 300.000 đồng cho xe máy và từ 500.000 đồng cho ô tô. Chi phí có thể thay đổi tùy nơi để xe, mức độ khó dễ khi tiếp cận vị trí đóng số và tình trạng bề mặt số. SGM luôn báo phí trước; chỉ khi quý khách đồng ý, chúng tôi mới đặt lịch.",
   },
   {
-    question: "Nếu số khung hoặc số máy bị mờ thì xử lý thế nào?",
+    question: "Số khung hoặc số máy bị mờ thì SGM xử lý ra sao?",
     answer:
-      "SGM không đục sửa hoặc tác động làm thay đổi số nhận dạng. Nếu thông tin khó đọc, có dấu hiệu bất thường hoặc không khớp giấy tờ, SGM sẽ dừng thao tác và thông báo để anh/chị kiểm tra theo đúng quy định.",
+      "SGM không đục sửa hay làm thay đổi số nhận dạng của xe. Trường hợp số khó đọc, có dấu hiệu bất thường hoặc không khớp với giấy tờ, chúng tôi sẽ tạm dừng và thông báo để quý khách kiểm tra theo đúng quy định.",
   },
   {
     question: "Bản chà có thay thế việc xác nhận của cơ quan có thẩm quyền không?",
     answer:
-      "Không. SGM chỉ thực hiện bản chà trong phạm vi kỹ thuật có thể thao tác an toàn. Việc chấp nhận tài liệu trong từng hồ sơ thuộc cơ quan tiếp nhận có thẩm quyền.",
+      "Không. SGM chỉ thực hiện bản chà ở những vị trí có thể thao tác an toàn. Việc bản chà có được chấp nhận trong hồ sơ hay không do cơ quan tiếp nhận có thẩm quyền quyết định.",
   },
 ];
 
@@ -113,7 +113,7 @@ export default function FrameNumberLandingPage() {
           </Link>
           <nav aria-label="Nội dung trang cà số khung, số máy">
             <a href="#truong-hop">Trường hợp hỗ trợ</a>
-            <a href="#quy-trinh">Quy trình thực hiện</a>
+            <a href="#quy-trinh">Chi phí và lịch hẹn</a>
             <a href="#cau-hoi">Câu hỏi thường gặp</a>
           </nav>
           <TrackedAnchor className={styles.headerCall} href="tel:0704104104" eventName="call_click" placement="frame_number_header" eventData={trackingData}>
@@ -128,31 +128,31 @@ export default function FrameNumberLandingPage() {
           <div className={styles.heroInner}>
             <div className={styles.heroCopy}>
               <span className={styles.eyebrow}>Cà số khung, số máy tận nơi tại TP.HCM</span>
-              <h1>Anh/chị cần cà số khung, số máy cho ô tô hoặc xe máy?</h1>
+              <h1>Cà số khung, số máy tận nơi, báo phí rõ ràng trước khi hẹn lịch</h1>
               <p className={styles.heroLead}>
-                Saigon Motor đến tận nơi để xác định vị trí đóng số, thực hiện bản chà rõ nét và đối chiếu với giấy tờ anh/chị cung cấp. SGM kiểm tra loại xe, địa điểm đang để phương tiện và báo phí trước khi xác nhận lịch.
+                Saigon Motor đến tận nơi, xác định đúng vị trí đóng số, thực hiện bản chà rõ nét và đối chiếu cẩn thận với giấy tờ xe quý khách cung cấp. Trước khi xác nhận lịch hẹn, chúng tôi trao đổi về loại xe, nơi đang để xe và báo phí rõ ràng để quý khách an tâm quyết định.
               </p>
               <div className={styles.heroActions}>
-                <a className={styles.primaryButton} href="#dang-ky">Gửi thông tin để SGM báo phí</a>
+                <a className={styles.primaryButton} href="#dang-ky">Gửi thông tin để nhận báo phí</a>
                 <TrackedAnchor className={styles.secondaryButton} href="https://zalo.me/0704104104" target="_blank" rel="noopener noreferrer" eventName="zalo_click" placement="frame_number_hero" eventData={trackingData}>
                   Nhắn Zalo cho SGM
                 </TrackedAnchor>
               </div>
               <div className={styles.privateNotice}>
-                <strong>Nguyên tắc thực hiện</strong>
-                <p>SGM chỉ thực hiện bản chà trong điều kiện có thể thao tác an toàn, không đục sửa hoặc làm thay đổi số nhận dạng phương tiện. Nếu thông tin khó đọc hoặc không khớp giấy tờ, SGM sẽ thông báo ngay để anh/chị kiểm tra.</p>
+                <strong>Nguyên tắc làm việc của SGM</strong>
+                <p>Chúng tôi chỉ thực hiện bản chà khi có thể thao tác an toàn, không đục sửa hay làm thay đổi số nhận dạng của xe. Nếu số khó đọc hoặc không khớp với giấy tờ, SGM sẽ thông báo ngay để quý khách kiểm tra.</p>
               </div>
             </div>
 
             <div className={styles.reviewCard} aria-label="Quy trình đặt lịch cà số khung, số máy">
-              <div className={styles.reviewTop}><span>Đặt lịch thực hiện</span><strong>Trao đổi rõ trước khi làm</strong></div>
+              <div className={styles.reviewTop}><span>Đặt lịch cà số</span><strong>Trao đổi rõ ràng trước khi thực hiện</strong></div>
               <ol>
-                <li><span>01</span><div><strong>Gửi thông tin xe</strong><p>Loại xe, dòng xe và khu vực đang để phương tiện.</p></div></li>
-                <li><span>02</span><div><strong>Kiểm tra khả năng thực hiện</strong><p>Xác định vị trí đóng số và điều kiện tiếp cận an toàn.</p></div></li>
-                <li><span>03</span><div><strong>Xác nhận chi phí và lịch hẹn</strong><p>SGM thông báo chi phí dự kiến trước khi anh/chị quyết định.</p></div></li>
-                <li><span>04</span><div><strong>Thực hiện và kiểm tra bản chà</strong><p>Đối chiếu độ rõ nét và thông tin khách hàng đã cung cấp.</p></div></li>
+                <li><span>01</span><div><strong>Tiếp nhận thông tin</strong><p>Quý khách cho biết loại xe, dòng xe và khu vực đang để xe.</p></div></li>
+                <li><span>02</span><div><strong>Khảo sát vị trí đóng số</strong><p>SGM xác định vị trí đóng số và điều kiện tiếp cận an toàn.</p></div></li>
+                <li><span>03</span><div><strong>Báo phí rõ ràng</strong><p>Chúng tôi báo chi phí dự kiến để quý khách cân nhắc trước khi hẹn lịch.</p></div></li>
+                <li><span>04</span><div><strong>Thực hiện và bàn giao kết quả</strong><p>SGM kiểm tra độ rõ nét của bản chà và đối chiếu với thông tin quý khách đã cung cấp.</p></div></li>
               </ol>
-              <div className={styles.reviewFoot}>Không can thiệp, đục sửa hoặc thay đổi số nhận dạng phương tiện</div>
+              <div className={styles.reviewFoot}>Không đục sửa, không làm thay đổi số nhận dạng của xe</div>
             </div>
           </div>
         </section>
@@ -161,22 +161,22 @@ export default function FrameNumberLandingPage() {
           <div>
             <span>Xe máy <strong>từ 300.000 đồng</strong></span>
             <span>Ô tô <strong>từ 500.000 đồng</strong></span>
-            <span>Nhận thực hiện <strong>tận nơi tại TP.HCM</strong></span>
+            <span>Thực hiện <strong>tận nơi tại TP.HCM</strong></span>
           </div>
         </section>
 
         <section className={styles.section} id="truong-hop">
           <div className={styles.sectionInner}>
             <div className={styles.sectionIntro}>
-              <span className={styles.eyebrow}>Trường hợp SGM thường hỗ trợ</span>
-              <h2>Mỗi dòng xe có vị trí đóng số và điều kiện thao tác khác nhau</h2>
-              <p>SGM cần biết loại xe, vị trí phương tiện và tình trạng khu vực đóng số trước khi xác nhận khả năng thực hiện.</p>
+              <span className={styles.eyebrow}>Những trường hợp SGM thường hỗ trợ</span>
+              <h2>Mỗi dòng xe có vị trí đóng số riêng, nên SGM luôn tìm hiểu kỹ trước khi hẹn lịch</h2>
+              <p>Trước khi nhận lịch, chúng tôi cần biết loại xe, nơi đang để xe và tình trạng vị trí đóng số để chuẩn bị chu đáo.</p>
             </div>
             <div className={styles.caseGrid}>
-              <article><span>01</span><h3>Không xác định được vị trí đóng số</h3><p>SGM kiểm tra thông tin dòng xe để xác định vị trí số khung, số máy trước khi thao tác.</p></article>
-              <article><span>02</span><h3>Vị trí đóng số khó tiếp cận</h3><p>Một số loại xe cần thêm không gian hoặc thao tác chuẩn bị để thực hiện bản chà an toàn.</p></article>
-              <article><span>03</span><h3>Bề mặt đóng số khó đọc</h3><p>SGM kiểm tra tình trạng thực tế và dừng thao tác nếu phát hiện dấu hiệu cần xác minh chuyên môn.</p></article>
-              <article><span>04</span><h3>Cần đối chiếu với giấy tờ xe</h3><p>Thông tin trên bản chà được đối chiếu với giấy tờ do anh/chị cung cấp; SGM thông báo nếu có điểm chưa thống nhất.</p></article>
+              <article><span>01</span><h3>Chưa rõ vị trí đóng số</h3><p>SGM tra cứu theo dòng xe để xác định đúng vị trí số khung, số máy trước khi thao tác.</p></article>
+              <article><span>02</span><h3>Vị trí đóng số khó tiếp cận</h3><p>Một số dòng xe cần thêm không gian hoặc khâu chuẩn bị để chúng tôi thực hiện bản chà an toàn.</p></article>
+              <article><span>03</span><h3>Số đóng bị mờ, khó đọc</h3><p>Chúng tôi kiểm tra tình trạng thực tế và tạm dừng nếu nhận thấy dấu hiệu cần xác minh chuyên môn.</p></article>
+              <article><span>04</span><h3>Cần đối chiếu với giấy tờ xe</h3><p>SGM đối chiếu thông tin trên bản chà với giấy tờ quý khách cung cấp và thông báo nếu có điểm chưa thống nhất.</p></article>
             </div>
           </div>
         </section>
@@ -185,13 +185,13 @@ export default function FrameNumberLandingPage() {
           <div className={styles.sectionInner}>
             <div className={styles.sectionIntro}>
               <span className={styles.eyebrow}>Chi phí và lịch hẹn</span>
-              <h2>SGM xác nhận rõ trước khi anh/chị quyết định</h2>
-              <p>Giá tham khảo cho trường hợp thông thường tại TP.HCM là từ 300.000 đồng đối với xe máy và từ 500.000 đồng đối với ô tô. Nếu địa điểm ở xa, vị trí đóng số khó tiếp cận hoặc bề mặt cần xử lý thêm, SGM sẽ báo lại trước; không tự ý phát sinh chi phí sau khi hai bên đã thống nhất.</p>
+              <h2>Quý khách nắm rõ chi phí trước khi hẹn lịch</h2>
+              <p>Với trường hợp thông thường tại TP.HCM, giá tham khảo từ 300.000 đồng cho xe máy và từ 500.000 đồng cho ô tô. Nếu xe ở xa, vị trí đóng số khó tiếp cận hoặc bề mặt cần xử lý thêm, SGM sẽ báo trước để quý khách cân nhắc. Khi hai bên đã thống nhất, chúng tôi không tự ý phát sinh thêm chi phí.</p>
             </div>
             <div className={styles.scopeBox}>
-              <div><strong>Thông tin SGM cần biết</strong><ul><li>Loại xe và dòng xe.</li><li>Khu vực đang để phương tiện.</li><li>Tình trạng số khung, số máy nếu anh/chị đã quan sát.</li></ul></div>
-              <div><strong>SGM sẽ thông báo</strong><ul><li>Khả năng sắp xếp thực hiện.</li><li>Chi phí dự kiến và khoản di chuyển nếu có.</li><li>Thời gian và điều kiện cần chuẩn bị tại vị trí phương tiện.</li></ul></div>
-              <div><strong>Anh/chị cần phối hợp</strong><ul><li>Bố trí phương tiện tại nơi an toàn, đủ không gian thao tác.</li><li>Cung cấp giấy tờ xe để đối chiếu khi cần.</li><li>Không tự đục sửa hoặc tác động lên số nhận dạng.</li></ul></div>
+              <div><strong>Thông tin quý khách vui lòng cung cấp</strong><ul><li>Loại xe và dòng xe.</li><li>Khu vực đang để xe.</li><li>Tình trạng số khung, số máy, nếu quý khách đã quan sát.</li></ul></div>
+              <div><strong>SGM sẽ thông báo</strong><ul><li>Có thể sắp xếp lịch thực hiện hay không.</li><li>Chi phí dự kiến và phí đi lại, nếu có.</li><li>Thời gian hẹn và những điều cần chuẩn bị tại nơi để xe.</li></ul></div>
+              <div><strong>Quý khách vui lòng chuẩn bị</strong><ul><li>Để xe ở nơi an toàn, đủ không gian thao tác.</li><li>Mang theo giấy tờ xe để đối chiếu khi cần.</li><li>Không tự đục sửa hay tác động lên số khung, số máy.</li></ul></div>
             </div>
           </div>
         </section>
@@ -200,9 +200,9 @@ export default function FrameNumberLandingPage() {
           <div className={`${styles.sectionInner} ${styles.formLayout}`}>
             <div className={styles.formSide}>
               <span className={styles.eyebrow}>Đặt lịch cùng SGM</span>
-              <h2>Gửi thông tin xe, SGM sẽ liên hệ để xác nhận</h2>
-              <p>Anh/chị chưa cần tải giấy tờ lên website. SGM sẽ hỏi thêm những thông tin cần thiết và chỉ xác nhận lịch sau khi hai bên đã thống nhất chi phí.</p>
-              <div className={styles.contactCard}><span>Hotline/Zalo</span><strong>0704 104 104</strong><small>Hotline nhận cuộc gọi 24/7. Yêu cầu qua form được xử lý trong khung giờ làm việc.</small></div>
+              <h2>Gửi thông tin xe, SGM sẽ liên hệ báo phí và sắp xếp lịch hẹn</h2>
+              <p>Quý khách chưa cần tải giấy tờ lên website. Chúng tôi sẽ trao đổi thêm những thông tin cần thiết và chỉ xác nhận lịch khi hai bên đã thống nhất chi phí.</p>
+              <div className={styles.contactCard}><span>Hotline/Zalo</span><strong>0704 104 104</strong><small>Hotline nhận cuộc gọi 24/7. Yêu cầu gửi qua form sẽ được SGM phản hồi trong giờ làm việc.</small></div>
             </div>
             <FrameNumberLeadForm />
           </div>
@@ -210,7 +210,7 @@ export default function FrameNumberLandingPage() {
 
         <section className={`${styles.section} ${styles.softSection}`} id="cau-hoi">
           <div className={styles.narrowInner}>
-            <div className={styles.sectionIntro}><span className={styles.eyebrow}>Câu hỏi thường gặp</span><h2>Thông tin cần biết trước khi đặt lịch</h2></div>
+            <div className={styles.sectionIntro}><span className={styles.eyebrow}>Câu hỏi thường gặp</span><h2>Những điều quý khách thường quan tâm trước khi đặt lịch</h2></div>
             <div className={styles.faqList}>
               {faqs.map((item) => <details key={item.question}><summary>{item.question}</summary><p>{item.answer}</p></details>)}
             </div>
@@ -220,7 +220,7 @@ export default function FrameNumberLandingPage() {
 
       <footer className={styles.footer}>
         <div className={styles.footerInner}>
-          <div><strong>Saigon Motor</strong><p>Nhánh dịch vụ của Công ty TNHH Ô tô Xe máy 368</p></div>
+          <div><strong>Saigon Motor</strong><p>Đơn vị dịch vụ tư nhân thuộc Công ty TNHH Ô tô Xe máy 368, không phải cơ quan nhà nước</p></div>
           <div><span>MST 0316339254</span><span>745 Phạm Văn Đồng, Khu phố 8, phường Hiệp Bình, TP. Hồ Chí Minh</span></div>
           <div><Link href="/phap-ly-cam-ket">Thông tin pháp lý</Link><Link href="/chinh-sach-bao-mat">Chính sách bảo mật</Link></div>
         </div>

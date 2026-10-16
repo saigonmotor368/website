@@ -28,10 +28,10 @@ export const metadata: Metadata = {
 };
 
 const faqs = [
-  ["SGM có nhận hồ sơ xe qua nhiều đời chủ không?", "SGM sẽ kiểm tra giấy tờ và quá trình chuyển nhượng của từng trường hợp. Hồ sơ chỉ được tiếp nhận khi có cơ sở pháp lý và đáp ứng điều kiện thực hiện; SGM không khẳng định kết quả khi chưa xem hồ sơ."],
-  ["Bảng giá trên website đã gồm lệ phí nhà nước chưa?", "Chưa. Bảng giá công khai là phí dịch vụ tham khảo cho hồ sơ thông thường. Thuế trước bạ, lệ phí cấp biển số và các khoản phải nộp cho cơ quan nhà nước sẽ được thông báo riêng."],
-  ["Khách hàng ở tỉnh khác có thể nhờ SGM hỗ trợ không?", "Có. SGM hỗ trợ kiểm tra hồ sơ tại TP.HCM và các tỉnh. Quy trình tiếp nhận, thời gian dự kiến và chi phí sẽ phụ thuộc vào nơi đăng ký xe, loại xe và tình trạng giấy tờ thực tế."],
-  ["Tôi có cần gửi ảnh giấy tờ ngay trên website không?", "Không. Biểu mẫu trên website chỉ yêu cầu thông tin cơ bản. Sau khi trao đổi, nhân viên SGM sẽ hướng dẫn anh/chị gửi giấy tờ qua kênh phù hợp."],
+  ["SGM có tiếp nhận hồ sơ xe đã qua nhiều đời chủ không?", "Với những trường hợp này, chúng tôi cần xem kỹ giấy tờ và quá trình chuyển nhượng qua từng đời chủ. SGM chỉ tiếp nhận khi hồ sơ có đủ căn cứ pháp lý và đáp ứng điều kiện thực hiện thủ tục. Khi chưa xem hồ sơ, chúng tôi không nhận định trước về kết quả."],
+  ["Bảng giá trên website đã gồm lệ phí nhà nước chưa?", "Chưa. Bảng giá trên website là phí dịch vụ tham khảo dành cho hồ sơ thông thường. Thuế trước bạ, lệ phí cấp biển số và các khoản phải nộp cho cơ quan nhà nước sẽ được SGM thông báo riêng để quý khách nắm rõ."],
+  ["Quý khách ở tỉnh khác có thể nhờ SGM hỗ trợ không?", "Có. SGM hỗ trợ kiểm tra hồ sơ cho quý khách tại TP.HCM và các tỉnh. Cách thức tiếp nhận, thời gian dự kiến và chi phí sẽ tùy thuộc vào nơi đăng ký xe, loại xe và tình trạng giấy tờ thực tế."],
+  ["Tôi có cần gửi ảnh giấy tờ ngay trên website không?", "Không cần. Biểu mẫu trên website chỉ gồm một vài thông tin cơ bản. Sau khi trao đổi, nhân viên SGM sẽ hướng dẫn quý khách gửi giấy tờ qua kênh thuận tiện nhất."],
 ];
 
 const faqSchema = {
@@ -49,14 +49,14 @@ export default function Home() {
     <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: serializeJsonLd(faqSchema) }} />
     <PremiumHero />
     <section className="trust-strip" aria-label="Điểm tin cậy"><div className="container trust-grid">
-      <div className="trust-item"><strong>15 năm kinh nghiệm thực tế</strong><span>Đội ngũ am hiểu quy trình hồ sơ xe</span></div>
-      <div className="trust-item"><strong>Chi phí được báo rõ</strong><span>Phân biệt phí dịch vụ và lệ phí nhà nước</span></div>
-      <div className="trust-item"><strong>Kiểm tra trước khi tiếp nhận</strong><span>Chỉ nhận hồ sơ sau khi xem xét điều kiện thực hiện</span></div>
+      <div className="trust-item"><strong>15 năm kinh nghiệm thực tế</strong><span>Am tường từng bước của hồ sơ xe</span></div>
+      <div className="trust-item"><strong>Chi phí rõ ràng từ đầu</strong><span>Tách bạch phí dịch vụ và lệ phí nhà nước</span></div>
+      <div className="trust-item"><strong>Kiểm tra trước khi tiếp nhận</strong><span>Xem xét kỹ điều kiện rồi mới tiếp nhận hồ sơ</span></div>
       <div className="trust-item"><strong>Hotline hỗ trợ 24/7</strong><span>0704 104 104</span></div>
     </div></section>
 
     <section className="section" id="dich-vu"><div className="container">
-      <div className="center"><span className="eyebrow">Dịch vụ hồ sơ xe</span><h2 className="section-heading">Một nơi để anh/chị tìm đúng thủ tục đang cần</h2><p className="section-lead">SGM hỗ trợ hồ sơ pháp lý cho ô tô, xe máy và xe kinh doanh vận tải. Mỗi trường hợp đều được kiểm tra trước, hướng dẫn rõ quy trình và báo chi phí trước khi tiếp nhận.</p></div>
+      <div className="center"><span className="eyebrow">Dịch vụ hồ sơ xe</span><h2 className="section-heading">Thủ tục nào quý khách cần, chúng tôi đều sẵn lòng hướng dẫn</h2><p className="section-lead">Saigon Motor hỗ trợ hồ sơ pháp lý cho ô tô, xe máy và xe kinh doanh vận tải. Với mỗi trường hợp, chúng tôi đều kiểm tra trước, hướng dẫn rõ từng bước và báo chi phí trước khi tiếp nhận.</p></div>
       <div className="home-service-groups" style={{ marginTop: 40 }}>
         {serviceCategories.map((category) => (
           <Link className="home-service-group" href={`/dich-vu#${category.id}`} key={category.id}>
@@ -70,19 +70,19 @@ export default function Home() {
       <div className="center" style={{ marginTop: 30 }}><Link className="btn btn-primary" href="/dich-vu">Xem tất cả dịch vụ</Link></div>
     </div></section>
 
-    <section className="section section-soft" id="quy-trinh"><div className="container"><span className="eyebrow">Quy trình làm việc</span><h2 className="section-heading">Hồ sơ của anh/chị được xử lý như thế nào?</h2><div className="grid-4 steps" style={{ marginTop: 42 }}>
-      <div className="step"><h3>Tiếp nhận thông tin</h3><p>SGM ghi nhận loại xe, nơi cần làm thủ tục và những giấy tờ anh/chị đang có.</p></div>
-      <div className="step"><h3>Kiểm tra hồ sơ</h3><p>Đội ngũ xem xét điều kiện thực hiện, giấy tờ cần bổ sung và những điểm cần lưu ý.</p></div>
-      <div className="step"><h3>Hướng dẫn và báo phí</h3><p>SGM giải thích quy trình, phạm vi hỗ trợ và tách rõ từng khoản chi phí.</p></div>
-      <div className="step"><h3>Thực hiện và bàn giao</h3><p>SGM thực hiện phần việc đã thống nhất, cập nhật tiến độ và bàn giao kết quả cho anh/chị.</p></div>
+    <section className="section section-soft" id="quy-trinh"><div className="container"><span className="eyebrow">Quy trình làm việc</span><h2 className="section-heading">Bốn bước rõ ràng, từ lúc quý khách liên hệ đến khi nhận kết quả</h2><div className="grid-4 steps" style={{ marginTop: 42 }}>
+      <div className="step"><h3>Tiếp nhận thông tin</h3><p>SGM ghi nhận loại xe, nơi cần thực hiện thủ tục và những giấy tờ quý khách đang có.</p></div>
+      <div className="step"><h3>Kiểm tra hồ sơ</h3><p>Chúng tôi xem xét hồ sơ đã đủ điều kiện hay chưa, cần bổ sung giấy tờ gì và có điểm nào cần lưu ý.</p></div>
+      <div className="step"><h3>Báo phí rõ ràng</h3><p>Quý khách được giải thích từng bước, biết rõ phần việc SGM đảm nhận và từng khoản chi phí trước khi quyết định.</p></div>
+      <div className="step"><h3>Thực hiện và bàn giao kết quả</h3><p>SGM thực hiện đúng phần việc đã thống nhất, thường xuyên cập nhật tiến độ và bàn giao kết quả khi hoàn tất.</p></div>
     </div></div></section>
 
-    <section className="section" id="bang-gia"><div className="container"><span className="eyebrow">Bảng giá tham khảo</span><h2 className="section-heading">Tham khảo chi phí trước khi quyết định</h2><p className="section-lead">Các mức giá dưới đây áp dụng cho hồ sơ thông thường, giấy tờ đầy đủ. Sau khi kiểm tra tình trạng thực tế, SGM sẽ thông báo chi phí cụ thể trước khi tiếp nhận.</p><div className="price-table-wrap" style={{ marginTop: 34 }}><table className="price-table"><thead><tr><th>Dịch vụ</th><th>TP.HCM</th><th>Tỉnh khác</th></tr></thead><tbody><tr><td>Sang tên trọn gói ô tô</td><td>Từ 5.000.000 ₫</td><td>Từ 5.500.000 ₫</td></tr><tr><td>Thu hồi hồ sơ ô tô</td><td>Từ 2.500.000 ₫</td><td>Từ 2.800.000 ₫</td></tr><tr><td>Thu hồi hồ sơ xe máy</td><td>Từ 1.500.000 ₫</td><td>Từ 1.800.000–2.000.000 ₫</td></tr><tr><td>Đăng ký ô tô</td><td>Từ 2.500.000 ₫</td><td>Từ 3.000.000 ₫</td></tr><tr><td>Đăng ký xe máy</td><td>Từ 1.200.000 ₫</td><td>Từ 2.000.000 ₫</td></tr></tbody></table></div><p className="price-note">Giá có thể thay đổi khoảng 10–20% tuỳ loại xe, địa phương và tình trạng hồ sơ. Mức trên chưa gồm thuế trước bạ, lệ phí cấp biển số và các khoản phải nộp cho cơ quan nhà nước.</p></div></section>
+    <section className="section" id="bang-gia"><div className="container"><span className="eyebrow">Bảng giá tham khảo</span><h2 className="section-heading">Biết trước chi phí để quý khách an tâm quyết định</h2><p className="section-lead">Mức giá dưới đây áp dụng cho hồ sơ thông thường, giấy tờ đầy đủ. Sau khi xem xét tình trạng thực tế, SGM sẽ báo chi phí cụ thể trước khi tiếp nhận hồ sơ.</p><div className="price-table-wrap" style={{ marginTop: 34 }}><table className="price-table"><thead><tr><th>Dịch vụ</th><th>TP.HCM</th><th>Tỉnh khác</th></tr></thead><tbody><tr><td>Sang tên trọn gói ô tô</td><td>Từ 5.000.000 ₫</td><td>Từ 5.500.000 ₫</td></tr><tr><td>Thu hồi hồ sơ ô tô</td><td>Từ 2.500.000 ₫</td><td>Từ 2.800.000 ₫</td></tr><tr><td>Thu hồi hồ sơ xe máy</td><td>Từ 1.500.000 ₫</td><td>Từ 1.800.000–2.000.000 ₫</td></tr><tr><td>Đăng ký ô tô</td><td>Từ 2.500.000 ₫</td><td>Từ 3.000.000 ₫</td></tr><tr><td>Đăng ký xe máy</td><td>Từ 1.200.000 ₫</td><td>Từ 2.000.000 ₫</td></tr></tbody></table></div><p className="price-note">Giá có thể dao động khoảng 10–20% tùy loại xe, địa phương và tình trạng hồ sơ. Mức trên chưa gồm thuế trước bạ, lệ phí cấp biển số và các khoản phải nộp cho cơ quan nhà nước.</p></div></section>
 
-    <section className="section section-soft"><div className="container grid-2"><div><span className="eyebrow">Hồ sơ phức tạp</span><h2 className="section-heading">Hồ sơ càng phức tạp, càng cần kiểm tra kỹ từ đầu</h2><p className="section-lead">Xe đã chuyển qua nhiều người, thiếu giấy tờ hoặc có thông tin chưa thống nhất cần được xem xét cẩn trọng. Trước khi tiếp nhận, SGM sẽ trao đổi rõ khả năng thực hiện, giấy tờ cần bổ sung và những lưu ý anh/chị cần biết.</p></div><div className="notice"><strong>Nguyên tắc tiếp nhận hồ sơ</strong><p style={{ marginTop: 8 }}>SGM từ chối hồ sơ có dấu hiệu giả mạo, tranh chấp, nguồn gốc không rõ ràng hoặc không đáp ứng yêu cầu của cơ quan có thẩm quyền.</p></div></div></section>
+    <section className="section section-soft"><div className="container grid-2"><div><span className="eyebrow">Hồ sơ phức tạp</span><h2 className="section-heading">Hồ sơ càng phức tạp, càng cần kiểm tra kỹ từ đầu</h2><p className="section-lead">Xe đã qua nhiều đời chủ, thiếu giấy tờ hoặc có thông tin chưa thống nhất càng cần được xem xét cẩn trọng ngay từ đầu. Trước khi tiếp nhận, SGM sẽ trao đổi rõ với quý khách hồ sơ có thể thực hiện được hay không, cần bổ sung những gì và có điều gì cần lưu ý.</p></div><div className="notice"><strong>Nguyên tắc tiếp nhận hồ sơ</strong><p style={{ marginTop: 8 }}>SGM từ chối tiếp nhận hồ sơ có dấu hiệu giả mạo, đang tranh chấp, không rõ nguồn gốc hoặc không đáp ứng yêu cầu của cơ quan có thẩm quyền.</p></div></div></section>
 
-    <section className="section" id="tu-van"><div className="container"><div className="lead-shell"><div className="lead-intro"><span className="eyebrow" style={{ color: "var(--gold)" }}>Để SGM liên hệ tư vấn</span><h2>Hãy cho SGM biết tình trạng hồ sơ của anh/chị</h2><p>Anh/chị không cần tải ảnh giấy tờ lên website. Nhân viên SGM sẽ gọi lại để tìm hiểu tình trạng thực tế và hướng dẫn bước tiếp theo.</p><ul><li>✓ Thông tin được bảo mật</li><li>✓ Không tự động đăng ký nhận quảng cáo</li><li>✓ Anh/chị có thể yêu cầu xoá thông tin</li></ul></div><LeadForm /></div></div></section>
+    <section className="section" id="tu-van"><div className="container"><div className="lead-shell"><div className="lead-intro"><span className="eyebrow" style={{ color: "var(--gold)" }}>Để SGM liên hệ tư vấn</span><h2>Quý khách chia sẻ tình trạng hồ sơ, SGM sẽ cùng tìm hướng xử lý</h2><p>Quý khách không cần tải ảnh giấy tờ lên website. Nhân viên SGM sẽ gọi lại, tìm hiểu tình trạng thực tế và hướng dẫn quý khách bước tiếp theo.</p><ul><li>✓ Chúng tôi bảo mật thông tin quý khách cung cấp</li><li>✓ Không tự động đưa quý khách vào danh sách nhận quảng cáo</li><li>✓ Quý khách có thể yêu cầu xoá thông tin</li></ul></div><LeadForm /></div></div></section>
 
-    <section className="section section-soft"><div className="container"><div className="center"><span className="eyebrow">Câu hỏi thường gặp</span><h2 className="section-heading">Những thông tin anh/chị cần biết trước khi giao hồ sơ</h2></div><div className="faq" style={{ maxWidth: 850, margin: "38px auto 0" }}>{faqs.map(([q, a]) => <details key={q}><summary>{q}</summary><p>{a}</p></details>)}</div></div></section>
+    <section className="section section-soft"><div className="container"><div className="center"><span className="eyebrow">Câu hỏi thường gặp</span><h2 className="section-heading">Những điều quý khách thường quan tâm trước khi giao hồ sơ</h2></div><div className="faq" style={{ maxWidth: 850, margin: "38px auto 0" }}>{faqs.map(([q, a]) => <details key={q}><summary>{q}</summary><p>{a}</p></details>)}</div></div></section>
   </main>;
 }

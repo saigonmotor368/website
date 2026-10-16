@@ -19,7 +19,7 @@ export default function Header() {
           <span className="brand-mark"><Image src="/logo_sgm.png" alt="" width={64} height={64} priority /></span>
           <span className="brand-copy">
             <span className="brand-name">SAIGON <span>MOTOR</span></span>
-            <span className="brand-note">Nhánh dịch vụ của Công ty TNHH Ô tô Xe máy 368</span>
+            <span className="brand-note">Đơn vị dịch vụ thuộc Công ty TNHH Ô tô Xe máy 368</span>
           </span>
         </Link>
         {open && <div className="mobile-menu-backdrop" onClick={close} aria-hidden="true" />}
@@ -36,7 +36,7 @@ export default function Header() {
             <Link className="service-nav-trigger" href="/dich-vu" onClick={close}>Dịch vụ <span aria-hidden="true">⌄</span></Link>
             <div className="service-nav-panel">
               <div className="service-nav-panel-head">
-                <div><strong>Dịch vụ hồ sơ xe</strong><span>Chọn đúng thủ tục anh/chị đang cần</span></div>
+                <div><strong>Dịch vụ hồ sơ xe</strong><span>Chọn đúng thủ tục quý khách đang cần</span></div>
                 <Link href="/dich-vu" onClick={close}>Xem tất cả →</Link>
               </div>
               <div className="service-nav-groups">
