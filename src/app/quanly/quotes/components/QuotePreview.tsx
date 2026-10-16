@@ -192,12 +192,14 @@ export default function QuotePreview({ quoteData, onNext, onPrev }: Step4Props) 
             {/* Signatures */}
             <div className="mt-8 flex justify-between px-10 pt-3">
               <div className="text-center">
-                <p className="mb-14 text-[11px] font-bold uppercase text-gray-800">Khách hàng</p>
-                <p className="text-[9px] text-gray-500">(Ký và ghi rõ họ tên)</p>
+                <p className="text-[11px] font-bold uppercase text-gray-800">Khách hàng</p>
+                <p className="mt-1 text-[9px] text-gray-500">(Ký và ghi rõ họ tên)</p>
+                <div className="h-16" aria-hidden="true" />
               </div>
               <div className="text-center">
-                <p className="mb-14 text-[11px] font-bold uppercase text-gray-800">Đại diện Saigon Motor</p>
-                <p className="text-[9px] text-gray-500">(Ký và ghi rõ họ tên)</p>
+                <p className="text-[11px] font-bold uppercase text-gray-800">Đại diện Saigon Motor</p>
+                <p className="mt-1 text-[9px] text-gray-500">(Ký, ghi rõ họ tên và đóng dấu)</p>
+                <div className="h-16" aria-hidden="true" />
               </div>
             </div>
           </div>
