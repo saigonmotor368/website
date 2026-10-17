@@ -35,39 +35,34 @@ export default function QuotePreview({ quoteData, onNext, onPrev }: Step4Props) 
       <div className="flex justify-center overflow-x-auto rounded-xl bg-gray-900 p-3 sm:p-6">
         <div 
           id="quote-preview" 
-          className="relative overflow-hidden bg-[#fffefa] p-9 text-[14px] leading-[1.5] font-normal text-[#263633] shadow-2xl"
+          className="relative overflow-hidden bg-white p-9 text-[14px] leading-[1.5] font-normal text-[#263633] shadow-2xl"
           style={{ width: '794px', minHeight: '1123px', fontFamily: 'var(--font-be-vietnam), Arial, sans-serif' }} // A4 dimensions at 96dpi
         >
-          <div aria-hidden="true" className="absolute inset-x-0 top-0 h-2 bg-gradient-to-r from-[#14584f] via-[#75b7a7] to-[#d1a54f]" />
-          {/* Watermark mờ */}
-          <div className="absolute inset-0 flex items-center justify-center opacity-[0.035] pointer-events-none z-0">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/logo_sgm.png" alt="Watermark" style={{ width: '400px', height: '400px', objectFit: 'contain' }} />
-          </div>
-
           <div className="relative z-10">
             {/* Header */}
-              <div className="mb-7 flex items-start justify-between rounded-b-xl border-b border-[#c9d9d3] bg-gradient-to-br from-[#edf5f1] via-[#f7f8f3] to-[#fbf3e2] px-5 pb-5 pt-6">
-              <div className="flex flex-1 items-center gap-3 pr-4">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src="/logo_sgm.png" alt="Saigon Motor" className="h-16 w-16 shrink-0 object-contain" />
-                <div>
-                  <h1 className="text-[20px] font-bold uppercase tracking-[0.08em] text-[#174f48]">SAIGON MOTOR</h1>
-                  <p className="mt-1 text-[13px] font-medium uppercase tracking-wide text-[#405b55]">Công ty TNHH Ô tô Xe máy 368</p>
-                  <p className="mt-1 text-[11px] font-normal text-[#445853]"><span className="font-semibold">MST:</span> 0316339254</p>
-                  <p className="mt-1 max-w-[360px] text-[11px] font-normal leading-[1.45] text-[#445853]"><span className="font-semibold">Địa chỉ:</span> 745 Phạm Văn Đồng, khu phố 8, Phường Hiệp Bình, TP&nbsp;Hồ&nbsp;Chí&nbsp;Minh, Việt&nbsp;Nam</p>
+            <div className="mb-6 flex items-center justify-between gap-4 rounded-2xl bg-[#174f48] px-5 py-5 text-white shadow-sm">
+              <div className="flex min-w-0 flex-1 items-center gap-4 pr-2">
+                <div className="grid h-[88px] w-[88px] shrink-0 place-items-center">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src="/logo_sgm.png" alt="Saigon Motor" className="h-full w-full object-contain brightness-0 invert" />
+                </div>
+                <div className="min-w-0">
+                  <h1 className="text-[20px] font-semibold uppercase tracking-[0.07em] text-white">SAIGON MOTOR</h1>
+                  <p className="mt-1 text-[12px] font-medium uppercase tracking-wide text-[#d7e9e3]">Công ty TNHH Ô tô Xe máy 368</p>
+                  <p className="mt-1 text-[10px] font-normal text-[#e1eeea]"><span className="font-medium">MST:</span> 0316339254</p>
+                  <p className="mt-0.5 max-w-[390px] text-[10px] font-normal leading-[1.4] text-[#e1eeea]"><span className="font-medium">Địa chỉ:</span> 745 Phạm Văn Đồng, khu phố 8, Phường Hiệp Bình, TP&nbsp;Hồ&nbsp;Chí&nbsp;Minh, Việt Nam</p>
                 </div>
               </div>
-              <div className="text-right shrink-0">
-                <h2 className="mb-2 whitespace-nowrap text-[21px] font-bold uppercase tracking-[0.02em] text-[#174f48]">BÁO GIÁ DỊCH VỤ</h2>
-                <p className="text-[12px] font-normal text-[#445853]">Số: <span className="font-semibold text-[#263633]">{quoteData.quoteNumber}</span></p>
-                <p className="text-[12px] font-normal text-[#445853]">Ngày: <span className="font-semibold text-[#263633]">{dateStr}</span></p>
+              <div className="shrink-0 rounded-xl border border-white/20 bg-white/10 px-4 py-3 text-right">
+                <p className="mb-1 text-[10px] font-medium uppercase tracking-[0.16em] text-[#f3c2c8]">Báo giá dịch vụ</p>
+                <h2 className="whitespace-nowrap text-[19px] font-semibold tracking-tight text-white">{quoteData.quoteNumber}</h2>
+                <p className="mt-1 text-[11px] font-normal text-[#e1eeea]">Ngày {dateStr}</p>
               </div>
             </div>
 
             {/* Thông tin Khách hàng & Xe */}
-            <div className="mb-7 grid grid-cols-2 gap-7">
-              <div>
+            <div className="mb-6 grid grid-cols-2 gap-4">
+              <div className="rounded-xl border border-[#d9e5e0] bg-[#f4f8f6] p-4">
                 <h3 className="mb-2 border-b border-[#b8cbc4] pb-1.5 text-[13px] font-semibold uppercase tracking-wide text-[#174f48]">Thông tin khách hàng</h3>
                 <p className="mb-1"><span className="inline-block w-20 font-normal text-[#536761]">Họ và tên:</span> <span className="font-semibold text-[#263633]">{quoteData.customer.name}</span></p>
                 {quoteData.customer.companyName && (
@@ -82,21 +77,21 @@ export default function QuotePreview({ quoteData, onNext, onPrev }: Step4Props) 
               </div>
               
               {quoteData.vehicle && (
-                <div>
+                <div className="rounded-xl border border-[#d9e5e0] bg-[#f4f8f6] p-4">
                   <h3 className="mb-2 border-b border-[#b8cbc4] pb-1.5 text-[13px] font-semibold uppercase tracking-wide text-[#174f48]">Thông tin xe</h3>
                   <div className="grid grid-cols-2 gap-x-2 gap-y-1 text-[12px] font-medium">
-                    <p><span className="font-semibold text-[#444]">Biển số:</span> <span className="font-bold text-black">{quoteData.vehicle.licensePlate}</span></p>
-                    <p><span className="text-gray-600">Loại xe:</span> <span className="font-bold">{quoteData.vehicle.vehicleType === 'motorbike' ? 'Xe Máy' : 'Ô tô'}</span></p>
-                    <p><span className="text-gray-600">Nhãn hiệu:</span> <span className="font-bold">{quoteData.vehicle.brand}</span></p>
-                    <p><span className="text-gray-600">Model:</span> <span className="font-bold">{quoteData.vehicle.model}</span></p>
-                    <p><span className="text-gray-600">Năm SX:</span> <span className="font-bold">{quoteData.vehicle.yearOfManufacture || '---'}</span></p>
+                    <p><span className="font-normal text-[#536761]">Biển số:</span> <span className="font-semibold text-[#263633]">{quoteData.vehicle.licensePlate}</span></p>
+                    <p><span className="font-normal text-[#536761]">Loại xe:</span> <span className="font-semibold text-[#263633]">{quoteData.vehicle.vehicleType === 'motorbike' ? 'Xe máy' : 'Ô tô'}</span></p>
+                    <p><span className="font-normal text-[#536761]">Nhãn hiệu:</span> <span className="font-semibold text-[#263633]">{quoteData.vehicle.brand}</span></p>
+                    <p><span className="font-normal text-[#536761]">Mẫu xe:</span> <span className="font-semibold text-[#263633]">{quoteData.vehicle.model}</span></p>
+                    <p><span className="font-normal text-[#536761]">Năm SX:</span> <span className="font-semibold text-[#263633]">{quoteData.vehicle.yearOfManufacture || '---'}</span></p>
                   </div>
                 </div>
               )}
             </div>
 
             {/* Bảng Dịch vụ */}
-            <div className="mb-7">
+            <div className="mb-6">
               <h3 className="mb-2.5 text-[14px] font-semibold uppercase tracking-wide text-[#174f48]">1. Chi phí dịch vụ</h3>
               <table className="w-full border-collapse border border-[#aebdb8] text-[#263633]">
                 <thead>
@@ -110,7 +105,7 @@ export default function QuotePreview({ quoteData, onNext, onPrev }: Step4Props) 
                 </thead>
                 <tbody>
                   {quoteData.services.map((service, idx) => (
-                    <tr key={service.id}>
+                    <tr key={service.id} className={idx % 2 === 0 ? "bg-white" : "bg-[#f3f7f5]"}>
                       <td className="border border-[#c5d0cc] px-2 py-2 text-center text-[12px] font-normal">{idx + 1}</td>
                       <td className="border border-[#c5d0cc] px-2 py-2">
                         <p className="text-[13px] font-medium text-[#263633]">{service.name}</p>
@@ -144,16 +139,16 @@ export default function QuotePreview({ quoteData, onNext, onPrev }: Step4Props) 
                     </tr>
                   )}
 
-                  <tr className="bg-[#f4edda] font-semibold">
-                    <td colSpan={4} className="border border-[#aebdb8] px-2 py-2.5 text-right text-[13px] font-semibold uppercase text-[#344842]">Tổng cộng thanh toán:</td>
-                    <td className="border border-[#aebdb8] px-2 py-2.5 text-right text-[16px] font-bold text-[#174f48] whitespace-nowrap">{formatMoney(totalAmount)}</td>
+                  <tr className="bg-[#174f48] font-semibold text-white">
+                    <td colSpan={4} className="border border-[#174f48] px-2 py-2.5 text-right text-[13px] font-semibold uppercase tracking-wide text-white">Tổng cộng thanh toán:</td>
+                    <td className="border border-[#174f48] px-2 py-2.5 text-right text-[16px] font-bold text-white whitespace-nowrap">{formatMoney(totalAmount)}</td>
                   </tr>
                 </tbody>
               </table>
             </div>
 
             {/* Bảng Hồ sơ */}
-            <div className="mb-7">
+            <div className="mb-6">
               <h3 className="mb-2.5 text-[14px] font-semibold uppercase tracking-wide text-[#174f48]">2. Hồ sơ khách hàng cần chuẩn bị</h3>
               <table className="w-full border-collapse border border-[#aebdb8] text-[#263633]">
                 <thead>
@@ -166,7 +161,7 @@ export default function QuotePreview({ quoteData, onNext, onPrev }: Step4Props) 
                 </thead>
                 <tbody>
                   {quoteData.documents.map((doc, idx) => (
-                    <tr key={doc.id}>
+                    <tr key={doc.id} className={idx % 2 === 0 ? "bg-white" : "bg-[#f3f7f5]"}>
                       <td className="border border-[#c5d0cc] px-2 py-2 text-center text-[12px] font-normal">{idx + 1}</td>
                       <td className="border border-[#c5d0cc] px-2 py-2 text-[12px] font-medium">{doc.name}</td>
                       <td className="border border-[#c5d0cc] px-2 py-2 text-center text-[12px] font-normal">{doc.quantity} bản</td>
@@ -184,7 +179,7 @@ export default function QuotePreview({ quoteData, onNext, onPrev }: Step4Props) 
             {quoteData.note && (
               <div className="mb-4">
                 <h3 className="mb-1 text-[11px] font-semibold text-[#344842]">Ghi chú:</h3>
-                <div className="whitespace-pre-wrap rounded-r-md border-l-[3px] border-[#d1a54f] bg-[#f5f6f1] p-3 text-[12px] font-normal text-[#344842]">
+                <div className="whitespace-pre-wrap rounded-xl border border-[#d9e5e0] border-l-[4px] border-l-[#bd2c3b] bg-[#f4f8f6] p-3 text-[12px] font-normal text-[#344842]">
                   {quoteData.note}
                 </div>
               </div>
