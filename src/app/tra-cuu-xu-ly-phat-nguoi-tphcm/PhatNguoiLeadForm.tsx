@@ -121,7 +121,7 @@ export default function PhatNguoiLeadForm() {
       <div className={styles.formHeader}>
         <span>Kiểm tra phạt nguội</span>
         <h2>Gửi biển số để SGM kiểm tra giúp quý khách</h2>
-        <p>Chúng tôi đối chiếu thông tin từ nguồn chính thức, sau đó liên hệ để giải thích kết quả và báo phí trước khi tiếp nhận bất kỳ phần việc nào.</p>
+        <p>Chúng tôi tra cứu dữ liệu công khai của CSGT, sau đó liên hệ để giải thích kết quả và báo phí trước khi tiếp nhận bất kỳ phần việc nào.</p>
       </div>
       <div className={styles.formGrid}>
         <label><span>Họ tên hoặc tên Zalo</span><input name="name" autoComplete="name" maxLength={80} placeholder="Ví dụ: Anh Minh" required /></label>

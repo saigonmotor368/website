@@ -12,7 +12,7 @@ const PAGE_URL = `${SITE_URL}${PAGE_PATH}`;
 const GOOGLE_ADS_ID = "AW-18352281213";
 const OFFICIAL_LOOKUP_URL = "https://www.csgt.vn/tra-cuu-phuong-tien-vi-pham.html";
 const title = "Hỗ trợ kiểm tra và xử lý phạt nguội tại TP.HCM";
-const description = "Saigon Motor kiểm tra thông tin phạt nguội ô tô, xe máy từ nguồn chính thức, chỉ rõ nơi xử lý, giấy tờ cần chuẩn bị và báo phí trước khi tiếp nhận.";
+const description = "Saigon Motor kiểm tra phạt nguội ô tô, xe máy từ dữ liệu công khai của CSGT, hướng dẫn xử lý tận nơi tại TP.HCM và báo phí trước khi tiếp nhận.";
 
 export const metadata: Metadata = {
   title,
@@ -94,7 +94,7 @@ export default function PhatNguoiPage() {
             <div className={styles.heroCopy}>
               <span className={styles.eyebrow}>Phạt nguội ô tô, xe máy tại TP.HCM</span>
               <h1>Nhận thông báo phạt nguội? Chúng tôi giúp quý khách kiểm tra rõ ràng, xử lý đúng nơi</h1>
-              <p className={styles.heroLead}>Saigon Motor đối chiếu thông tin vi phạm từ nguồn chính thức, chỉ rõ lỗi được ghi nhận ở đâu, đang do cơ quan nào xử lý và quý khách cần chuẩn bị những giấy tờ gì. Chi phí hỗ trợ được báo trước, để quý khách an tâm quyết định.</p>
+              <p className={styles.heroLead}>Saigon Motor tra cứu thông tin vi phạm từ dữ liệu công khai của CSGT, cho quý khách biết lỗi được ghi nhận ở đâu, đang do cơ quan nào xử lý và cần chuẩn bị những giấy tờ gì. Khi cần, nhân viên của chúng tôi đến tận nơi để hướng dẫn và cùng quý khách hoàn tất các bước xử lý. Chi phí hỗ trợ luôn được báo trước, để quý khách an tâm quyết định.</p>
               <div className={styles.heroActions}>
                 <a className={styles.primaryButton} href="#dang-ky">Gửi biển số để kiểm tra</a>
                 <TrackedAnchor className={styles.secondaryButton} href="https://zalo.me/0704104104" target="_blank" rel="noopener noreferrer" eventName="zalo_click" placement="phat_nguoi_hero" eventData={trackingData}>Nhắn Zalo cho SGM</TrackedAnchor>
@@ -104,17 +104,17 @@ export default function PhatNguoiPage() {
             <div className={styles.reviewCard} aria-label="Những việc SGM hỗ trợ quý khách">
               <div className={styles.reviewTop}><span>SGM hỗ trợ quý khách</span><strong>Báo phí trước khi tiếp nhận</strong></div>
               <ol>
-                <li><span>01</span><div><strong>Kiểm tra thông tin vi phạm</strong><p>Tra cứu từ nguồn chính thức và đối chiếu với thông báo quý khách nhận được.</p></div></li>
+                <li><span>01</span><div><strong>Kiểm tra thông tin vi phạm</strong><p>Tra cứu dữ liệu công khai của CSGT và đối chiếu với thông báo quý khách nhận được.</p></div></li>
                 <li><span>02</span><div><strong>Xác định nơi xử lý</strong><p>Chỉ rõ lỗi do cơ quan nào thụ lý và quý khách cần liên hệ ở đâu.</p></div></li>
                 <li><span>03</span><div><strong>Chuẩn bị giấy tờ</strong><p>Hướng dẫn giấy tờ của chủ xe, người điều khiển và giấy tờ xe theo từng vụ việc.</p></div></li>
-                <li><span>04</span><div><strong>Theo dõi phần việc đã nhận</strong><p>Cập nhật tiến độ cho quý khách đến khi hoàn tất phần việc hai bên đã thống nhất.</p></div></li>
+                <li><span>04</span><div><strong>Hướng dẫn xử lý tận nơi</strong><p>Khi cần, nhân viên SGM đến tận nơi hướng dẫn và theo sát đến khi hoàn tất phần việc hai bên đã thống nhất.</p></div></li>
               </ol>
               <div className={styles.reviewFoot}>Tiền nộp phạt theo quyết định của cơ quan nhà nước được tách riêng với phí dịch vụ</div>
             </div>
           </div>
         </section>
 
-        <section className={styles.trustStrip} aria-label="Cam kết khi hỗ trợ phạt nguội"><div><span>Tra cứu từ <strong>nguồn chính thức</strong></span><span><strong>Báo phí rõ ràng</strong> trước khi làm</span><span>Phục vụ <strong>ô tô, xe máy</strong> tại TP.HCM</span></div></section>
+        <section className={styles.trustStrip} aria-label="Cam kết khi hỗ trợ phạt nguội"><div><span>Tra cứu từ <strong>dữ liệu công khai của CSGT</strong></span><span><strong>Hướng dẫn xử lý tận nơi</strong> tại TP.HCM</span><span><strong>Báo phí rõ ràng</strong> trước khi làm</span></div></section>
 
         <section className={styles.section} id="truong-hop">
           <div className={styles.sectionInner}>
@@ -133,7 +133,7 @@ export default function PhatNguoiPage() {
             <div className={styles.sectionIntro}><span className={styles.eyebrow}>Quy trình hỗ trợ</span><h2>Từng bước rõ ràng, để quý khách luôn nắm được hồ sơ đang ở đâu</h2></div>
             <div className={styles.processGrid}>
               <div><span>1</span><h3>Tiếp nhận thông tin</h3><p>SGM ghi nhận biển số, loại xe và thông báo vi phạm quý khách đang có.</p></div>
-              <div><span>2</span><h3>Kiểm tra hồ sơ</h3><p>Chúng tôi tra cứu từ nguồn chính thức, xác định số vụ việc và nơi đang thụ lý.</p></div>
+              <div><span>2</span><h3>Kiểm tra hồ sơ</h3><p>Chúng tôi tra cứu dữ liệu công khai của CSGT, xác định số vụ việc và nơi đang thụ lý.</p></div>
               <div><span>3</span><h3>Báo phí rõ ràng</h3><p>Quý khách được giải thích từng bước và biết trước chi phí hỗ trợ trước khi đồng ý.</p></div>
               <div><span>4</span><h3>Thực hiện và bàn giao kết quả</h3><p>SGM thực hiện đúng phần việc đã thống nhất, cập nhật tiến độ và bàn giao giấy tờ cho quý khách.</p></div>
             </div>
