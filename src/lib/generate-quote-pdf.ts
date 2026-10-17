@@ -1,7 +1,7 @@
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 
-const captureQuoteCanvas = async (elementId: string) => {
+const captureQuoteCanvas = async (elementId: string, scale = 2) => {
   const element = document.getElementById(elementId);
   if (!element) {
     console.error(`Element with id ${elementId} not found`);
@@ -12,7 +12,7 @@ const captureQuoteCanvas = async (elementId: string) => {
     element.classList.add('pdf-exporting');
 
     const canvas = await html2canvas(element, {
-      scale: 2, // Tăng chất lượng ảnh
+      scale,
       useCORS: true,
       logging: false,
       backgroundColor: '#ffffff'
@@ -29,7 +29,7 @@ const captureQuoteCanvas = async (elementId: string) => {
 
 export const generateQuotePdf = async (elementId: string, filename: string = 'BaoGia_SaigonMotor.pdf') => {
   try {
-    const canvas = await captureQuoteCanvas(elementId);
+    const canvas = await captureQuoteCanvas(elementId, 3);
     if (!canvas) return false;
 
     const imgData = canvas.toDataURL('image/png');
