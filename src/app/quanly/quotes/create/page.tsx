@@ -417,6 +417,8 @@ export default function CreateQuotePage() {
 
     const exportIssuedQuote = async () => {
       try {
+        await new Promise((resolve) => window.setTimeout(resolve, 70));
+        if (cancelled) return;
         if (document.fonts?.ready) await document.fonts.ready;
         const preview = document.getElementById("quote-preview");
         if (preview) {
@@ -569,7 +571,26 @@ export default function CreateQuotePage() {
     setSaving(true);
     setPdfAction("download");
     setExportFormat(format);
+    setShowPreview(false);
     setPdfQuoteData(buildPdfQuoteData(quoteNumber, "issued"));
+    setPendingPdf(true);
+  };
+
+  const handleExportColorImage = () => {
+    if (isIssuedQuote) {
+      handleDownloadIssuedQuote("image");
+      return;
+    }
+    if (!customerName.trim() || selectedServices.length === 0) {
+      alert("Vui lòng nhập tên khách hàng và chọn ít nhất 1 dịch vụ để xuất ảnh báo giá.");
+      return;
+    }
+
+    setSaving(true);
+    setPdfAction("download");
+    setExportFormat("image");
+    setShowPreview(false);
+    setPdfQuoteData(buildPdfQuoteData(quoteNumber || "BAN_NHAP", quoteStatus));
     setPendingPdf(true);
   };
 
@@ -649,34 +670,32 @@ export default function CreateQuotePage() {
               Lưu bản nháp
             </button>
           )}
+          <button
+            type="button"
+            onClick={handleExportColorImage}
+            disabled={saving}
+            className="quanly-btn-secondary"
+            title="Lưu ảnh JPG bản màu đẹp để gửi qua Zalo"
+          >
+            {saving ? "Đang xử lý..." : "▧ Lưu ảnh màu (Zalo)"}
+          </button>
           {isIssuedQuote ? (
-            <>
-              <button
-                type="button"
-                onClick={() => handleDownloadIssuedQuote("image")}
-                disabled={saving}
-                className="quanly-btn-secondary"
-                title="Tải ảnh JPG gọn nhẹ để gửi qua Zalo"
-              >
-                {saving ? "Đang xử lý..." : "▧ Ảnh gửi Zalo"}
-              </button>
-              <button
-                type="button"
-                onClick={() => handleDownloadIssuedQuote("pdf")}
-                disabled={saving}
-                className="quanly-btn-gold quanly-action-span-full"
-              >
-                {saving ? "Đang xử lý..." : "↻ Tải PDF"}
-              </button>
-            </>
+            <button
+              type="button"
+              onClick={() => handleDownloadIssuedQuote("pdf")}
+              disabled={saving}
+              className="quanly-btn-gold quanly-action-span-full"
+            >
+              {saving ? "Đang xử lý..." : "↻ Tải PDF"}
+            </button>
           ) : (
             <button
               type="button"
               onClick={handlePrimaryPdfAction}
               disabled={saving}
-              className="quanly-btn-gold quanly-action-span-full"
+              className="quanly-btn-gold"
             >
-              {saving ? "Đang xử lý..." : "✓ Phát hành & tải PDF"}
+              {saving ? "Đang xử lý..." : "✓ Phát hành & PDF"}
             </button>
           )}
         </div>
@@ -1328,47 +1347,45 @@ export default function CreateQuotePage() {
               Lưu bản nháp
             </button>
           )}
+          <button
+            type="button"
+            onClick={handleExportColorImage}
+            disabled={saving}
+            className="quanly-btn-secondary"
+            title="Lưu ảnh JPG bản màu đẹp để gửi qua Zalo"
+          >
+            {saving ? "Đang xử lý..." : "▧ Lưu ảnh màu (Zalo)"}
+          </button>
           {isIssuedQuote ? (
-            <>
-              <button
-                type="button"
-                onClick={() => handleDownloadIssuedQuote("image")}
-                disabled={saving}
-                className="quanly-btn-secondary"
-                title="Tải ảnh JPG gọn nhẹ để gửi qua Zalo"
-              >
-                {saving ? "Đang xử lý..." : "▧ Tải ảnh Zalo"}
-              </button>
-              <button
-                type="button"
-                onClick={() => handleDownloadIssuedQuote("pdf")}
-                disabled={saving}
-                className="quanly-btn-gold quanly-action-span-full"
-              >
-                {saving ? "Đang xử lý..." : "↻ Tải lại PDF"}
-              </button>
-            </>
+            <button
+              type="button"
+              onClick={() => handleDownloadIssuedQuote("pdf")}
+              disabled={saving}
+              className="quanly-btn-gold quanly-action-span-full"
+            >
+              {saving ? "Đang xử lý..." : "↻ Tải lại PDF"}
+            </button>
           ) : (
             <button
               type="button"
               onClick={handlePrimaryPdfAction}
               disabled={saving}
-              className="quanly-btn-gold quanly-action-span-full"
+              className="quanly-btn-gold"
             >
-              {saving ? "Đang xử lý..." : "✓ Phát hành báo giá & xuất PDF"}
+              {saving ? "Đang xử lý..." : "✓ Phát hành & xuất PDF"}
             </button>
           )}
         </div>
       </div>
 
       {showPreview && (
-        <div className="fixed inset-0 z-50 overflow-y-auto bg-black/80 p-3 pb-8 backdrop-blur-sm sm:p-6">
+        <div className="quote-preview-modal-overlay fixed inset-0 z-50 overflow-y-auto bg-black/80 p-3 pb-8 backdrop-blur-sm sm:p-6">
           <div className="mx-auto max-w-5xl">
-            <div className="sticky top-2 z-10 mb-3 flex flex-wrap items-center justify-between gap-2 rounded-xl border border-white/10 bg-[#141923]/95 px-4 py-3 shadow-xl backdrop-blur">
+            <div className="print:hidden sticky top-2 z-10 mb-3 flex flex-wrap items-center justify-between gap-2 rounded-xl border border-white/10 bg-[#141923]/95 px-4 py-3 shadow-xl backdrop-blur">
               <div className="min-w-0">
                 <div className="text-sm font-bold text-white">Xem trước báo giá</div>
                 <div className="text-xs text-gray-400">
-                  Kiểm tra nội dung trước khi phát hành bản chính thức.
+                  Chọn Bản màu để lưu ảnh gửi Zalo hoặc Bản trắng đen để in giấy A4.
                 </div>
               </div>
               <button
@@ -1383,6 +1400,8 @@ export default function CreateQuotePage() {
               quoteData={buildPdfQuoteData(quoteNumber || "BẢN NHÁP", quoteStatus)}
               onPrev={() => setShowPreview(false)}
               onNext={handlePrimaryPdfAction}
+              elementId="quote-preview-modal"
+              saving={saving}
             />
           </div>
         </div>
@@ -1390,7 +1409,13 @@ export default function CreateQuotePage() {
 
       {pendingPdf && pdfQuoteData && (
         <div className="pointer-events-none fixed left-[-10000px] top-0" aria-hidden="true">
-          <QuotePreview quoteData={pdfQuoteData} onPrev={() => {}} onNext={() => {}} />
+          <QuotePreview
+            quoteData={pdfQuoteData}
+            onPrev={() => {}}
+            onNext={() => {}}
+            initialMode="color"
+            elementId="quote-preview"
+          />
         </div>
       )}
     </div>

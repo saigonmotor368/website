@@ -23,8 +23,9 @@ function InvoiceCreateForm() {
   // Case reference
   const [caseNumber, setCaseNumber] = useState("");
 
-  // Items
+  // Items & VAT
   const [items, setItems] = useState<Array<{ item_name: string; unit_price: number; quantity: number }>>([]);
+  const [vatRate, setVatRate] = useState<0 | 8 | 10>(0);
   const [notes, setNotes] = useState("");
   const [dueDate, setDueDate] = useState("");
 
@@ -87,7 +88,9 @@ function InvoiceCreateForm() {
     setItems((prev) => prev.filter((_, i) => i !== index));
   }
 
-  const totalAmount = items.reduce((sum, item) => sum + item.unit_price * item.quantity, 0);
+  const subtotalAmount = items.reduce((sum, item) => sum + item.unit_price * item.quantity, 0);
+  const vatAmount = Math.round(subtotalAmount * (vatRate / 100));
+  const totalAmount = subtotalAmount + vatAmount;
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -118,6 +121,7 @@ function InvoiceCreateForm() {
           created_at: new Date().toISOString(),
         },
         status: "issued" as const,
+        vat_rate: vatRate,
         due_date: dueDate || undefined,
         notes: notes.trim() || undefined,
         items,
@@ -250,6 +254,30 @@ function InvoiceCreateForm() {
             className="w-full bg-[#0d1017] border border-gray-800 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-[#d4af37]"
           />
         </div>
+
+        {(companyName.trim() || taxId.trim()) && vatRate === 0 && (
+          <div className="p-3 rounded-xl border border-[#d4af37]/35 bg-[#d4af37]/10 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 text-xs">
+            <span className="text-[#f3d27a]">
+              💡 Khách doanh nghiệp: Anh/chị có thể chọn mức thuế VAT 8% hoặc 10% ở mục thanh toán bên dưới.
+            </span>
+            <div className="flex items-center gap-2 shrink-0">
+              <button
+                type="button"
+                onClick={() => setVatRate(8)}
+                className="px-2.5 py-1.5 rounded-lg border border-[#d4af37]/50 bg-[#0d1017] text-[#f3d27a] font-semibold hover:bg-[#d4af37]/20 whitespace-nowrap"
+              >
+                Chọn VAT 8%
+              </button>
+              <button
+                type="button"
+                onClick={() => setVatRate(10)}
+                className="px-2.5 py-1.5 rounded-lg border border-[#d4af37]/50 bg-[#0d1017] text-[#f3d27a] font-semibold hover:bg-[#d4af37]/20 whitespace-nowrap"
+              >
+                Chọn VAT 10%
+              </button>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Services Items Card */}
@@ -327,6 +355,76 @@ function InvoiceCreateForm() {
           >
             ＋ Thêm dòng dịch vụ
           </button>
+        </div>
+
+        {/* VAT Selector & Financial Breakdown */}
+        <div className="pt-4 mt-4 border-t border-gray-800 flex flex-col sm:flex-row justify-between items-stretch sm:items-end gap-4">
+          <div className="space-y-2">
+            <span className="block text-xs font-semibold text-gray-300">
+              Thuế GTGT (VAT) xuất phiếu công ty / khách hàng:
+            </span>
+            <div className="grid grid-cols-3 gap-2" role="group" aria-label="Chọn mức thuế VAT">
+              <button
+                type="button"
+                aria-pressed={vatRate === 0}
+                onClick={() => setVatRate(0)}
+                className={`min-h-[38px] px-2 py-2 rounded-lg border text-[11px] sm:text-xs font-semibold transition whitespace-nowrap ${
+                  vatRate === 0
+                    ? "border-[#d4af37] bg-[#d4af37]/15 text-[#f3d27a]"
+                    : "border-gray-800 bg-[#0d1017] text-gray-400 hover:text-white"
+                }`}
+              >
+                Không VAT
+              </button>
+              <button
+                type="button"
+                aria-pressed={vatRate === 8}
+                onClick={() => setVatRate(8)}
+                className={`min-h-[38px] px-2 py-2 rounded-lg border text-[11px] sm:text-xs font-semibold transition whitespace-nowrap ${
+                  vatRate === 8
+                    ? "border-[#d4af37] bg-[#d4af37]/20 text-[#f3d27a]"
+                    : "border-gray-800 bg-[#0d1017] text-gray-400 hover:text-white"
+                }`}
+              >
+                ✓ VAT 8%
+              </button>
+              <button
+                type="button"
+                aria-pressed={vatRate === 10}
+                onClick={() => setVatRate(10)}
+                className={`min-h-[38px] px-2 py-2 rounded-lg border text-[11px] sm:text-xs font-semibold transition whitespace-nowrap ${
+                  vatRate === 10
+                    ? "border-[#d4af37] bg-[#d4af37]/20 text-[#f3d27a]"
+                    : "border-gray-800 bg-[#0d1017] text-gray-400 hover:text-white"
+                }`}
+              >
+                ✓ VAT 10%
+              </button>
+            </div>
+          </div>
+
+          <div className="w-full sm:w-auto text-left sm:text-right space-y-1.5 text-xs">
+            <div className="flex items-center justify-between sm:justify-end gap-4 text-gray-400">
+              <span>Cộng tiền dịch vụ:</span>
+              <span className="font-mono tabular-nums text-white font-semibold">
+                {subtotalAmount.toLocaleString("vi-VN")}đ
+              </span>
+            </div>
+            {vatRate > 0 && (
+              <div className="flex items-center justify-between sm:justify-end gap-4 text-[#f3d27a]">
+                <span>Tiền thuế GTGT (VAT {vatRate}%):</span>
+                <span className="font-mono tabular-nums font-semibold">
+                  +{vatAmount.toLocaleString("vi-VN")}đ
+                </span>
+              </div>
+            )}
+            <div className="pt-2 mt-1.5 border-t border-gray-800 flex items-baseline justify-between sm:justify-end gap-4 text-sm font-bold text-white">
+              <span>TỔNG CỘNG THANH TOÁN:</span>
+              <span className="text-lg sm:text-xl font-mono tabular-nums text-emerald-400">
+                {totalAmount.toLocaleString("vi-VN")}đ
+              </span>
+            </div>
+          </div>
         </div>
       </div>
 

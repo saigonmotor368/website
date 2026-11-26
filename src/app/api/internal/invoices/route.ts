@@ -38,6 +38,7 @@ export async function POST(request: NextRequest) {
     case_id?: string;
     customer?: CustomerData;
     status?: "draft" | "issued";
+    vat_rate?: number;
     due_date?: string;
     notes?: string;
     items?: Array<{
@@ -93,7 +94,11 @@ export async function POST(request: NextRequest) {
     if (!body.customer?.name || !body.customer?.phone) {
       return NextResponse.json({ error: "Vui lòng nhập thông tin khách hàng" }, { status: 400 });
     }
-    targetCustomer = body.customer;
+    targetCustomer = await SupabaseEntities.saveCustomer({
+      ...body.customer,
+      id: undefined,
+      created_by: staff.user.id,
+    });
 
     if (!body.items || body.items.length === 0) {
       return NextResponse.json({ error: "Vui lòng nhập ít nhất 1 dòng dịch vụ" }, { status: 400 });
@@ -109,7 +114,10 @@ export async function POST(request: NextRequest) {
     }));
   }
 
-  const totalAmount = invoiceItems.reduce((sum, item) => sum + item.total_price, 0);
+  const vatRate = Number(body.vat_rate) === 8 ? 8 : Number(body.vat_rate) === 10 ? 10 : 0;
+  const subtotalAmount = invoiceItems.reduce((sum, item) => sum + item.total_price, 0);
+  const vatAmount = Math.round(subtotalAmount * (vatRate / 100));
+  const totalAmount = subtotalAmount + vatAmount;
   const invoiceNumber = generateInvoiceNumber();
 
   const invoiceRecord: InvoiceRecord = {
@@ -117,10 +125,14 @@ export async function POST(request: NextRequest) {
     invoice_number: invoiceNumber,
     case_id: body.case_id || "",
     case_number: targetCaseNumber,
+    customer_id: targetCustomer.id,
     customer: targetCustomer,
     status: body.status || "issued",
     issued_at: body.status === "issued" ? now : undefined,
     due_date: body.due_date,
+    subtotal_amount: subtotalAmount,
+    vat_rate: vatRate,
+    vat_amount: vatAmount,
     total_amount: totalAmount,
     paid_amount: 0,
     balance: totalAmount,

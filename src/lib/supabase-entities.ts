@@ -205,6 +205,9 @@ export interface InvoiceRecord {
   status: "draft" | "issued" | "cancelled";
   issued_at?: string;
   due_date?: string;
+  subtotal_amount?: number;
+  vat_rate?: number;
+  vat_amount?: number;
   total_amount: number;
   paid_amount: number;
   balance: number;
@@ -906,6 +909,11 @@ export const SupabaseEntities = {
     const customerId = inv.customer_id || inv.customer?.id || null;
 
     const firstPayment = inv.payments?.[0];
+    const baseNotes = (inv.notes || "").replace(/\s*\[VAT:(?:8|10)%\]\s*/g, " ").trim();
+    const storedNotes =
+      inv.vat_rate && (inv.vat_rate === 8 || inv.vat_rate === 10)
+        ? `${baseNotes ? `${baseNotes} ` : ""}[VAT:${inv.vat_rate}%]`
+        : baseNotes || null;
 
     // Execute via Supabase RPC Transaction (atomic, no fallback)
     const { data: rpcRes, error: rpcErr } = await admin.rpc("rpc_create_invoice", {
@@ -918,7 +926,7 @@ export const SupabaseEntities = {
         issued_at: inv.issued_at || (inv.status === "issued" ? now : null),
         due_date: inv.due_date || null,
         total_amount: Math.round(Number(inv.total_amount) || 0),
-        notes: inv.notes || null,
+        notes: storedNotes,
         created_by: actorId,
       },
       p_customer: null,
@@ -1317,6 +1325,27 @@ export const SupabaseEntities = {
     const paidAmount = payments.reduce((sum, p) => sum + p.amount, 0);
     const balance = Math.max(0, totalAmount - paidAmount);
 
+    const rawNotes = (r.notes as string) || "";
+    const vatMatch = rawNotes.match(/\[VAT:(8|10)%\]/);
+    const parsedVatRate = vatMatch ? Number(vatMatch[1]) : 0;
+    const cleanNotes = rawNotes.replace(/\s*\[VAT:(?:8|10)%\]\s*/g, " ").trim() || undefined;
+    const itemsSum = items.reduce((sum, item) => sum + item.total_price, 0);
+    let subtotalAmount = itemsSum > 0 ? itemsSum : totalAmount;
+    let vatAmount = 0;
+
+    if (parsedVatRate > 0) {
+      if (itemsSum > 0) {
+        subtotalAmount = itemsSum;
+        vatAmount =
+          totalAmount > itemsSum
+            ? totalAmount - itemsSum
+            : Math.round(itemsSum * (parsedVatRate / 100));
+      } else {
+        subtotalAmount = Math.round(totalAmount / (1 + parsedVatRate / 100));
+        vatAmount = Math.max(0, totalAmount - subtotalAmount);
+      }
+    }
+
     return {
       id: r.id as string,
       invoice_number: (r.invoice_number as string) || "",
@@ -1335,10 +1364,13 @@ export const SupabaseEntities = {
       status: (r.status as "draft" | "issued" | "cancelled") || "draft",
       issued_at: (r.issued_at as string) || undefined,
       due_date: (r.due_date as string) || undefined,
+      subtotal_amount: subtotalAmount,
+      vat_rate: parsedVatRate,
+      vat_amount: vatAmount,
       total_amount: totalAmount,
       paid_amount: paidAmount,
       balance,
-      notes: (r.notes as string) || undefined,
+      notes: cleanNotes,
       items,
       payments,
       created_by: (r.created_by as string) || undefined,
