@@ -3,6 +3,10 @@
 import { Suspense, useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
+import {
+  CUSTOM_DOCUMENT_OPTION,
+  STANDARD_DOCUMENT_CATALOG,
+} from "../../lib/document-catalog";
 
 interface CatalogItem {
   id: string;
@@ -102,6 +106,9 @@ function CaseCreateForm() {
   const [notes, setNotes] = useState("");
   const [catalog, setCatalog] = useState<CatalogItem[]>([]);
   const [selectedCatalogId, setSelectedCatalogId] = useState("");
+  const [selectedDocCatalogId, setSelectedDocCatalogId] = useState("");
+  const [customDocName, setCustomDocName] = useState("");
+  const [customDocNote, setCustomDocNote] = useState("");
 
   useEffect(() => {
     fetch("/api/internal/service-catalog")
@@ -149,6 +156,16 @@ function CaseCreateForm() {
                   name: s.name,
                   price: s.price,
                   quantity: s.quantity || 1,
+                }))
+              );
+            }
+            if (Array.isArray(qData.documents) && qData.documents.length > 0) {
+              setDocuments(
+                qData.documents.map((d: { id?: string; name: string; note?: string }, idx: number) => ({
+                  id: d.id || `doc_q_${idx}_${Date.now()}`,
+                  name: d.name,
+                  status: "required" as const,
+                  note: d.note || "",
                 }))
               );
             }
@@ -208,6 +225,80 @@ function CaseCreateForm() {
     setServices((prev) => prev.filter((_, i) => i !== index));
   }
 
+  function handleAddDocumentFromCatalog() {
+    if (!selectedDocCatalogId) return;
+    setError("");
+    if (selectedDocCatalogId === CUSTOM_DOCUMENT_OPTION) {
+      const trimmed = customDocName.trim();
+      if (!trimmed) {
+        setError("Vui lòng nhập tên giấy tờ trước khi thêm.");
+        return;
+      }
+      setDocuments((prev) => [
+        ...prev,
+        {
+          id: `doc_${Date.now()}`,
+          name: trimmed,
+          status: "required",
+          note: customDocNote.trim() || undefined,
+        },
+      ]);
+      setCustomDocName("");
+      setCustomDocNote("");
+      setSelectedDocCatalogId("");
+      return;
+    }
+
+    const item = STANDARD_DOCUMENT_CATALOG.find((c) => c.id === selectedDocCatalogId);
+    if (!item) return;
+
+    setDocuments((prev) => [
+      ...prev,
+      {
+        id: `doc_${Date.now()}`,
+        name: item.name,
+        status: "required",
+        note: item.defaultNote,
+      },
+    ]);
+    setSelectedDocCatalogId("");
+  }
+
+  function handleAddCustomDocumentRow() {
+    setDocuments((prev) => [
+      ...prev,
+      {
+        id: `doc_${Date.now()}`,
+        name: "",
+        status: "required",
+        note: "",
+      },
+    ]);
+  }
+
+  function handleUpdateDocument(
+    index: number,
+    field: "name" | "note" | "status",
+    val: string
+  ) {
+    setDocuments((prev) => {
+      const copy = [...prev];
+      if (field === "status") {
+        copy[index] = {
+          ...copy[index],
+          status: val as "required" | "received" | "missing",
+        };
+      } else {
+        copy[index] = { ...copy[index], [field]: val };
+      }
+      return copy;
+    });
+  }
+
+  function handleRemoveDocument(index: number) {
+    setDocuments((prev) => prev.filter((_, i) => i !== index));
+  }
+
   const subtotal = services.reduce((sum, s) => sum + s.price * s.quantity, 0);
 
   async function handleSubmit(e: React.FormEvent) {
@@ -255,11 +346,13 @@ function CaseCreateForm() {
                 },
               ],
         services,
-        documents: documents.map((d) => ({
-          name: d.name,
-          status: d.status,
-          note: d.note,
-        })),
+        documents: documents
+          .filter((d) => d.name.trim())
+          .map((d) => ({
+            name: d.name.trim(),
+            status: d.status,
+            note: d.note?.trim() || undefined,
+          })),
         notes: notes.trim() || undefined,
       };
 
@@ -686,40 +779,172 @@ function CaseCreateForm() {
 
           {/* Section: Document Checklist */}
           <div className="quanly-card">
-            <h2 className="text-sm font-bold text-white flex items-center gap-2 mb-2">
-              <span>📑</span> Checklist Giấy tờ tiếp nhận
-            </h2>
+            <div className="quanly-section-head mb-2">
+              <h2 className="text-sm font-bold text-white flex items-center gap-2">
+                <span>📑</span> Checklist Giấy tờ tiếp nhận
+              </h2>
+              <span className="text-[11px] font-mono text-amber-300 shrink-0">
+                {documents.length} mục
+              </span>
+            </div>
             <p className="text-[11px] text-gray-400 mb-3">
-              Đánh dấu các giấy tờ đã nhận từ khách hàng tại thời điểm bàn giao
+              Chọn từ danh mục chuẩn, chọn &ldquo;Nhập tay...&rdquo; trong danh sách hoặc bấm thêm dòng tự nhập
             </p>
 
-            <div className="space-y-2">
+            {/* Standard Document Catalog Selector */}
+            <div className="flex flex-col sm:flex-row gap-2 mb-3">
+              <select
+                aria-label="Chọn giấy tờ từ danh mục chuẩn"
+                value={selectedDocCatalogId}
+                onChange={(e) => setSelectedDocCatalogId(e.target.value)}
+                className="w-full sm:flex-1 min-w-0 bg-[#0d1017] border border-gray-800 rounded-lg px-3 py-2 text-xs text-gray-200 focus:outline-none focus:border-[#d4af37]"
+              >
+                <option value="">-- Chọn giấy tờ từ danh mục chuẩn --</option>
+                {STANDARD_DOCUMENT_CATALOG.map((item) => {
+                  const exists = documents.some(
+                    (d) => d.name.trim().toLowerCase() === item.name.toLowerCase()
+                  );
+                  return (
+                    <option key={item.id} value={item.id}>
+                      {exists ? "✓ " : ""}
+                      {item.name}
+                    </option>
+                  );
+                })}
+                <option value={CUSTOM_DOCUMENT_OPTION}>
+                  ✍️ Nhập tay giấy tờ khác (ngoài danh mục)...
+                </option>
+              </select>
+              <button
+                type="button"
+                onClick={handleAddDocumentFromCatalog}
+                disabled={!selectedDocCatalogId}
+                className="quanly-btn-secondary w-full sm:w-auto shrink-0 !py-2 !px-3.5 text-xs disabled:opacity-45"
+              >
+                + Thêm giấy tờ
+              </button>
+            </div>
+
+            {/* Inline Custom Input when selecting custom option from dropdown */}
+            {selectedDocCatalogId === CUSTOM_DOCUMENT_OPTION && (
+              <div className="mb-3 p-3 rounded-xl border border-[#d4af37]/35 bg-[#d4af37]/5 space-y-2.5">
+                <div className="flex items-center justify-between gap-2">
+                  <span className="text-[11px] font-bold text-[#e8c766]">
+                    Nhập tay giấy tờ ngoài danh mục
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setSelectedDocCatalogId("");
+                      setCustomDocName("");
+                      setCustomDocNote("");
+                    }}
+                    className="text-[11px] text-gray-400 hover:text-white"
+                  >
+                    Đóng
+                  </button>
+                </div>
+                <input
+                  type="text"
+                  autoFocus
+                  value={customDocName}
+                  onChange={(e) => setCustomDocName(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      e.preventDefault();
+                      handleAddDocumentFromCatalog();
+                    }
+                  }}
+                  placeholder="Tên giấy tờ cần thu (VD: Giấy ủy quyền viết tay...)"
+                  className="w-full bg-[#0d1017] border border-gray-700 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-[#d4af37]"
+                />
+                <div className="flex flex-col sm:flex-row gap-2">
+                  <input
+                    type="text"
+                    value={customDocNote}
+                    onChange={(e) => setCustomDocNote(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") {
+                        e.preventDefault();
+                        handleAddDocumentFromCatalog();
+                      }
+                    }}
+                    placeholder="Ghi chú (bản gốc / công chứng...)"
+                    className="w-full sm:flex-1 bg-[#0d1017] border border-gray-800 rounded-lg px-3 py-2 text-xs text-gray-200 focus:outline-none focus:border-[#d4af37]"
+                  />
+                  <button
+                    type="button"
+                    onClick={handleAddDocumentFromCatalog}
+                    className="quanly-btn-gold w-full sm:w-auto shrink-0 !py-2 !px-3.5 text-xs"
+                  >
+                    ✓ Thêm vào danh sách
+                  </button>
+                </div>
+              </div>
+            )}
+
+            <div className="space-y-2.5">
               {documents.map((d, idx) => (
                 <div
                   key={d.id}
-                  className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 p-2.5 bg-black/40 border border-gray-800 rounded-lg"
+                  className="p-2.5 bg-black/40 border border-gray-800 rounded-xl space-y-2"
                 >
-                  <span className="text-xs text-gray-200 min-w-0">{d.name}</span>
-                  <select
-                    value={d.status}
-                    onChange={(e) => {
-                      const copy = [...documents];
-                      copy[idx].status = e.target.value as "required" | "received" | "missing";
-                      setDocuments(copy);
-                    }}
-                    className={`w-full sm:w-auto shrink-0 text-[11px] font-medium px-2.5 py-1.5 rounded-lg border focus:outline-none ${
-                      d.status === "received"
-                        ? "bg-emerald-950/40 text-emerald-300 border-emerald-800/40"
-                        : "bg-gray-900 text-gray-300 border-gray-800"
-                    }`}
-                  >
-                    <option value="required">Cần thu</option>
-                    <option value="received">Đã nhận</option>
-                    <option value="missing">Thiếu/Bổ sung sau</option>
-                  </select>
+                  <div className="flex items-center gap-2 min-w-0">
+                    <span className="text-[11px] font-mono text-gray-500 w-4 shrink-0">
+                      {idx + 1}.
+                    </span>
+                    <input
+                      type="text"
+                      value={d.name}
+                      onChange={(e) => handleUpdateDocument(idx, "name", e.target.value)}
+                      placeholder="Nhập tên giấy tờ cần thu..."
+                      className="flex-1 min-w-0 bg-transparent text-xs font-semibold text-gray-100 border-b border-transparent focus:border-[#d4af37] focus:outline-none pb-0.5"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => handleRemoveDocument(idx)}
+                      aria-label="Xóa giấy tờ"
+                      className="text-gray-500 hover:text-red-400 text-xs px-1.5 py-1 shrink-0"
+                    >
+                      ✕
+                    </button>
+                  </div>
+
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pl-6">
+                    <input
+                      type="text"
+                      value={d.note || ""}
+                      onChange={(e) => handleUpdateDocument(idx, "note", e.target.value)}
+                      placeholder="Ghi chú (bản chính / công chứng...)"
+                      className="flex-1 min-w-0 bg-transparent text-[11px] text-gray-400 border-b border-gray-800/80 focus:border-gray-600 focus:outline-none pb-0.5"
+                    />
+                    <select
+                      value={d.status}
+                      onChange={(e) => handleUpdateDocument(idx, "status", e.target.value)}
+                      className={`w-full sm:w-auto shrink-0 text-[11px] font-medium px-2.5 py-1.5 rounded-lg border focus:outline-none ${
+                        d.status === "received"
+                          ? "bg-emerald-950/40 text-emerald-300 border-emerald-800/40"
+                          : d.status === "missing"
+                            ? "bg-rose-950/40 text-rose-300 border-rose-800/40"
+                            : "bg-gray-900 text-gray-300 border-gray-800"
+                      }`}
+                    >
+                      <option value="required">Cần thu</option>
+                      <option value="received">Đã nhận</option>
+                      <option value="missing">Thiếu/Bổ sung sau</option>
+                    </select>
+                  </div>
                 </div>
               ))}
             </div>
+
+            <button
+              type="button"
+              onClick={handleAddCustomDocumentRow}
+              className="mt-3 w-full py-2.5 border border-dashed border-gray-800 rounded-lg text-xs text-gray-400 hover:text-white hover:border-gray-600 transition"
+            >
+              + Thêm dòng nhập tay
+            </button>
           </div>
 
           {/* Section: Notes */}

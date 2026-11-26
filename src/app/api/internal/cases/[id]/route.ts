@@ -35,7 +35,7 @@ export async function PATCH(
 
   const { id } = await params;
   let body: {
-    action?: "update_status" | "adjust_items" | "update_documents" | "toggle_lock" | "add_cost" | "approve_cost" | "update_vehicle";
+    action?: "update_status" | "adjust_items" | "update_documents" | "add_document" | "delete_document" | "toggle_lock" | "add_cost" | "approve_cost" | "update_vehicle";
     status?: "new" | "processing" | "completed";
     notes?: string;
     items?: Array<{
@@ -49,6 +49,12 @@ export async function PATCH(
       status: "required" | "received" | "missing";
       note?: string;
     }>;
+    document?: {
+      document_name: string;
+      status?: "required" | "received" | "missing";
+      note?: string;
+    };
+    document_id?: string;
     cost?: {
       cost_group: string;
       description: string;
@@ -201,6 +207,65 @@ export async function PATCH(
             details: `Cập nhật giấy tờ "${doc.document_name}": ${docUpdate.status}`,
           });
         }
+      }
+    }
+
+    // 3b. Add Document to checklist
+    else if (body.action === "add_document") {
+      const docName = body.document?.document_name?.trim();
+      if (!docName) {
+        return NextResponse.json({ error: "Vui lòng nhập tên giấy tờ cần thu" }, { status: 400 });
+      }
+      const docStatus = body.document?.status || "required";
+      const docNote = body.document?.note?.trim() || null;
+      const verifiedAt = docStatus === "received" ? now : null;
+      const verifiedBy = docStatus === "received" ? staff.user.id : null;
+
+      await withRetry(async () => {
+        const { error } = await admin.from("case_documents").insert({
+          id: crypto.randomUUID(),
+          case_id: id,
+          document_name: docName,
+          status: docStatus,
+          note: docNote,
+          verified_at: verifiedAt,
+          verified_by: verifiedBy,
+        });
+        if (error) throw error;
+      });
+
+      await SupabaseEntities.logAudit({
+        action: "add_document",
+        entityType: "case",
+        entityId: id,
+        actorId: staff.user.id,
+        actorName,
+        details: `Thêm giấy tờ vào checklist: "${docName}" (${docStatus})`,
+      });
+    }
+
+    // 3c. Delete Document from checklist
+    else if (body.action === "delete_document" && body.document_id) {
+      const targetDoc = existing.documents.find((d) => d.id === body.document_id);
+
+      await withRetry(async () => {
+        const { error } = await admin
+          .from("case_documents")
+          .delete()
+          .eq("id", body.document_id!)
+          .eq("case_id", id);
+        if (error) throw error;
+      });
+
+      if (targetDoc) {
+        await SupabaseEntities.logAudit({
+          action: "delete_document",
+          entityType: "case",
+          entityId: id,
+          actorId: staff.user.id,
+          actorName,
+          details: `Xóa giấy tờ "${targetDoc.document_name}" khỏi checklist`,
+        });
       }
     }
 

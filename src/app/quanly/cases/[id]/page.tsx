@@ -2,6 +2,10 @@
 
 import { use, useEffect, useState } from "react";
 import Link from "next/link";
+import {
+  CUSTOM_DOCUMENT_OPTION,
+  STANDARD_DOCUMENT_CATALOG,
+} from "../../lib/document-catalog";
 
 interface CaseDetail {
   id: string;
@@ -133,6 +137,13 @@ export default function CaseDetailPage({ params }: { params: Promise<{ id: strin
   });
   const [ocrSaving, setOcrSaving] = useState(false);
 
+  // State for Document Checklist catalog & custom input
+  const [selectedDocCatalogId, setSelectedDocCatalogId] = useState("");
+  const [customDocName, setCustomDocName] = useState("");
+  const [customDocNote, setCustomDocNote] = useState("");
+  const [customDocStatus, setCustomDocStatus] = useState<"required" | "received" | "missing">("required");
+  const [docSaving, setDocSaving] = useState(false);
+
   useEffect(() => {
     let ignore = false;
     async function loadCaseData() {
@@ -203,6 +214,86 @@ export default function CaseDetailPage({ params }: { params: Promise<{ id: strin
       await reloadCase();
     } catch {
       alert("Lỗi kết nối");
+    }
+  }
+
+  async function handleAddDocument(e?: React.FormEvent) {
+    e?.preventDefault();
+    if (!caseData || caseData.is_locked || !selectedDocCatalogId) return;
+
+    let docName = "";
+    let docNote = "";
+    let docStatus: "required" | "received" | "missing" = "required";
+
+    if (selectedDocCatalogId === CUSTOM_DOCUMENT_OPTION) {
+      docName = customDocName.trim();
+      docNote = customDocNote.trim();
+      docStatus = customDocStatus;
+      if (!docName) {
+        alert("Vui lòng nhập tên giấy tờ cần thu.");
+        return;
+      }
+    } else {
+      const item = STANDARD_DOCUMENT_CATALOG.find((c) => c.id === selectedDocCatalogId);
+      if (!item) return;
+      docName = item.name;
+      docNote = item.defaultNote;
+    }
+
+    setDocSaving(true);
+    try {
+      const res = await fetch(`/api/internal/cases/${id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          action: "add_document",
+          document: {
+            document_name: docName,
+            status: docStatus,
+            note: docNote || undefined,
+          },
+        }),
+      });
+      if (!res.ok) {
+        const err = await res.json().catch(() => null);
+        alert(err?.error || "Không thể thêm giấy tờ");
+        return;
+      }
+      setCustomDocName("");
+      setCustomDocNote("");
+      setCustomDocStatus("required");
+      setSelectedDocCatalogId("");
+      reloadCase();
+    } catch {
+      alert("Lỗi kết nối");
+    } finally {
+      setDocSaving(false);
+    }
+  }
+
+  async function handleDeleteDocument(docId: string, docName: string) {
+    if (!caseData || caseData.is_locked) return;
+    if (!window.confirm(`Xóa "${docName}" khỏi checklist giấy tờ?`)) return;
+    setDocSaving(true);
+    try {
+      const res = await fetch(`/api/internal/cases/${id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          action: "delete_document",
+          document_id: docId,
+        }),
+      });
+      if (!res.ok) {
+        const err = await res.json().catch(() => null);
+        alert(err?.error || "Không thể xóa giấy tờ");
+        return;
+      }
+      reloadCase();
+    } catch {
+      alert("Lỗi kết nối");
+    } finally {
+      setDocSaving(false);
     }
   }
 
@@ -894,84 +985,219 @@ export default function CaseDetailPage({ params }: { params: Promise<{ id: strin
       {/* TAB 2: Documents Checklist */}
       {activeTab === "documents" && (
         <div className="space-y-4">
-          <div className="quanly-card">
-            <div className="mb-4">
-              <h3 className="text-sm font-bold text-white">📑 Danh mục Giấy tờ bàn giao</h3>
-              <p className="text-[11px] text-gray-400 mt-0.5">
-                Chọn trạng thái nhanh để xác nhận bàn giao bản gốc
-              </p>
+          <div className="quanly-card space-y-4">
+            <div className="quanly-section-head">
+              <div>
+                <h3 className="text-sm font-bold text-white">📑 Danh mục Giấy tờ bàn giao</h3>
+                <p className="text-[11px] text-gray-400 mt-0.5">
+                  Chọn trạng thái nhanh hoặc thêm giấy tờ từ danh mục chuẩn / nhập tay
+                </p>
+              </div>
             </div>
 
-            <div className="space-y-3">
-              {caseData.documents.map((doc) => (
-                <div
-                  key={doc.id}
-                  className="p-3.5 bg-black/40 border border-gray-800 rounded-xl flex flex-col sm:flex-row sm:items-center justify-between gap-3"
-                >
-                  <div className="min-w-0">
-                    <div className="font-semibold text-white text-xs flex flex-wrap items-center gap-2">
-                      <span>{doc.document_name}</span>
-                      {doc.status === "received" && (
-                        <span className="text-[10px] px-2 py-0.5 rounded bg-emerald-950/60 text-emerald-300 border border-emerald-800/40 whitespace-nowrap">
-                          ✓ Đã nhận
-                        </span>
-                      )}
-                      {doc.status === "missing" && (
-                        <span className="text-[10px] px-2 py-0.5 rounded bg-rose-950/60 text-rose-300 border border-rose-800/40 whitespace-nowrap">
-                          ⚠️ Thiếu/Bổ sung sau
-                        </span>
-                      )}
-                    </div>
-                    {doc.note && (
-                      <div className="text-[11px] text-gray-400 mt-1 italic">Ghi chú: {doc.note}</div>
-                    )}
-                    {doc.verified_by && (
-                      <div className="text-[10px] text-gray-500 mt-0.5">
-                        Xác nhận bởi {doc.verified_by} lúc {formatDate(doc.verified_at)}
-                      </div>
-                    )}
-                  </div>
-
-                  <div className="grid grid-cols-3 sm:flex items-center gap-1.5 w-full sm:w-auto shrink-0">
+            {/* Catalog Dropdown + Manual Add Controls */}
+            {!caseData.is_locked && (
+              <div className="space-y-3 border-y border-white/5 py-3">
+                <div className="flex flex-col sm:flex-row gap-2">
+                  <select
+                    aria-label="Chọn giấy tờ cần thêm vào hồ sơ"
+                    value={selectedDocCatalogId}
+                    onChange={(e) => setSelectedDocCatalogId(e.target.value)}
+                    disabled={docSaving}
+                    className="w-full sm:flex-1 min-w-0 bg-[#0d1017] border border-gray-800 rounded-lg px-3 py-2 text-xs text-gray-200 focus:outline-none focus:border-[#d4af37]"
+                  >
+                    <option value="">-- Chọn giấy tờ từ danh mục chuẩn --</option>
+                    {STANDARD_DOCUMENT_CATALOG.map((item) => {
+                      const exists = caseData.documents.some(
+                        (d) => d.document_name.trim().toLowerCase() === item.name.toLowerCase()
+                      );
+                      return (
+                        <option key={item.id} value={item.id}>
+                          {exists ? "✓ " : ""}
+                          {item.name}
+                        </option>
+                      );
+                    })}
+                    <option value={CUSTOM_DOCUMENT_OPTION}>
+                      ✍️ Nhập tay giấy tờ khác (ngoài danh mục)...
+                    </option>
+                  </select>
+                  <div className="quanly-action-bar">
                     <button
                       type="button"
-                      disabled={caseData.is_locked}
-                      onClick={() => handleDocStatusChange(doc.id, "received")}
-                      className={`min-h-[38px] sm:min-h-0 px-2.5 py-1.5 rounded-lg text-xs transition ${
-                        doc.status === "received"
-                          ? "bg-emerald-600 text-white font-bold"
-                          : "bg-gray-800 text-gray-300 hover:text-white"
-                      }`}
+                      disabled={
+                        docSaving ||
+                        !selectedDocCatalogId ||
+                        selectedDocCatalogId === CUSTOM_DOCUMENT_OPTION
+                      }
+                      onClick={() => void handleAddDocument()}
+                      className="quanly-btn-secondary !py-2 !px-3.5 text-xs disabled:opacity-45"
                     >
-                      Đã nhận
+                      + Thêm giấy tờ
                     </button>
                     <button
                       type="button"
-                      disabled={caseData.is_locked}
-                      onClick={() => handleDocStatusChange(doc.id, "missing")}
-                      className={`min-h-[38px] sm:min-h-0 px-2.5 py-1.5 rounded-lg text-xs transition ${
-                        doc.status === "missing"
-                          ? "bg-rose-600 text-white font-bold"
-                          : "bg-gray-800 text-gray-300 hover:text-white"
-                      }`}
+                      disabled={docSaving}
+                      onClick={() => setSelectedDocCatalogId(CUSTOM_DOCUMENT_OPTION)}
+                      className="quanly-btn-secondary !py-2 !px-3.5 text-xs disabled:opacity-45"
                     >
-                      Bổ sung sau
-                    </button>
-                    <button
-                      type="button"
-                      disabled={caseData.is_locked}
-                      onClick={() => handleDocStatusChange(doc.id, "required")}
-                      className={`min-h-[38px] sm:min-h-0 px-2.5 py-1.5 rounded-lg text-xs transition ${
-                        doc.status === "required"
-                          ? "bg-amber-600 text-white font-bold"
-                          : "bg-gray-800 text-gray-300 hover:text-white"
-                      }`}
-                    >
-                      Cần thu
+                      + Dòng nhập tay
                     </button>
                   </div>
                 </div>
-              ))}
+
+                {selectedDocCatalogId === CUSTOM_DOCUMENT_OPTION && (
+                  <form
+                    onSubmit={handleAddDocument}
+                    className="rounded-xl border border-[#d4af37]/35 bg-[#d4af37]/5 p-3 space-y-2.5"
+                  >
+                    <div className="text-[11px] font-bold text-[#e8c766]">
+                      Thêm giấy tờ nhập tay (ngoài danh mục)
+                    </div>
+                    <input
+                      id="case-custom-doc-name"
+                      type="text"
+                      autoFocus
+                      required
+                      value={customDocName}
+                      onChange={(e) => setCustomDocName(e.target.value)}
+                      placeholder="Nhập tên giấy tờ cần thu..."
+                      className="w-full bg-[#0d1017] border border-gray-700 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-[#d4af37]"
+                    />
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                      <input
+                        type="text"
+                        value={customDocNote}
+                        onChange={(e) => setCustomDocNote(e.target.value)}
+                        placeholder="Ghi chú (bản gốc / công chứng...)"
+                        className="w-full bg-[#0d1017] border border-gray-800 rounded-lg px-3 py-2 text-xs text-gray-200 focus:outline-none focus:border-[#d4af37]"
+                      />
+                      <select
+                        value={customDocStatus}
+                        onChange={(e) =>
+                          setCustomDocStatus(e.target.value as "required" | "received" | "missing")
+                        }
+                        className="w-full bg-[#0d1017] border border-gray-800 rounded-lg px-3 py-2 text-xs text-gray-200 focus:outline-none focus:border-[#d4af37]"
+                      >
+                        <option value="required">Trạng thái: Cần thu</option>
+                        <option value="received">Trạng thái: Đã nhận</option>
+                        <option value="missing">Trạng thái: Bổ sung sau</option>
+                      </select>
+                    </div>
+                    <div className="quanly-action-bar pt-1">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setSelectedDocCatalogId("");
+                          setCustomDocName("");
+                          setCustomDocNote("");
+                        }}
+                        className="quanly-btn-secondary !py-2 text-xs"
+                      >
+                        Hủy
+                      </button>
+                      <button
+                        type="submit"
+                        disabled={docSaving}
+                        className="quanly-btn-gold !py-2 text-xs"
+                      >
+                        {docSaving ? "Đang lưu..." : "✓ Lưu giấy tờ"}
+                      </button>
+                    </div>
+                  </form>
+                )}
+              </div>
+            )}
+
+            <div className="space-y-3">
+              {caseData.documents.length === 0 ? (
+                <div className="text-center py-6 text-xs text-gray-500">
+                  Chưa có giấy tờ nào trong checklist. Hãy chọn từ danh mục hoặc nhập tay ở trên.
+                </div>
+              ) : (
+                caseData.documents.map((doc) => (
+                  <div
+                    key={doc.id}
+                    className="p-3.5 bg-black/40 border border-gray-800 rounded-xl flex flex-col sm:flex-row sm:items-center justify-between gap-3"
+                  >
+                    <div className="min-w-0 flex-1">
+                      <div className="font-semibold text-white text-xs flex flex-wrap items-center gap-2">
+                        <span>{doc.document_name}</span>
+                        {doc.status === "received" && (
+                          <span className="text-[10px] px-2 py-0.5 rounded bg-emerald-950/60 text-emerald-300 border border-emerald-800/40 whitespace-nowrap">
+                            ✓ Đã nhận
+                          </span>
+                        )}
+                        {doc.status === "missing" && (
+                          <span className="text-[10px] px-2 py-0.5 rounded bg-rose-950/60 text-rose-300 border border-rose-800/40 whitespace-nowrap">
+                            ⚠️ Thiếu/Bổ sung sau
+                          </span>
+                        )}
+                      </div>
+                      {doc.note && (
+                        <div className="text-[11px] text-gray-400 mt-1 italic">Ghi chú: {doc.note}</div>
+                      )}
+                      {doc.verified_by && (
+                        <div className="text-[10px] text-gray-500 mt-0.5">
+                          Xác nhận bởi {doc.verified_by} lúc {formatDate(doc.verified_at)}
+                        </div>
+                      )}
+                    </div>
+
+                    <div className="flex items-center gap-2 w-full sm:w-auto shrink-0">
+                      <div className="grid grid-cols-3 sm:flex items-center gap-1.5 flex-1 sm:flex-initial">
+                        <button
+                          type="button"
+                          disabled={caseData.is_locked || docSaving}
+                          onClick={() => handleDocStatusChange(doc.id, "received")}
+                          className={`min-h-[38px] sm:min-h-0 px-2.5 py-1.5 rounded-lg text-xs transition ${
+                            doc.status === "received"
+                              ? "bg-emerald-600 text-white font-bold"
+                              : "bg-gray-800 text-gray-300 hover:text-white"
+                          }`}
+                        >
+                          Đã nhận
+                        </button>
+                        <button
+                          type="button"
+                          disabled={caseData.is_locked || docSaving}
+                          onClick={() => handleDocStatusChange(doc.id, "missing")}
+                          className={`min-h-[38px] sm:min-h-0 px-2.5 py-1.5 rounded-lg text-xs transition ${
+                            doc.status === "missing"
+                              ? "bg-rose-600 text-white font-bold"
+                              : "bg-gray-800 text-gray-300 hover:text-white"
+                          }`}
+                        >
+                          Bổ sung sau
+                        </button>
+                        <button
+                          type="button"
+                          disabled={caseData.is_locked || docSaving}
+                          onClick={() => handleDocStatusChange(doc.id, "required")}
+                          className={`min-h-[38px] sm:min-h-0 px-2.5 py-1.5 rounded-lg text-xs transition ${
+                            doc.status === "required"
+                              ? "bg-amber-600 text-white font-bold"
+                              : "bg-gray-800 text-gray-300 hover:text-white"
+                          }`}
+                        >
+                          Cần thu
+                        </button>
+                      </div>
+                      {!caseData.is_locked && (
+                        <button
+                          type="button"
+                          disabled={docSaving}
+                          onClick={() => void handleDeleteDocument(doc.id, doc.document_name)}
+                          aria-label={`Xóa ${doc.document_name}`}
+                          className="min-w-[36px] min-h-[36px] sm:min-w-[30px] sm:min-h-[30px] grid place-items-center rounded-lg border border-gray-800 bg-gray-900/70 text-gray-400 hover:text-rose-400 hover:border-rose-800/60 shrink-0 text-xs"
+                        >
+                          ✕
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                ))
+              )}
             </div>
           </div>
         </div>

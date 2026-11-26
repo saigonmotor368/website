@@ -5,6 +5,13 @@ import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import ManagementSidebar from "./ManagementSidebar";
 import ManagementHeader from "./ManagementHeader";
+import {
+  IconCases,
+  IconDashboard,
+  IconInvoices,
+  IconMenu,
+  IconQuotes,
+} from "./QuanlyIcons";
 
 export default function ManagementShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -67,28 +74,28 @@ export default function ManagementShell({ children }: { children: React.ReactNod
           href="/quanly"
           className={pathname === "/quanly" ? "quanly-mobile-nav-item is-active" : "quanly-mobile-nav-item"}
         >
-          <span className="text-base leading-none" aria-hidden="true">📊</span>
+          <IconDashboard className="w-[18px] h-[18px] shrink-0" />
           <span>Tổng quan</span>
         </Link>
         <Link
           href="/quanly/quotes"
           className={pathname?.startsWith("/quanly/quotes") ? "quanly-mobile-nav-item is-active" : "quanly-mobile-nav-item"}
         >
-          <span className="text-base leading-none" aria-hidden="true">📝</span>
+          <IconQuotes className="w-[18px] h-[18px] shrink-0" />
           <span>Báo giá</span>
         </Link>
         <Link
           href="/quanly/cases"
           className={pathname?.startsWith("/quanly/cases") ? "quanly-mobile-nav-item is-active" : "quanly-mobile-nav-item"}
         >
-          <span className="text-base leading-none" aria-hidden="true">📂</span>
+          <IconCases className="w-[18px] h-[18px] shrink-0" />
           <span>Hồ sơ</span>
         </Link>
         <Link
           href="/quanly/invoices"
           className={pathname?.startsWith("/quanly/invoices") ? "quanly-mobile-nav-item is-active" : "quanly-mobile-nav-item"}
         >
-          <span className="text-base leading-none" aria-hidden="true">🧾</span>
+          <IconInvoices className="w-[18px] h-[18px] shrink-0" />
           <span>Phiếu thu</span>
         </Link>
         <button
@@ -97,7 +104,7 @@ export default function ManagementShell({ children }: { children: React.ReactNod
           aria-expanded={sidebarOpen}
           className={sidebarOpen || isMenuRouteActive ? "quanly-mobile-nav-item is-active" : "quanly-mobile-nav-item"}
         >
-          <span className="text-base leading-none" aria-hidden="true">☰</span>
+          <IconMenu className="w-[18px] h-[18px] shrink-0" />
           <span>Mở rộng</span>
         </button>
       </nav>

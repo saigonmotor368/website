@@ -1,7 +1,7 @@
 {
   "id": "/quanly",
-  "name": "Saigon Motor - Quản lý hồ sơ",
-  "short_name": "SGM Quản lý",
+  "name": "Saigon Motor",
+  "short_name": "Saigon Motor",
   "description": "Quản lý báo giá, hồ sơ, khách hàng và doanh thu của Saigon Motor.",
   "lang": "vi-VN",
   "start_url": "/quanly",
@@ -10,7 +10,7 @@
   "display_override": ["standalone"],
   "orientation": "portrait-primary",
   "background_color": "#0b0e14",
-  "theme_color": "#0b3132",
+  "theme_color": "#0b0e14",
   "icons": [
     {
       "src": "/icon-192.png",

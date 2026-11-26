@@ -3,6 +3,20 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import Image from "next/image";
+import type { ComponentType } from "react";
+import {
+  IconCases,
+  IconClose,
+  IconCosts,
+  IconCustomers,
+  IconDashboard,
+  IconGlobe,
+  IconInvoices,
+  IconLeads,
+  IconQuotes,
+  IconServices,
+  IconSettings,
+} from "./QuanlyIcons";
 
 interface SidebarProps {
   open: boolean;
@@ -10,16 +24,21 @@ interface SidebarProps {
   userRole?: string | null;
 }
 
-const navItems = [
-  { href: "/quanly", label: "Tổng quan", icon: "📊" },
-  { href: "/quanly/quotes", label: "Báo giá dịch vụ", icon: "📝" },
-  { href: "/quanly/cases", label: "Hồ sơ thực hiện", icon: "📂" },
-  { href: "/quanly/customers", label: "Khách hàng", icon: "👥" },
-  { href: "/quanly/invoices", label: "Phiếu thanh toán", icon: "🧾" },
-  { href: "/quanly/costs", label: "Chi phí & Lợi nhuận", icon: "💰" },
-  { href: "/quanly/leads", label: "Khách tiềm năng", icon: "🎯" },
-  { href: "/quanly/services", label: "Danh mục dịch vụ", icon: "📋" },
-  { href: "/quanly/settings", label: "Cài đặt hệ thống", icon: "⚙️", ownerOnly: true },
+const navItems: Array<{
+  href: string;
+  label: string;
+  Icon: ComponentType<{ className?: string }>;
+  ownerOnly?: boolean;
+}> = [
+  { href: "/quanly", label: "Tổng quan", Icon: IconDashboard },
+  { href: "/quanly/quotes", label: "Báo giá dịch vụ", Icon: IconQuotes },
+  { href: "/quanly/cases", label: "Hồ sơ thực hiện", Icon: IconCases },
+  { href: "/quanly/customers", label: "Khách hàng", Icon: IconCustomers },
+  { href: "/quanly/invoices", label: "Phiếu thanh toán", Icon: IconInvoices },
+  { href: "/quanly/costs", label: "Chi phí & Lợi nhuận", Icon: IconCosts },
+  { href: "/quanly/leads", label: "Khách tiềm năng", Icon: IconLeads },
+  { href: "/quanly/services", label: "Danh mục dịch vụ", Icon: IconServices },
+  { href: "/quanly/settings", label: "Cài đặt hệ thống", Icon: IconSettings, ownerOnly: true },
 ];
 
 export default function ManagementSidebar({ open, onClose, userRole }: SidebarProps) {
@@ -51,9 +70,9 @@ export default function ManagementSidebar({ open, onClose, userRole }: SidebarPr
       <aside className={open ? "quanly-sidebar mobile-open" : "quanly-sidebar"} aria-label="Menu điều hướng quản lý">
         {/* Brand logo */}
         <div className="quanly-sidebar-logo">
-          <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-white p-1">
+          <span className="quanly-brand-emblem h-10 w-10 p-1">
             <Image
-              src="/logo_sgm.png"
+              src="/logo_sgm_gold.png"
               alt="Saigon Motor"
               width={34}
               height={34}
@@ -72,9 +91,9 @@ export default function ManagementSidebar({ open, onClose, userRole }: SidebarPr
             type="button"
             onClick={onClose}
             aria-label="Đóng menu"
-            className="lg:hidden min-w-[40px] min-h-[40px] grid place-items-center rounded-lg bg-white/5 text-gray-300 hover:text-white text-base"
+            className="lg:hidden min-w-[40px] min-h-[40px] grid place-items-center rounded-lg bg-white/5 text-gray-300 hover:text-white"
           >
-            ✕
+            <IconClose className="w-5 h-5" />
           </button>
         </div>
 
@@ -91,6 +110,7 @@ export default function ManagementSidebar({ open, onClose, userRole }: SidebarPr
                 item.href === "/quanly"
                   ? pathname === "/quanly"
                   : pathname?.startsWith(item.href);
+              const NavIcon = item.Icon;
 
               return (
                 <Link
@@ -99,7 +119,7 @@ export default function ManagementSidebar({ open, onClose, userRole }: SidebarPr
                   onClick={onClose}
                   className={isActive ? "quanly-nav-item active" : "quanly-nav-item"}
                 >
-                  <span className="text-base">{item.icon}</span>
+                  <NavIcon className="w-[18px] h-[18px] shrink-0" />
                   <span className="truncate">{item.label}</span>
                 </Link>
               );
@@ -115,7 +135,7 @@ export default function ManagementSidebar({ open, onClose, userRole }: SidebarPr
             target="_blank"
             rel="noopener noreferrer"
           >
-            <span className="text-base">🌐</span>
+            <IconGlobe className="w-[18px] h-[18px] shrink-0" />
             <span>Trang web chính</span>
           </Link>
         </nav>

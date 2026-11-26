@@ -2,14 +2,14 @@ import type { MetadataRoute } from "next";
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: "Saigon Motor - Dịch vụ hồ sơ xe",
+    name: "Saigon Motor",
     short_name: "Saigon Motor",
     description:
       "Saigon Motor hỗ trợ sang tên xe, thu hồi đăng ký, biển số ô tô, xe máy tại TP.HCM và các tỉnh.",
     start_url: "/",
     display: "standalone",
-    background_color: "#f6f8f7",
-    theme_color: "#0b3132",
+    background_color: "#0b0e14",
+    theme_color: "#0b0e14",
     lang: "vi-VN",
     icons: [
       { src: "/icon-192.png", sizes: "192x192", type: "image/png", purpose: "any" },

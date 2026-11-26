@@ -181,19 +181,21 @@ function AuthForm() {
             display: "inline-grid",
             placeItems: "center",
             overflow: "hidden",
-            borderRadius: 22,
-            background: "#ffffff",
+            borderRadius: 24,
+            background: "radial-gradient(circle at 50% 35%, rgba(212, 175, 55, 0.22), rgba(15, 20, 30, 0.98) 76%)",
+            border: "1px solid rgba(212, 175, 55, 0.38)",
+            boxShadow: "0 14px 34px rgba(0, 0, 0, 0.5), 0 0 24px rgba(212, 175, 55, 0.12)",
           }}
         >
-          <Image src="/logo_sgm.png" alt="Saigon Motor" width={82} height={82} priority />
+          <Image src="/logo_sgm_gold.png" alt="Saigon Motor" width={78} height={78} priority />
         </span>
-        <h1 style={{ color: "#d8aa55", marginTop: 12, fontSize: "1.45rem", fontWeight: 800 }}>
-          {mode === "login" && "Cổng nội bộ SGM"}
+        <h1 style={{ color: "#d8aa55", marginTop: 14, fontSize: "1.45rem", fontWeight: 800 }}>
+          {mode === "login" && "Saigon Motor"}
           {mode === "forgot" && "Quên mật khẩu"}
           {mode === "reset" && "Thiết lập mật khẩu mới"}
         </h1>
         <p style={{ color: "#9aa4b2", marginTop: 6, fontSize: "0.88rem" }}>
-          {mode === "login" && "Dành riêng cho nhân sự được phân quyền quản lý."}
+          {mode === "login" && "Hệ thống quản lý hồ sơ & dịch vụ nội bộ"}
           {mode === "forgot" && "Nhập email tài khoản để nhận liên kết khôi phục."}
           {mode === "reset" && "Nhập mật khẩu mới cho tài khoản nội bộ."}
         </p>
@@ -493,14 +495,16 @@ export default function LoginPage() {
                 display: "grid",
                 placeItems: "center",
                 overflow: "hidden",
-                borderRadius: 26,
-                background: "#ffffff",
+                borderRadius: 28,
+                background: "radial-gradient(circle at 50% 35%, rgba(212, 175, 55, 0.22), rgba(15, 20, 30, 0.98) 76%)",
+                border: "1px solid rgba(212, 175, 55, 0.38)",
+                boxShadow: "0 18px 42px rgba(0, 0, 0, 0.55), 0 0 28px rgba(212, 175, 55, 0.14)",
               }}
             >
-              <Image src="/logo_sgm.png" alt="Saigon Motor" width={98} height={98} priority />
+              <Image src="/logo_sgm_gold.png" alt="Saigon Motor" width={92} height={92} priority />
             </div>
             <strong style={{ color: "white", letterSpacing: ".08em" }}>SAIGON MOTOR</strong>
-            <span style={{ fontSize: ".86rem" }}>Đang mở hệ thống quản lý...</span>
+            <span style={{ fontSize: ".86rem" }}>Đang tải hệ thống quản lý...</span>
           </div>
         }
       >

@@ -3,19 +3,20 @@ import ManagementShell from "./components/ManagementShell";
 import "./quanly.css";
 
 export const metadata: Metadata = {
-  title: "Quản lý nội bộ",
-  description: "Hệ thống quản lý hồ sơ nội bộ Saigon Motor.",
+  title: { absolute: "Saigon Motor" },
+  applicationName: "Saigon Motor",
+  description: "Hệ thống quản lý hồ sơ và dịch vụ pháp lý xe Saigon Motor.",
   manifest: "/quanly.webmanifest",
   appleWebApp: {
     capable: true,
-    title: "SGM Quản lý",
+    title: "Saigon Motor",
     statusBarStyle: "black-translucent",
   },
   robots: { index: false, follow: false, noarchive: true, nocache: true },
 };
 
 export const viewport: Viewport = {
-  themeColor: "#0b3132",
+  themeColor: "#0b0e14",
   colorScheme: "dark",
   viewportFit: "cover",
 };

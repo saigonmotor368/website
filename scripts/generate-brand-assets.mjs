@@ -8,18 +8,62 @@ const heroPath = path.join(root, "public", "sgm-hero-premium.png");
 const appDir = path.join(root, "src", "app");
 const publicDir = path.join(root, "public");
 
-const iconPng = await sharp({
-  create: { width: 512, height: 512, channels: 4, background: "#ffffff" },
-})
-  .composite([
-    {
-      input: await sharp(logoPath)
-        .resize(404, 404, { fit: "contain", background: { r: 255, g: 255, b: 255, alpha: 0 } })
-        .png()
-        .toBuffer(),
-      gravity: "center",
-    },
-  ])
+// 1. Metallic champagne-gold transparent emblem derived from logo_sgm.png alpha mask
+const logoAlphaMask = await sharp(logoPath)
+  .resize(512, 512, { fit: "contain", background: { r: 0, g: 0, b: 0, alpha: 0 } })
+  .png()
+  .toBuffer();
+
+const goldGradientSvg = Buffer.from(`
+  <svg width="512" height="512" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <linearGradient id="sgmGold" x1="0" y1="0" x2="0.2" y2="1">
+        <stop offset="0%" stop-color="#fff5cc"/>
+        <stop offset="48%" stop-color="#e8c766"/>
+        <stop offset="100%" stop-color="#d4af37"/>
+      </linearGradient>
+    </defs>
+    <rect width="512" height="512" fill="url(#sgmGold)"/>
+  </svg>
+`);
+
+const logoGold = await sharp(goldGradientSvg)
+  .ensureAlpha()
+  .composite([{ input: logoAlphaMask, blend: "dest-in" }])
+  .png({ compressionLevel: 9 })
+  .toBuffer();
+
+await fs.writeFile(path.join(publicDir, "logo_sgm_gold.png"), logoGold);
+
+function createDarkGoldBackdrop(size, withBorder = false) {
+  const radius = Math.round(size * 0.18);
+  const inset = Math.round(size * 0.032);
+  const borderSvg = withBorder
+    ? `<rect x="${inset}" y="${inset}" width="${size - inset * 2}" height="${size - inset * 2}" rx="${radius}" fill="none" stroke="rgba(212,175,55,0.34)" stroke-width="${Math.max(2, Math.round(size * 0.006))}"/>`
+    : "";
+  return Buffer.from(`
+    <svg width="${size}" height="${size}" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <radialGradient id="ambientGlow" cx="50%" cy="38%" r="58%">
+          <stop offset="0%" stop-color="#d4af37" stop-opacity="0.22"/>
+          <stop offset="55%" stop-color="#151b2a" stop-opacity="0.72"/>
+          <stop offset="100%" stop-color="#0b0e14" stop-opacity="0"/>
+        </radialGradient>
+      </defs>
+      <rect width="${size}" height="${size}" fill="#0b0e14"/>
+      <rect width="${size}" height="${size}" fill="url(#ambientGlow)"/>
+      ${borderSvg}
+    </svg>
+  `);
+}
+
+const emblem400 = await sharp(logoGold)
+  .resize(400, 400, { fit: "contain", background: { r: 0, g: 0, b: 0, alpha: 0 } })
+  .png()
+  .toBuffer();
+
+const iconPng = await sharp(createDarkGoldBackdrop(512, true))
+  .composite([{ input: emblem400, gravity: "center" }])
   .png({ compressionLevel: 9 })
   .toBuffer();
 
@@ -32,27 +76,24 @@ const icon192 = await sharp(iconPng)
   .toBuffer();
 await fs.writeFile(path.join(publicDir, "icon-192.png"), icon192);
 
-const maskableIcon = await sharp({
-  create: { width: 512, height: 512, channels: 4, background: "#0b3132" },
-})
-  .composite([
-    {
-      input: await sharp(logoPath)
-        .resize(300, 300, { fit: "contain", background: "#ffffff" })
-        .flatten({ background: "#ffffff" })
-        .png({ compressionLevel: 9 })
-        .toBuffer(),
-      gravity: "center",
-    },
-  ])
+const emblem348 = await sharp(logoGold)
+  .resize(348, 348, { fit: "contain", background: { r: 0, g: 0, b: 0, alpha: 0 } })
+  .png()
+  .toBuffer();
+
+const maskableIcon = await sharp(createDarkGoldBackdrop(512, false))
+  .composite([{ input: emblem348, gravity: "center" }])
   .png({ compressionLevel: 9 })
   .toBuffer();
 await fs.writeFile(path.join(publicDir, "icon-maskable-512.png"), maskableIcon);
 
-const appleIcon = await sharp(logoPath)
-  .resize(152, 152, { fit: "contain", background: "#ffffff" })
-  .extend({ top: 14, bottom: 14, left: 14, right: 14, background: "#ffffff" })
-  .flatten({ background: "#ffffff" })
+const emblem142 = await sharp(logoGold)
+  .resize(142, 142, { fit: "contain", background: { r: 0, g: 0, b: 0, alpha: 0 } })
+  .png()
+  .toBuffer();
+
+const appleIcon = await sharp(createDarkGoldBackdrop(180, false))
+  .composite([{ input: emblem142, gravity: "center" }])
   .png({ compressionLevel: 9 })
   .toBuffer();
 
@@ -62,9 +103,8 @@ await fs.writeFile(path.join(publicDir, "apple-touch-icon.png"), appleIcon);
 const faviconSizes = [16, 32, 48];
 const faviconImages = await Promise.all(
   faviconSizes.map((size) =>
-    sharp(logoPath)
-      .resize(size, size, { fit: "contain", background: "#ffffff" })
-      .flatten({ background: "#ffffff" })
+    sharp(iconPng)
+      .resize(size, size, { fit: "contain", background: "#0b0e14" })
       .ensureAlpha(1)
       .png({ compressionLevel: 9 })
       .toBuffer(),

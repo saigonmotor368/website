@@ -276,12 +276,21 @@ export default function InvoiceDetailPage({ params }: { params: Promise<{ id: st
         {/* Child 1: Header with Saigon Motor Branding */}
         <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4 sm:gap-6 border-b border-gray-800 print:border-gray-300 pb-5 sm:pb-6">
           <div className="flex items-center gap-3">
+            <span className="quanly-brand-emblem h-14 w-14 p-1.5 print:hidden">
+              <Image
+                src="/logo_sgm_gold.png"
+                alt="Saigon Motor"
+                width={46}
+                height={46}
+                className="object-contain"
+              />
+            </span>
             <Image
               src="/logo_sgm.png"
               alt="Saigon Motor"
               width={56}
               height={56}
-              className="object-contain shrink-0"
+              className="hidden print:block object-contain shrink-0"
             />
             <div className="min-w-0">
               <h2 className="text-base font-bold text-white print:text-black tracking-wide">

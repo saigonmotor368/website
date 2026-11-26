@@ -6,6 +6,10 @@ import Link from "next/link";
 import type { QuoteData } from "../quote-types";
 import QuotePreview from "../components/QuotePreview";
 import { generateQuoteImage, generateQuotePdf } from "@/lib/generate-quote-pdf";
+import {
+  CUSTOM_DOCUMENT_OPTION,
+  STANDARD_DOCUMENT_CATALOG,
+} from "../../lib/document-catalog";
 
 interface ServiceItem {
   id: string;
@@ -85,6 +89,7 @@ export default function CreateQuotePage() {
     { id: "doc_2", name: "CCCD gắn chip của chủ xe", quantity: 2, note: "Bản sao công chứng" },
     { id: "doc_3", name: "Hợp đồng mua bán / Chuyển nhượng xe", quantity: 2, note: "Đã công chứng" },
   ]);
+  const [selectedDocCatalogId, setSelectedDocCatalogId] = useState("");
 
   // General settings
   const [vatRate, setVatRate] = useState(0);
@@ -299,11 +304,34 @@ export default function CreateQuotePage() {
       ...documents,
       {
         id: `doc_${Date.now()}`,
-        name: "Giấy tờ bổ sung",
+        name: "",
         quantity: 1,
         note: "",
       },
     ]);
+  };
+
+  const addDocumentFromCatalog = () => {
+    if (!selectedDocCatalogId) return;
+    if (selectedDocCatalogId === CUSTOM_DOCUMENT_OPTION) {
+      addDocument();
+      setSelectedDocCatalogId("");
+      return;
+    }
+
+    const item = STANDARD_DOCUMENT_CATALOG.find((c) => c.id === selectedDocCatalogId);
+    if (!item) return;
+
+    setDocuments([
+      ...documents,
+      {
+        id: `doc_${Date.now()}`,
+        name: item.name,
+        quantity: item.defaultQuantity,
+        note: item.defaultNote,
+      },
+    ]);
+    setSelectedDocCatalogId("");
   };
 
   const removeDocument = (id: string) => {
@@ -482,7 +510,13 @@ export default function CreateQuotePage() {
               },
         ],
         services: selectedServices,
-        documents,
+        documents: documents
+          .filter((d) => d.name.trim())
+          .map((d) => ({
+            ...d,
+            name: d.name.trim(),
+            note: d.note?.trim() || "",
+          })),
         status,
         vatRate,
         notes: quoteNotes,
@@ -1149,15 +1183,53 @@ export default function CreateQuotePage() {
       {/* Section 4: Documents Checklist */}
       <div className="quanly-card space-y-4">
         <div className="quanly-section-head pb-2.5 border-b border-gray-800">
-          <h2 className="text-base font-bold text-[#d4af37]">
-            4. Hồ sơ thủ tục cần chuẩn bị (Đính kèm báo giá)
-          </h2>
+          <div className="min-w-0">
+            <h2 className="text-base font-bold text-[#d4af37]">
+              4. Hồ sơ thủ tục cần chuẩn bị (Đính kèm báo giá)
+            </h2>
+            <p className="text-[11px] text-gray-400 mt-0.5">
+              Chọn từ danh mục chuẩn hoặc bấm &ldquo;+ Dòng nhập tay&rdquo; cho giấy tờ ngoài danh mục
+            </p>
+          </div>
           <button
             type="button"
             onClick={addDocument}
             className="quanly-btn-secondary !py-1.5 !px-3 text-xs shrink-0"
           >
-            + Thêm giấy tờ
+            + Dòng nhập tay
+          </button>
+        </div>
+
+        <div className="flex flex-col sm:flex-row gap-2">
+          <select
+            aria-label="Chọn giấy tờ đính kèm báo giá từ danh mục chuẩn"
+            value={selectedDocCatalogId}
+            onChange={(e) => setSelectedDocCatalogId(e.target.value)}
+            className="w-full sm:flex-1 min-w-0 bg-[#0d1017] border border-gray-700 rounded-lg px-3 py-2 text-xs text-gray-200 focus:outline-none focus:border-[#d4af37]"
+          >
+            <option value="">-- Chọn giấy tờ từ danh mục chuẩn --</option>
+            {STANDARD_DOCUMENT_CATALOG.map((item) => {
+              const exists = documents.some(
+                (d) => d.name.trim().toLowerCase() === item.name.toLowerCase()
+              );
+              return (
+                <option key={item.id} value={item.id}>
+                  {exists ? "✓ " : ""}
+                  {item.name}
+                </option>
+              );
+            })}
+            <option value={CUSTOM_DOCUMENT_OPTION}>
+              ✍️ Nhập tay giấy tờ khác (ngoài danh mục)...
+            </option>
+          </select>
+          <button
+            type="button"
+            onClick={addDocumentFromCatalog}
+            disabled={!selectedDocCatalogId}
+            className="quanly-btn-secondary w-full sm:w-auto shrink-0 !py-2 !px-3.5 text-xs disabled:opacity-45"
+          >
+            + Thêm từ danh mục
           </button>
         </div>
 
@@ -1177,7 +1249,8 @@ export default function CreateQuotePage() {
                       documents.map((d) => (d.id === doc.id ? { ...d, name: e.target.value } : d))
                     );
                   }}
-                  className="flex-1 min-w-0 bg-transparent font-medium text-gray-100 focus:outline-none border-b border-transparent focus:border-gray-700"
+                  placeholder="Nhập tên giấy tờ yêu cầu..."
+                  className="flex-1 min-w-0 bg-transparent font-medium text-gray-100 focus:outline-none border-b border-transparent focus:border-[#d4af37] pb-0.5"
                 />
                 <button
                   type="button"
