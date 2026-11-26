@@ -86,12 +86,10 @@ function CaseCreateForm() {
     }
   }
 
-  // Load catalog
   const [services, setServices] = useState<
     Array<{ id: string; name: string; price: number; quantity: number; note?: string }>
   >([]);
 
-  // Checklist
   const [documents, setDocuments] = useState<
     Array<{ id: string; name: string; status: "required" | "received" | "missing"; note?: string }>
   >([
@@ -105,7 +103,6 @@ function CaseCreateForm() {
   const [catalog, setCatalog] = useState<CatalogItem[]>([]);
   const [selectedCatalogId, setSelectedCatalogId] = useState("");
 
-  // Load catalog
   useEffect(() => {
     fetch("/api/internal/service-catalog")
       .then((res) => (res.ok ? res.json() : []))
@@ -119,7 +116,6 @@ function CaseCreateForm() {
       .catch(() => {});
   }, []);
 
-  // Pre-load quote if quoteId exists
   useEffect(() => {
     if (!quoteId) return;
 
@@ -140,7 +136,6 @@ function CaseCreateForm() {
           if (found.vehicle_plate) {
             setLicensePlate(found.vehicle_plate);
           }
-          // Fetch quote details to get services
           const quoteDetailRes = await fetch(`/api/internal/quotes/${quoteId}`, {
             cache: "no-store",
           });
@@ -298,55 +293,53 @@ function CaseCreateForm() {
   return (
     <form onSubmit={handleSubmit} className="quanly-content-container max-w-5xl">
       {/* Top Banner */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-gray-800 pb-4">
-        <div>
-          <div className="flex items-center gap-2">
+      <div className="quanly-page-header">
+        <div className="quanly-page-title-group">
+          <div className="flex flex-wrap items-center gap-2">
             <Link
               href="/quanly/cases"
-              className="text-xs text-gray-400 hover:text-white px-2 py-1 rounded bg-gray-900 border border-gray-800"
+              className="text-xs text-gray-300 hover:text-white px-2.5 py-1.5 rounded-lg bg-gray-900 border border-gray-800 inline-flex items-center"
             >
               ← Danh sách hồ sơ
             </Link>
             {quoteId && (
-              <span className="text-[11px] px-2 py-0.5 rounded bg-amber-950/60 text-amber-300 border border-amber-800/40">
+              <span className="text-[11px] px-2.5 py-1 rounded-lg bg-amber-950/60 text-amber-300 border border-amber-800/40 truncate max-w-full">
                 Chuyển từ báo giá: {quoteId}
               </span>
             )}
           </div>
-          <h1 className="text-xl font-bold text-white tracking-tight mt-2">
+          <h1 className="text-xl sm:text-2xl font-bold text-white tracking-tight mt-2.5">
             📂 Tiếp nhận Hồ sơ Xử lý Mới
           </h1>
-          <p className="text-xs text-gray-400">
+          <p className="text-xs sm:text-sm text-gray-400 mt-1">
             Khởi tạo hồ sơ, ghi nhận phương tiện, checklist giấy tờ và giá trị thực hiện
           </p>
         </div>
 
-        <button
-          type="submit"
-          disabled={loading}
-          className="quanly-btn-primary self-start sm:self-auto text-xs flex items-center gap-1.5"
-        >
-          {loading ? "Đang lưu..." : "✓ Xác nhận tiếp nhận hồ sơ"}
-        </button>
+        <div className="quanly-action-bar quanly-action-bar-single">
+          <button type="submit" disabled={loading} className="quanly-btn-primary">
+            {loading ? "Đang lưu..." : "✓ Xác nhận tiếp nhận hồ sơ"}
+          </button>
+        </div>
       </div>
 
       {error && (
-        <div className="p-3 bg-red-950/40 border border-red-800/60 rounded-xl text-xs text-red-300">
+        <div role="alert" className="p-3 bg-red-950/40 border border-red-800/60 rounded-xl text-xs text-red-300">
           ⚠️ {error}
         </div>
       )}
 
       {/* Grid: 2 columns */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
         {/* Left Column: Customer & Vehicles */}
-        <div className="space-y-6">
+        <div className="space-y-4 sm:space-y-6 min-w-0">
           {/* Section: Customer Information */}
           <div className="quanly-card">
             <h2 className="text-sm font-bold text-white flex items-center gap-2 mb-4">
               <span>👤</span> Thông tin khách hàng
             </h2>
 
-            <div className="flex gap-4 mb-4">
+            <div className="flex flex-wrap gap-4 mb-4">
               <label className="flex items-center gap-2 text-xs text-gray-300 cursor-pointer">
                 <input
                   type="radio"
@@ -384,7 +377,7 @@ function CaseCreateForm() {
                 />
               </div>
 
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
                   <label className="block text-[11px] text-gray-400 mb-1">Số điện thoại *</label>
                   <input
@@ -448,11 +441,11 @@ function CaseCreateForm() {
 
           {/* Section: Vehicle / Fleet Information */}
           <div className="quanly-card">
-            <div className="flex items-center justify-between mb-3">
+            <div className="quanly-section-head mb-3">
               <h2 className="text-sm font-bold text-white flex items-center gap-2">
                 <span>🚗</span> Thông tin phương tiện tiếp nhận
               </h2>
-              <label className="cursor-pointer px-2.5 py-1 rounded bg-[#d4af37]/10 border border-[#d4af37]/30 text-[#d4af37] text-[11px] font-semibold hover:bg-[#d4af37]/20 transition flex items-center gap-1.5">
+              <label className="cursor-pointer px-3 py-1.5 rounded-lg bg-[#d4af37]/10 border border-[#d4af37]/30 text-[#d4af37] text-[11px] font-semibold hover:bg-[#d4af37]/20 transition inline-flex items-center gap-1.5 shrink-0">
                 <input
                   type="file"
                   accept="image/*"
@@ -463,16 +456,19 @@ function CaseCreateForm() {
               </label>
             </div>
 
-            {/* OCR Status Banner */}
             {ocrStatus === "scanning" && (
               <div className="p-2.5 bg-amber-950/40 border border-amber-800/60 rounded-xl text-xs text-amber-300 flex items-center gap-2 mb-4 animate-pulse">
                 ⚡ Đang kết nối Gemini 2.5 Flash để đọc số khung, số máy, biển số và tên chủ xe...
               </div>
             )}
             {ocrStatus === "success" && (
-              <div className="p-2.5 bg-emerald-950/40 border border-emerald-800/60 rounded-xl text-xs text-emerald-300 flex items-center justify-between mb-4">
-                <span>✓ Đã nhận diện thành công ({ocrConfidence === "high" ? "Độ tin cậy 95%" : "Độ tin cậy 75%"}) • Tự động điền dữ liệu xe</span>
-                {ocrStoragePath && <span className="text-[10px] text-emerald-400/70 font-mono">Đã lưu trữ private</span>}
+              <div className="p-2.5 bg-emerald-950/40 border border-emerald-800/60 rounded-xl text-xs text-emerald-300 flex flex-wrap items-center justify-between gap-2 mb-4">
+                <span>
+                  ✓ Đã nhận diện thành công ({ocrConfidence === "high" ? "Độ tin cậy 95%" : "Độ tin cậy 75%"}) • Tự động điền dữ liệu xe
+                </span>
+                {ocrStoragePath && (
+                  <span className="text-[10px] text-emerald-400/70 font-mono">Đã lưu trữ private</span>
+                )}
               </div>
             )}
             {ocrStatus === "error" && (
@@ -488,7 +484,7 @@ function CaseCreateForm() {
               </div>
             )}
 
-            <div className="flex gap-4 mb-4">
+            <div className="flex flex-wrap gap-4 mb-4">
               <label className="flex items-center gap-2 text-xs text-gray-300 cursor-pointer">
                 <input
                   type="radio"
@@ -513,7 +509,7 @@ function CaseCreateForm() {
 
             {vehicleMode === "single" ? (
               <div className="space-y-3">
-                <div className="grid grid-cols-2 gap-3">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <div>
                     <label className="block text-[11px] text-gray-400 mb-1">Biển số xe</label>
                     <input
@@ -536,7 +532,7 @@ function CaseCreateForm() {
                   </div>
                 </div>
 
-                <div className="grid grid-cols-2 gap-3">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <div>
                     <label className="block text-[11px] text-gray-400 mb-1">Hãng xe (Brand)</label>
                     <input
@@ -589,24 +585,24 @@ function CaseCreateForm() {
         </div>
 
         {/* Right Column: Services & Document Checklist */}
-        <div className="space-y-6">
+        <div className="space-y-4 sm:space-y-6 min-w-0">
           {/* Section: Services Cart */}
           <div className="quanly-card">
-            <div className="flex items-center justify-between mb-4">
+            <div className="quanly-section-head mb-4">
               <h2 className="text-sm font-bold text-white flex items-center gap-2">
                 <span>📋</span> Dịch vụ pháp lý cần xử lý
               </h2>
-              <span className="text-xs font-mono font-bold text-emerald-400">
+              <span className="text-xs font-mono tabular-nums font-bold text-emerald-400 shrink-0">
                 Tổng: {subtotal.toLocaleString("vi-VN")}đ
               </span>
             </div>
 
             {/* Catalog Selector */}
-            <div className="flex gap-2 mb-4">
+            <div className="flex flex-col sm:flex-row gap-2 mb-4">
               <select
                 value={selectedCatalogId}
                 onChange={(e) => setSelectedCatalogId(e.target.value)}
-                className="flex-1 bg-[#0d1017] border border-gray-800 rounded-lg px-3 py-2 text-xs text-gray-300 focus:outline-none focus:border-[#d4af37]"
+                className="w-full sm:flex-1 min-w-0 bg-[#0d1017] border border-gray-800 rounded-lg px-3 py-2 text-xs text-gray-300 focus:outline-none focus:border-[#d4af37]"
               >
                 <option value="">-- Chọn dịch vụ từ danh mục chuẩn --</option>
                 {catalog.map((c) => (
@@ -618,9 +614,9 @@ function CaseCreateForm() {
               <button
                 type="button"
                 onClick={handleAddServiceFromCatalog}
-                className="px-3 py-2 rounded-lg bg-gray-800 text-xs text-gray-200 hover:text-white hover:bg-gray-700 whitespace-nowrap"
+                className="quanly-btn-secondary w-full sm:w-auto shrink-0 !py-2 !px-3.5 text-xs"
               >
-                + Thêm
+                + Thêm vào hồ sơ
               </button>
             </div>
 
@@ -629,37 +625,38 @@ function CaseCreateForm() {
               {services.map((s, idx) => (
                 <div
                   key={s.id}
-                  className="p-3 bg-black/40 border border-gray-800/80 rounded-xl space-y-2"
+                  className="p-3 bg-black/40 border border-gray-800/80 rounded-xl space-y-2.5"
                 >
                   <div className="flex items-center justify-between gap-2">
                     <input
                       type="text"
                       value={s.name}
                       onChange={(e) => handleUpdateService(idx, "name", e.target.value)}
-                      className="flex-1 bg-transparent text-xs font-semibold text-white focus:outline-none focus:border-b border-[#d4af37]"
+                      className="flex-1 min-w-0 bg-transparent text-xs font-semibold text-white focus:outline-none focus:border-b border-[#d4af37]"
                     />
                     <button
                       type="button"
                       onClick={() => handleRemoveService(idx)}
-                      className="text-gray-500 hover:text-red-400 text-xs px-1"
+                      aria-label="Xóa dịch vụ"
+                      className="text-gray-500 hover:text-red-400 text-xs px-1.5 py-1 shrink-0"
                     >
                       ✕
                     </button>
                   </div>
-                  <div className="flex items-center gap-3">
-                    <div className="flex items-center gap-1.5">
-                      <span className="text-[10px] text-gray-500">Đơn giá:</span>
+                  <div className="grid grid-cols-2 sm:flex sm:items-center gap-2.5">
+                    <div className="flex items-center gap-1.5 min-w-0">
+                      <span className="text-[11px] text-gray-500 shrink-0">Đơn giá:</span>
                       <input
                         type="number"
                         value={s.price}
                         onChange={(e) =>
                           handleUpdateService(idx, "price", parseInt(e.target.value) || 0)
                         }
-                        className="w-28 bg-[#0d1017] border border-gray-800 rounded px-2 py-1 text-xs text-white font-mono"
+                        className="w-full sm:w-28 min-w-0 bg-[#0d1017] border border-gray-800 rounded px-2 py-1.5 text-xs text-white font-mono"
                       />
                     </div>
-                    <div className="flex items-center gap-1.5">
-                      <span className="text-[10px] text-gray-500">SL:</span>
+                    <div className="flex items-center gap-1.5 min-w-0">
+                      <span className="text-[11px] text-gray-500 shrink-0">SL:</span>
                       <input
                         type="number"
                         min={1}
@@ -667,10 +664,10 @@ function CaseCreateForm() {
                         onChange={(e) =>
                           handleUpdateService(idx, "quantity", parseInt(e.target.value) || 1)
                         }
-                        className="w-14 bg-[#0d1017] border border-gray-800 rounded px-2 py-1 text-xs text-white font-mono"
+                        className="w-full sm:w-16 min-w-0 bg-[#0d1017] border border-gray-800 rounded px-2 py-1.5 text-xs text-white font-mono text-center"
                       />
                     </div>
-                    <span className="text-xs font-mono font-semibold text-emerald-400 ml-auto">
+                    <span className="col-span-2 sm:col-span-1 sm:ml-auto text-right text-xs font-mono tabular-nums font-semibold text-emerald-400">
                       {(s.price * s.quantity).toLocaleString("vi-VN")}đ
                     </span>
                   </div>
@@ -680,7 +677,7 @@ function CaseCreateForm() {
               <button
                 type="button"
                 onClick={handleAddCustomService}
-                className="w-full py-2 border border-dashed border-gray-800 rounded-lg text-xs text-gray-400 hover:text-white hover:border-gray-600 transition"
+                className="w-full py-2.5 border border-dashed border-gray-800 rounded-lg text-xs text-gray-400 hover:text-white hover:border-gray-600 transition"
               >
                 + Thêm dịch vụ tùy biến khác
               </button>
@@ -689,7 +686,7 @@ function CaseCreateForm() {
 
           {/* Section: Document Checklist */}
           <div className="quanly-card">
-            <h2 className="text-sm font-bold text-white flex items-center gap-2 mb-3">
+            <h2 className="text-sm font-bold text-white flex items-center gap-2 mb-2">
               <span>📑</span> Checklist Giấy tờ tiếp nhận
             </h2>
             <p className="text-[11px] text-gray-400 mb-3">
@@ -700,9 +697,9 @@ function CaseCreateForm() {
               {documents.map((d, idx) => (
                 <div
                   key={d.id}
-                  className="flex items-center justify-between p-2.5 bg-black/40 border border-gray-800 rounded-lg"
+                  className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 p-2.5 bg-black/40 border border-gray-800 rounded-lg"
                 >
-                  <span className="text-xs text-gray-200">{d.name}</span>
+                  <span className="text-xs text-gray-200 min-w-0">{d.name}</span>
                   <select
                     value={d.status}
                     onChange={(e) => {
@@ -710,10 +707,10 @@ function CaseCreateForm() {
                       copy[idx].status = e.target.value as "required" | "received" | "missing";
                       setDocuments(copy);
                     }}
-                    className={`text-[11px] font-medium px-2 py-1 rounded border focus:outline-none ${
+                    className={`w-full sm:w-auto shrink-0 text-[11px] font-medium px-2.5 py-1.5 rounded-lg border focus:outline-none ${
                       d.status === "received"
                         ? "bg-emerald-950/40 text-emerald-300 border-emerald-800/40"
-                        : "bg-gray-900 text-gray-400 border-gray-800"
+                        : "bg-gray-900 text-gray-300 border-gray-800"
                     }`}
                   >
                     <option value="required">Cần thu</option>
@@ -738,6 +735,18 @@ function CaseCreateForm() {
               className="w-full bg-[#0d1017] border border-gray-800 rounded-lg p-3 text-xs text-white focus:outline-none focus:border-[#d4af37]"
             />
           </div>
+        </div>
+      </div>
+
+      {/* Bottom Action Footer */}
+      <div className="pt-4 border-t border-gray-800 flex justify-end">
+        <div className="quanly-action-bar">
+          <Link href="/quanly/cases" className="quanly-btn-secondary">
+            Hủy
+          </Link>
+          <button type="submit" disabled={loading} className="quanly-btn-primary">
+            {loading ? "Đang lưu..." : "✓ Xác nhận tiếp nhận"}
+          </button>
         </div>
       </div>
     </form>

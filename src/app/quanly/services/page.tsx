@@ -135,22 +135,24 @@ export default function ServicesPage() {
   }
 
   return (
-    <div className="space-y-6 max-w-7xl mx-auto">
-      <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-4">
-        <div>
-          <p className="text-[11px] uppercase tracking-[0.18em] text-[#d4af37] font-bold mb-2">Thiết lập nghiệp vụ</p>
+    <div className="quanly-content-container space-y-6 max-w-7xl">
+      <div className="quanly-page-header">
+        <div className="min-w-0">
+          <p className="text-[11px] uppercase tracking-[0.18em] text-[#d4af37] font-bold mb-1.5">Thiết lập nghiệp vụ</p>
           <h1 className="text-2xl sm:text-3xl font-bold text-white">Danh mục dịch vụ chuẩn</h1>
-          <p className="text-gray-400 text-sm mt-2 max-w-2xl">Quản lý giá vốn nội bộ, giá bán đề xuất và nhóm dịch vụ dùng chung cho toàn bộ hệ thống báo giá.</p>
+          <p className="text-gray-400 text-sm mt-1.5 max-w-2xl">Quản lý giá vốn nội bộ, giá bán đề xuất và nhóm dịch vụ dùng chung cho toàn bộ hệ thống báo giá.</p>
         </div>
         {canManage && (
-          <button type="button" onClick={openCreate} className="quanly-btn-gold">＋ Thêm dịch vụ</button>
+          <div className="quanly-action-bar quanly-action-bar-single">
+            <button type="button" onClick={openCreate} className="quanly-btn-gold">＋ Thêm dịch vụ</button>
+          </div>
         )}
       </div>
 
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-        <div className="quanly-kpi-card"><span className="text-xs text-gray-500">Dịch vụ đang dùng</span><strong className="text-2xl text-white mt-2">{services.length}</strong></div>
-        <div className="quanly-kpi-card"><span className="text-xs text-gray-500">Nhóm dịch vụ</span><strong className="text-2xl text-white mt-2">{new Set(services.map((s) => s.group_name)).size}</strong></div>
-        <div className="quanly-kpi-card"><span className="text-xs text-gray-500">Giá bán bình quân</span><strong className="text-lg text-emerald-400 mt-2">{money(services.length ? Math.round(services.reduce((sum, s) => sum + s.suggested_price, 0) / services.length) : 0)}</strong></div>
+        <div className="quanly-kpi-card"><span className="text-xs text-gray-500">Dịch vụ đang dùng</span><strong className="text-2xl text-white mt-2 tabular-nums">{services.length}</strong></div>
+        <div className="quanly-kpi-card"><span className="text-xs text-gray-500">Nhóm dịch vụ</span><strong className="text-2xl text-white mt-2 tabular-nums">{new Set(services.map((s) => s.group_name)).size}</strong></div>
+        <div className="quanly-kpi-card"><span className="text-xs text-gray-500">Giá bán bình quân</span><strong className="text-lg text-emerald-400 mt-2 tabular-nums">{money(services.length ? Math.round(services.reduce((sum, s) => sum + s.suggested_price, 0) / services.length) : 0)}</strong></div>
         <div className="quanly-kpi-card"><span className="text-xs text-gray-500">Quyền chỉnh sửa</span><strong className="text-base text-[#d4af37] mt-2">{canManage ? "Chủ hệ thống" : "Chỉ xem"}</strong></div>
       </div>
 
@@ -158,11 +160,11 @@ export default function ServicesPage() {
       {error && <div role="alert" className="rounded-xl border border-red-700/50 bg-red-950/30 px-4 py-3 text-sm text-red-200">{error}</div>}
 
       <div className="quanly-card flex flex-col md:flex-row gap-3 md:items-center">
-        <div className="relative flex-1">
+        <div className="relative flex-1 min-w-0">
           <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">⌕</span>
           <input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Tìm theo tên, mã hoặc nhóm dịch vụ..." className="w-full bg-[#0d1017] border border-gray-700 rounded-xl pl-9 pr-3 py-2.5 text-sm text-gray-200 focus:outline-none focus:border-[#d4af37]" />
         </div>
-        <select value={filterType} onChange={(e) => setFilterType(e.target.value)} className="bg-[#0d1017] border border-gray-700 rounded-xl px-3 py-2.5 text-sm text-gray-200 focus:outline-none focus:border-[#d4af37]">
+        <select value={filterType} onChange={(e) => setFilterType(e.target.value)} className="w-full md:w-52 bg-[#0d1017] border border-gray-700 rounded-xl px-3 py-2.5 text-sm text-gray-200 focus:outline-none focus:border-[#d4af37]">
           <option value="all">Tất cả phương tiện</option><option value="car">Ô tô</option><option value="motorbike">Xe máy</option>
         </select>
       </div>
@@ -174,13 +176,62 @@ export default function ServicesPage() {
       ) : (
         <div className="space-y-5">
           {Object.entries(groups).map(([groupName, items]) => (
-            <section key={groupName} className="quanly-card p-0 overflow-hidden">
+            <section key={groupName} className="quanly-card !p-0 overflow-hidden">
               <div className="px-4 sm:px-5 py-4 border-b border-white/5 bg-white/[0.015] flex items-center justify-between gap-3">
-                <div><h2 className="text-sm font-bold text-[#e8c766]">{groupName}</h2><p className="text-[11px] text-gray-500 mt-1">{items.length} dịch vụ</p></div>
+                <div className="min-w-0"><h2 className="text-sm font-bold text-[#e8c766]">{groupName}</h2><p className="text-[11px] text-gray-500 mt-1 tabular-nums">{items.length} dịch vụ</p></div>
               </div>
-              <div className="overflow-x-auto">
+
+              {/* Mobile Cards */}
+              <div className="md:hidden divide-y divide-white/5">
+                {items.map((service) => {
+                  const profit = service.suggested_price - (service.cost_price || 0);
+                  return (
+                    <div key={service.id} className="p-4 space-y-3">
+                      <div className="flex items-start justify-between gap-2">
+                        <div className="min-w-0 flex-1">
+                          <div className="font-semibold text-white">{service.name}</div>
+                          <div className="font-mono text-[11px] text-gray-500 mt-0.5">{service.code}</div>
+                        </div>
+                        <span className="rounded-full border border-gray-700 bg-gray-900 px-2.5 py-1 text-[11px] text-gray-300 whitespace-nowrap shrink-0">
+                          {service.vehicle_type === "car" ? "Ô tô" : service.vehicle_type === "motorbike" ? "Xe máy" : "Tất cả"}
+                        </span>
+                      </div>
+
+                      <div className="grid grid-cols-3 gap-2 rounded-xl bg-black/25 border border-white/5 p-2.5 text-xs">
+                        <div className="min-w-0">
+                          <div className="text-[10px] text-gray-500">Giá vốn</div>
+                          <div className="font-mono text-amber-300 font-medium mt-0.5 truncate tabular-nums">{money(service.cost_price)}</div>
+                        </div>
+                        <div className="min-w-0">
+                          <div className="text-[10px] text-gray-500">Giá khách</div>
+                          <div className="font-mono font-bold text-emerald-400 mt-0.5 truncate tabular-nums">{money(service.suggested_price)}</div>
+                        </div>
+                        <div className="min-w-0">
+                          <div className="text-[10px] text-gray-500">Lãi dự kiến</div>
+                          <div className={`font-mono font-semibold mt-0.5 truncate tabular-nums ${profit >= 0 ? "text-cyan-300" : "text-red-300"}`}>{money(profit)}</div>
+                        </div>
+                      </div>
+
+                      {canManage && (
+                        <div className="quanly-action-bar pt-1">
+                          <button type="button" onClick={() => openEdit(service)} className="quanly-btn-secondary !py-2 text-xs">Sửa</button>
+                          <button type="button" onClick={() => void archiveService(service)} className="rounded-lg border border-red-900/70 bg-red-950/20 px-3 py-2 text-xs font-semibold text-red-300 hover:bg-red-950/40 whitespace-nowrap">Xóa</button>
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+
+              {/* Desktop Table */}
+              <div
+                className="hidden md:block quanly-table-scroll"
+                role="region"
+                aria-label={`Bảng dịch vụ ${groupName}`}
+                tabIndex={0}
+              >
                 <table className="w-full min-w-[780px] text-left text-sm text-gray-300">
-                  <thead className="text-[11px] uppercase tracking-wider text-gray-500 bg-black/20">
+                  <thead className="text-[11px] uppercase tracking-wider text-gray-500 bg-black/20 whitespace-nowrap">
                     <tr><th className="px-4 py-3">Dịch vụ</th><th className="px-4 py-3">Loại xe</th><th className="px-4 py-3 text-right">Giá vốn</th><th className="px-4 py-3 text-right">Giá khách</th><th className="px-4 py-3 text-right">Lãi dự kiến</th>{canManage && <th className="px-4 py-3 text-right">Thao tác</th>}</tr>
                   </thead>
                   <tbody className="divide-y divide-gray-800/70">
@@ -189,11 +240,11 @@ export default function ServicesPage() {
                       return (
                         <tr key={service.id} className="hover:bg-white/[0.025] transition-colors">
                           <td className="px-4 py-4"><div className="font-semibold text-white">{service.name}</div><div className="font-mono text-[11px] text-gray-500 mt-1">{service.code}</div></td>
-                          <td className="px-4 py-4"><span className="rounded-full border border-gray-700 bg-gray-900 px-2.5 py-1 text-[11px]">{service.vehicle_type === "car" ? "Ô tô" : service.vehicle_type === "motorbike" ? "Xe máy" : "Tất cả"}</span></td>
-                          <td className="px-4 py-4 text-right font-mono text-amber-300">{money(service.cost_price)}</td>
-                          <td className="px-4 py-4 text-right font-mono font-bold text-emerald-400">{money(service.suggested_price)}</td>
-                          <td className={`px-4 py-4 text-right font-mono font-semibold ${profit >= 0 ? "text-cyan-300" : "text-red-300"}`}>{money(profit)}</td>
-                          {canManage && <td className="px-4 py-4"><div className="flex justify-end gap-2"><button type="button" onClick={() => openEdit(service)} className="rounded-lg border border-gray-700 px-3 py-1.5 text-xs hover:border-[#d4af37] hover:text-[#e8c766]">Sửa</button><button type="button" onClick={() => void archiveService(service)} className="rounded-lg border border-red-900/70 px-3 py-1.5 text-xs text-red-300 hover:bg-red-950/40">Xóa</button></div></td>}
+                          <td className="px-4 py-4 whitespace-nowrap"><span className="rounded-full border border-gray-700 bg-gray-900 px-2.5 py-1 text-[11px]">{service.vehicle_type === "car" ? "Ô tô" : service.vehicle_type === "motorbike" ? "Xe máy" : "Tất cả"}</span></td>
+                          <td className="px-4 py-4 text-right font-mono text-amber-300 tabular-nums whitespace-nowrap">{money(service.cost_price)}</td>
+                          <td className="px-4 py-4 text-right font-mono font-bold text-emerald-400 tabular-nums whitespace-nowrap">{money(service.suggested_price)}</td>
+                          <td className={`px-4 py-4 text-right font-mono font-semibold tabular-nums whitespace-nowrap ${profit >= 0 ? "text-cyan-300" : "text-red-300"}`}>{money(profit)}</td>
+                          {canManage && <td className="px-4 py-4 whitespace-nowrap"><div className="flex justify-end gap-2"><button type="button" onClick={() => openEdit(service)} className="rounded-lg border border-gray-700 px-3 py-1.5 text-xs hover:border-[#d4af37] hover:text-[#e8c766]">Sửa</button><button type="button" onClick={() => void archiveService(service)} className="rounded-lg border border-red-900/70 px-3 py-1.5 text-xs text-red-300 hover:bg-red-950/40">Xóa</button></div></td>}
                         </tr>
                       );
                     })}
@@ -207,8 +258,8 @@ export default function ServicesPage() {
 
       {showForm && (
         <div className="fixed inset-0 z-[80] grid place-items-center bg-black/75 backdrop-blur-sm p-4" onMouseDown={(e) => { if (e.currentTarget === e.target && !saving) setShowForm(false); }}>
-          <form onSubmit={saveService} className="w-full max-w-2xl rounded-2xl border border-white/10 bg-[#141923] shadow-2xl overflow-hidden">
-            <div className="flex items-start justify-between gap-4 border-b border-white/10 px-5 sm:px-6 py-5"><div><p className="text-[11px] uppercase tracking-widest text-[#d4af37] font-bold">Danh mục dịch vụ</p><h2 className="text-xl font-bold text-white mt-1">{editingId ? "Chỉnh sửa dịch vụ" : "Thêm dịch vụ mới"}</h2></div><button type="button" onClick={() => setShowForm(false)} className="text-gray-400 hover:text-white text-xl">×</button></div>
+          <form onSubmit={saveService} className="w-full max-w-2xl max-h-[90dvh] overflow-y-auto rounded-2xl border border-white/10 bg-[#141923] shadow-2xl">
+            <div className="flex items-start justify-between gap-4 border-b border-white/10 px-5 sm:px-6 py-5"><div><p className="text-[11px] uppercase tracking-widest text-[#d4af37] font-bold">Danh mục dịch vụ</p><h2 className="text-xl font-bold text-white mt-1">{editingId ? "Chỉnh sửa dịch vụ" : "Thêm dịch vụ mới"}</h2></div><button type="button" onClick={() => setShowForm(false)} aria-label="Đóng hộp thoại" className="min-w-[40px] min-h-[40px] flex items-center justify-center rounded-lg text-gray-400 hover:text-white hover:bg-white/5 text-xl">×</button></div>
             <div className="p-5 sm:p-6 grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
               <label className="grid gap-1.5"><span className="text-gray-400">Mã dịch vụ *</span><input value={form.code} onChange={(e) => setForm({ ...form, code: e.target.value.toUpperCase() })} placeholder="VD: SANG_TEN_OTO" className="bg-[#0d1017] border border-gray-700 rounded-lg px-3 py-2.5 text-white font-mono focus:outline-none focus:border-[#d4af37]" required /></label>
               <label className="grid gap-1.5"><span className="text-gray-400">Loại phương tiện</span><select value={form.vehicle_type} onChange={(e) => setForm({ ...form, vehicle_type: e.target.value as ServiceItem["vehicle_type"] })} className="bg-[#0d1017] border border-gray-700 rounded-lg px-3 py-2.5 text-white focus:outline-none focus:border-[#d4af37]"><option value="all">Tất cả</option><option value="car">Ô tô</option><option value="motorbike">Xe máy</option></select></label>
@@ -220,7 +271,7 @@ export default function ServicesPage() {
               <div className="rounded-xl border border-white/5 bg-black/20 p-3"><span className="text-xs text-gray-500">Lãi dự kiến</span><strong className="block text-lg text-cyan-300 mt-1">{money(form.suggested_price - form.cost_price)}</strong></div>
             </div>
             {error && <p role="alert" className="mx-5 sm:mx-6 mb-4 rounded-lg bg-red-950/40 px-3 py-2 text-sm text-red-200">{error}</p>}
-            <div className="flex justify-end gap-3 border-t border-white/10 px-5 sm:px-6 py-4"><button type="button" onClick={() => setShowForm(false)} disabled={saving} className="quanly-btn-secondary">Hủy</button><button type="submit" disabled={saving} className="quanly-btn-gold">{saving ? "Đang lưu..." : editingId ? "Lưu thay đổi" : "Thêm dịch vụ"}</button></div>
+            <div className="quanly-action-bar border-t border-white/10 px-5 sm:px-6 py-4"><button type="button" onClick={() => setShowForm(false)} disabled={saving} className="quanly-btn-secondary">Hủy</button><button type="submit" disabled={saving} className="quanly-btn-gold">{saving ? "Đang lưu..." : editingId ? "Lưu thay đổi" : "Thêm dịch vụ"}</button></div>
           </form>
         </div>
       )}

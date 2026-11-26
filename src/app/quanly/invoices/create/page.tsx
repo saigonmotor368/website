@@ -151,42 +151,40 @@ function InvoiceCreateForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="quanly-content-container max-w-4xl space-y-6">
+    <form onSubmit={handleSubmit} className="quanly-content-container max-w-4xl">
       {/* Top Banner */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-gray-800 pb-4">
-        <div>
-          <div className="flex items-center gap-2">
+      <div className="quanly-page-header">
+        <div className="quanly-page-title-group">
+          <div className="flex flex-wrap items-center gap-2">
             <Link
               href="/quanly/invoices"
-              className="text-xs text-gray-400 hover:text-white px-2 py-1 rounded bg-gray-900 border border-gray-800"
+              className="text-xs text-gray-300 hover:text-white px-2.5 py-1.5 rounded-lg bg-gray-900 border border-gray-800 inline-flex items-center"
             >
               ← Danh sách phiếu
             </Link>
             {caseNumber && (
-              <span className="text-[11px] px-2 py-0.5 rounded bg-emerald-950/60 text-emerald-300 border border-emerald-800/40">
+              <span className="text-[11px] px-2.5 py-1 rounded-lg bg-emerald-950/60 text-emerald-300 border border-emerald-800/40">
                 Từ hồ sơ: {caseNumber}
               </span>
             )}
           </div>
-          <h1 className="text-xl font-bold text-white tracking-tight mt-2">
+          <h1 className="text-xl sm:text-2xl font-bold text-white tracking-tight mt-2.5">
             🧾 Lập Phiếu Thanh toán / Biên nhận Dịch vụ
           </h1>
-          <p className="text-xs text-gray-400">
+          <p className="text-xs sm:text-sm text-gray-400 mt-1">
             Xuất phiếu biên nhận thu tiền dịch vụ xe cho khách hàng và theo dõi công nợ
           </p>
         </div>
 
-        <button
-          type="submit"
-          disabled={loading}
-          className="quanly-btn-primary self-start sm:self-auto text-xs flex items-center gap-1.5"
-        >
-          {loading ? "Đang xử lý..." : "✓ Phát hành phiếu thanh toán"}
-        </button>
+        <div className="quanly-action-bar quanly-action-bar-single">
+          <button type="submit" disabled={loading} className="quanly-btn-primary">
+            {loading ? "Đang xử lý..." : "✓ Phát hành phiếu thanh toán"}
+          </button>
+        </div>
       </div>
 
       {error && (
-        <div className="p-3 bg-red-950/40 border border-red-800/60 rounded-xl text-xs text-red-300">
+        <div role="alert" className="p-3 bg-red-950/40 border border-red-800/60 rounded-xl text-xs text-red-300">
           ⚠️ {error}
         </div>
       )}
@@ -254,13 +252,13 @@ function InvoiceCreateForm() {
         </div>
       </div>
 
-      {/* Services Items Table */}
+      {/* Services Items Card */}
       <div className="quanly-card space-y-4">
-        <div className="flex items-center justify-between">
+        <div className="quanly-section-head">
           <h2 className="text-sm font-bold text-white flex items-center gap-2">
             <span>📋</span> Nội dung thanh toán dịch vụ
           </h2>
-          <span className="font-mono text-sm font-bold text-emerald-400">
+          <span className="font-mono tabular-nums text-sm font-bold text-emerald-400 shrink-0">
             Tổng cộng: {totalAmount.toLocaleString("vi-VN")}đ
           </span>
         </div>
@@ -269,31 +267,41 @@ function InvoiceCreateForm() {
           {items.map((item, idx) => (
             <div
               key={idx}
-              className="p-3 bg-black/40 border border-gray-800 rounded-xl flex flex-col sm:flex-row sm:items-center gap-3"
+              className="p-3 bg-black/40 border border-gray-800 rounded-xl space-y-2.5"
             >
-              <input
-                type="text"
-                required
-                value={item.item_name}
-                onChange={(e) => handleUpdateItem(idx, "item_name", e.target.value)}
-                className="flex-1 bg-transparent text-xs font-semibold text-white focus:outline-none focus:border-b border-[#d4af37]"
-              />
+              <div className="flex items-center justify-between gap-2">
+                <input
+                  type="text"
+                  required
+                  value={item.item_name}
+                  onChange={(e) => handleUpdateItem(idx, "item_name", e.target.value)}
+                  className="flex-1 min-w-0 bg-transparent text-xs font-semibold text-white focus:outline-none border-b border-gray-800/80 pb-1 focus:border-[#d4af37]"
+                />
+                <button
+                  type="button"
+                  onClick={() => handleRemoveItem(idx)}
+                  aria-label="Xóa dòng dịch vụ"
+                  className="text-gray-500 hover:text-red-400 text-xs px-1.5 py-1 shrink-0"
+                >
+                  ✕
+                </button>
+              </div>
 
-              <div className="flex items-center gap-3">
-                <div className="flex items-center gap-1.5">
-                  <span className="text-[10px] text-gray-500">Đơn giá:</span>
+              <div className="grid grid-cols-2 sm:flex sm:items-center gap-2.5">
+                <div className="flex items-center gap-1.5 min-w-0">
+                  <span className="text-[11px] text-gray-500 shrink-0">Đơn giá:</span>
                   <input
                     type="number"
                     value={item.unit_price}
                     onChange={(e) =>
                       handleUpdateItem(idx, "unit_price", parseInt(e.target.value) || 0)
                     }
-                    className="w-28 bg-[#0d1017] border border-gray-800 rounded px-2 py-1 text-xs text-white font-mono"
+                    className="w-full sm:w-28 min-w-0 bg-[#0d1017] border border-gray-800 rounded px-2 py-1.5 text-xs text-white font-mono"
                   />
                 </div>
 
-                <div className="flex items-center gap-1.5">
-                  <span className="text-[10px] text-gray-500">SL:</span>
+                <div className="flex items-center gap-1.5 min-w-0">
+                  <span className="text-[11px] text-gray-500 shrink-0">SL:</span>
                   <input
                     type="number"
                     min={1}
@@ -301,21 +309,13 @@ function InvoiceCreateForm() {
                     onChange={(e) =>
                       handleUpdateItem(idx, "quantity", parseInt(e.target.value) || 1)
                     }
-                    className="w-14 bg-[#0d1017] border border-gray-800 rounded px-2 py-1 text-xs text-white font-mono"
+                    className="w-full sm:w-16 min-w-0 bg-[#0d1017] border border-gray-800 rounded px-2 py-1.5 text-xs text-white font-mono text-center"
                   />
                 </div>
 
-                <span className="text-xs font-mono font-bold text-emerald-400 min-w-[90px] text-right">
+                <span className="col-span-2 sm:col-span-1 sm:ml-auto text-xs font-mono tabular-nums font-bold text-emerald-400 text-right">
                   {(item.unit_price * item.quantity).toLocaleString("vi-VN")}đ
                 </span>
-
-                <button
-                  type="button"
-                  onClick={() => handleRemoveItem(idx)}
-                  className="text-gray-500 hover:text-red-400 text-xs px-1"
-                >
-                  ✕
-                </button>
               </div>
             </div>
           ))}
@@ -323,7 +323,7 @@ function InvoiceCreateForm() {
           <button
             type="button"
             onClick={handleAddItem}
-            className="w-full py-2 border border-dashed border-gray-800 rounded-lg text-xs text-gray-400 hover:text-white hover:border-gray-600 transition"
+            className="w-full py-2.5 border border-dashed border-gray-800 rounded-lg text-xs text-gray-400 hover:text-white hover:border-gray-600 transition"
           >
             ＋ Thêm dòng dịch vụ
           </button>
@@ -354,6 +354,18 @@ function InvoiceCreateForm() {
             placeholder="Ví dụ: Đã nhận cọc 50%, thanh toán phần còn lại khi giao hồ sơ..."
             className="w-full bg-[#0d1017] border border-gray-800 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-[#d4af37]"
           />
+        </div>
+      </div>
+
+      {/* Bottom Action Footer */}
+      <div className="flex justify-end pt-4 border-t border-gray-800">
+        <div className="quanly-action-bar">
+          <Link href="/quanly/invoices" className="quanly-btn-secondary">
+            Hủy
+          </Link>
+          <button type="submit" disabled={loading} className="quanly-btn-primary">
+            {loading ? "Đang xử lý..." : "✓ Phát hành phiếu"}
+          </button>
         </div>
       </div>
     </form>

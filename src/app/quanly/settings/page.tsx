@@ -54,7 +54,7 @@ export default function SystemSettingsPage() {
         <div className="p-4 bg-red-950/40 border border-red-800/60 rounded-xl text-xs text-red-300 max-w-md mx-auto">
           ⚠️ {error || "Bạn không có quyền truy cập trang này (Chỉ dành cho Chủ hệ thống)."}
         </div>
-        <Link href="/quanly" className="quanly-btn-secondary text-xs inline-block">
+        <Link href="/quanly" className="quanly-btn-secondary text-xs inline-flex justify-center">
           ← Quay lại Tổng quan
         </Link>
       </div>
@@ -64,23 +64,25 @@ export default function SystemSettingsPage() {
   return (
     <div className="quanly-content-container max-w-4xl space-y-6">
       {/* Header */}
-      <div>
-        <h1 className="text-2xl font-bold text-white tracking-tight flex items-center gap-2">
-          ⚙️ Cài đặt & Trạng thái Hệ thống
-        </h1>
-        <p className="text-xs text-gray-400 mt-1">
-          Khu vực bảo mật dành riêng cho Chủ hệ thống (Phạm Xuân Định) theo dõi kết nối API và hạ tầng
-        </p>
+      <div className="quanly-page-header">
+        <div className="min-w-0">
+          <h1 className="text-2xl font-bold text-white tracking-tight flex flex-wrap items-center gap-2">
+            ⚙️ Cài đặt &amp; Trạng thái Hệ thống
+          </h1>
+          <p className="text-xs text-gray-400 mt-1">
+            Khu vực bảo mật dành riêng cho Chủ hệ thống (Phạm Xuân Định) theo dõi kết nối API và hạ tầng
+          </p>
+        </div>
       </div>
 
       {/* Health Checks Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         {/* Supabase */}
         <div className="quanly-card space-y-3">
-          <div className="flex items-center justify-between">
+          <div className="flex flex-wrap items-center justify-between gap-2">
             <span className="text-base font-bold text-white">⚡ Supabase Database</span>
             <span
-              className={`text-[10px] font-bold px-2 py-0.5 rounded-full border ${
+              className={`text-[10px] font-bold px-2 py-0.5 rounded-full border whitespace-nowrap shrink-0 ${
                 status.supabase.status === "connected"
                   ? "bg-emerald-950/60 text-emerald-400 border-emerald-800/50"
                   : "bg-rose-950/60 text-rose-400 border-rose-800/50"
@@ -96,10 +98,10 @@ export default function SystemSettingsPage() {
 
         {/* Gemini */}
         <div className="quanly-card space-y-3">
-          <div className="flex items-center justify-between">
+          <div className="flex flex-wrap items-center justify-between gap-2">
             <span className="text-base font-bold text-white">🤖 Google Gemini AI</span>
             <span
-              className={`text-[10px] font-bold px-2 py-0.5 rounded-full border ${
+              className={`text-[10px] font-bold px-2 py-0.5 rounded-full border whitespace-nowrap shrink-0 ${
                 status.gemini.status === "configured"
                   ? "bg-emerald-950/60 text-emerald-400 border-emerald-800/50"
                   : "bg-gray-800 text-gray-400 border-gray-700"
@@ -115,10 +117,10 @@ export default function SystemSettingsPage() {
 
         {/* Resend */}
         <div className="quanly-card space-y-3">
-          <div className="flex items-center justify-between">
+          <div className="flex flex-wrap items-center justify-between gap-2">
             <span className="text-base font-bold text-white">✉️ Resend Email</span>
             <span
-              className={`text-[10px] font-bold px-2 py-0.5 rounded-full border ${
+              className={`text-[10px] font-bold px-2 py-0.5 rounded-full border whitespace-nowrap shrink-0 ${
                 status.resend.status === "configured"
                   ? "bg-emerald-950/60 text-emerald-400 border-emerald-800/50"
                   : "bg-gray-800 text-gray-400 border-gray-700"

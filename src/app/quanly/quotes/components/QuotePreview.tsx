@@ -32,10 +32,13 @@ export default function QuotePreview({ quoteData, onNext, onPrev }: Step4Props) 
     <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
       
       {/* Container giả lập trang A4 */}
-      <div className="flex justify-center overflow-x-auto rounded-xl bg-gray-900 p-3 sm:p-6">
-        <div 
-          id="quote-preview" 
-          className="relative overflow-hidden bg-white p-9 text-[14px] leading-[1.5] font-normal text-[#263633] shadow-2xl"
+      <p className="mb-2 text-center text-[11px] text-amber-300/90 md:hidden">
+        ← Vuốt ngang để xem toàn bộ trang A4 →
+      </p>
+      <div className="quanly-table-scroll rounded-xl bg-gray-900 p-3 sm:p-6">
+        <div
+          id="quote-preview"
+          className="relative mx-auto overflow-hidden bg-white p-9 text-[14px] leading-[1.5] font-normal text-[#263633] shadow-2xl"
           style={{ width: '794px', minHeight: '1123px', fontFamily: 'var(--font-be-vietnam), Arial, sans-serif' }} // A4 dimensions at 96dpi
         >
           <div className="relative z-10">
@@ -202,22 +205,24 @@ export default function QuotePreview({ quoteData, onNext, onPrev }: Step4Props) 
         </div>
       </div>
 
-      <div className="flex flex-col-reverse sm:flex-row justify-between gap-4 pt-8">
-        <button 
-          className="quanly-btn-secondary flex w-full items-center sm:w-auto"
+      <div className="quanly-action-bar pt-6 sm:justify-between">
+        <button
+          type="button"
+          className="quanly-btn-secondary"
           onClick={onPrev}
         >
-          <svg className="w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <svg className="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
           </svg>
           Chỉnh sửa lại
         </button>
-        <button 
-          className="quanly-btn-gold flex w-full items-center sm:w-auto"
+        <button
+          type="button"
+          className="quanly-btn-gold"
           onClick={onNext}
         >
           Chuyển sang Xuất PDF
-          <svg className="w-5 h-5 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <svg className="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
           </svg>
         </button>

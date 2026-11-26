@@ -165,7 +165,6 @@ export default function CaseDetailPage({ params }: { params: Promise<{ id: strin
     setRefreshKey((k) => k + 1);
   }
 
-  // Handle Status Update
   async function handleStatusChange(newStatus: "new" | "processing" | "completed") {
     if (!caseData) return;
     try {
@@ -185,7 +184,6 @@ export default function CaseDetailPage({ params }: { params: Promise<{ id: strin
     }
   }
 
-  // Handle Document Toggle
   async function handleDocStatusChange(docId: string, status: "required" | "received" | "missing") {
     if (!caseData) return;
     try {
@@ -208,7 +206,6 @@ export default function CaseDetailPage({ params }: { params: Promise<{ id: strin
     }
   }
 
-  // Handle Submit Price Adjustment
   async function handleSaveAdjustment(e: React.FormEvent) {
     e.preventDefault();
     setAdjustError("");
@@ -254,7 +251,6 @@ export default function CaseDetailPage({ params }: { params: Promise<{ id: strin
     }
   }
 
-  // Handle Add Cost
   async function handleAddCost(e: React.FormEvent) {
     e.preventDefault();
     if (!costDescription.trim() || costAmount <= 0) {
@@ -292,7 +288,6 @@ export default function CaseDetailPage({ params }: { params: Promise<{ id: strin
     }
   }
 
-  // Handle Approve Cost
   async function handleApproveCost(costId: string, approveStatus: "approved" | "rejected") {
     try {
       const res = await fetch(`/api/internal/cases/${id}`, {
@@ -315,7 +310,6 @@ export default function CaseDetailPage({ params }: { params: Promise<{ id: strin
     }
   }
 
-  // Handle Toggle Lock
   async function handleToggleLock() {
     if (!confirm(caseData?.is_locked ? "Mở khóa hồ sơ này để chỉnh sửa?" : "Khóa và chốt số liệu nghiệm thu cho hồ sơ này?")) {
       return;
@@ -337,7 +331,6 @@ export default function CaseDetailPage({ params }: { params: Promise<{ id: strin
     }
   }
 
-  // Handle Open OCR Modal
   function handleOpenOcrModal() {
     const v = caseData?.vehicles?.[0];
     setOcrForm({
@@ -357,7 +350,6 @@ export default function CaseDetailPage({ params }: { params: Promise<{ id: strin
     setOcrModalOpen(true);
   }
 
-  // Handle OCR Image File
   function handleOcrFileSelect(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -375,7 +367,6 @@ export default function CaseDetailPage({ params }: { params: Promise<{ id: strin
     reader.readAsDataURL(file);
   }
 
-  // Handle Scan with Gemini AI
   async function handleScanCavetWithAi() {
     if (!ocrImagePreview) {
       setOcrError("Vui lòng tải ảnh lên trước khi quét AI.");
@@ -420,7 +411,6 @@ export default function CaseDetailPage({ params }: { params: Promise<{ id: strin
     }
   }
 
-  // Handle Save Vehicle from OCR / Form
   async function handleSaveVehicle(e: React.FormEvent) {
     e.preventDefault();
     setOcrSaving(true);
@@ -466,7 +456,7 @@ export default function CaseDetailPage({ params }: { params: Promise<{ id: strin
     return (
       <div className="quanly-content-container py-12 text-center space-y-4">
         <div className="text-red-400 text-sm">⚠️ {error || "Hồ sơ không tồn tại"}</div>
-        <Link href="/quanly/cases" className="quanly-btn-secondary text-xs inline-block">
+        <Link href="/quanly/cases" className="quanly-btn-secondary inline-flex">
           ← Quay lại danh sách hồ sơ
         </Link>
       </div>
@@ -480,14 +470,14 @@ export default function CaseDetailPage({ params }: { params: Promise<{ id: strin
   const netEstimated = Math.max(0, caseData.final_amount - approvedCosts);
 
   return (
-    <div className="quanly-content-container max-w-6xl space-y-6">
+    <div className="quanly-content-container max-w-6xl">
       {/* Top Header Bar */}
-      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 border-b border-gray-800 pb-5">
-        <div>
-          <div className="flex items-center gap-2">
+      <div className="quanly-page-header">
+        <div className="quanly-page-title-group">
+          <div className="flex flex-wrap items-center gap-2">
             <Link
               href="/quanly/cases"
-              className="text-xs text-gray-400 hover:text-white px-2.5 py-1 rounded bg-gray-900 border border-gray-800"
+              className="text-xs text-gray-300 hover:text-white px-2.5 py-1.5 rounded-lg bg-gray-900 border border-gray-800 inline-flex items-center"
             >
               ← Danh sách hồ sơ
             </Link>
@@ -501,71 +491,70 @@ export default function CaseDetailPage({ params }: { params: Promise<{ id: strin
             )}
           </div>
 
-          <h1 className="text-xl font-bold text-white tracking-tight mt-2 flex items-center gap-2">
+          <h1 className="text-xl sm:text-2xl font-bold text-white tracking-tight mt-2.5 flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
             <span>{caseData.customer.name}</span>
             <span className="text-xs font-normal text-gray-400 font-mono">
               ({caseData.customer.phone})
             </span>
             {caseData.customer.company_name && (
               <span className="text-xs text-amber-400 font-normal">
-                - {caseData.customer.company_name}
+                · {caseData.customer.company_name}
               </span>
             )}
           </h1>
-          <p className="text-xs text-gray-400 mt-0.5">
-            Ngày tiếp nhận: {formatDate(caseData.received_at)} • Người phụ trách: {caseData.assigned_name || "Phạm Xuân Định"}
+          <p className="text-xs text-gray-400 mt-1">
+            Ngày tiếp nhận: {formatDate(caseData.received_at)} • Người phụ trách:{" "}
+            {caseData.assigned_name || "Phạm Xuân Định"}
           </p>
         </div>
 
         {/* Operational Actions */}
-        <div className="flex flex-wrap items-center gap-2">
+        <div className="quanly-action-bar">
           {caseData.status === "new" && (
             <button
+              type="button"
               onClick={() => handleStatusChange("processing")}
-              className="px-3 py-1.5 rounded-lg bg-amber-500/10 border border-amber-500/30 text-xs font-semibold text-amber-300 hover:bg-amber-500/20 transition"
+              className="quanly-btn-gold"
             >
-              ▶ Bắt đầu xử lý hồ sơ
+              ▶ Bắt đầu xử lý
             </button>
           )}
 
           {caseData.status === "processing" && (
             <button
+              type="button"
               onClick={() => handleStatusChange("completed")}
-              className="px-3 py-1.5 rounded-lg bg-emerald-500/10 border border-emerald-500/30 text-xs font-semibold text-emerald-300 hover:bg-emerald-500/20 transition"
+              className="quanly-btn-gold"
             >
               ✓ Đánh dấu Hoàn thành
             </button>
           )}
 
           {caseData.status === "completed" && (
-            <Link
-              href={`/quanly/invoices/create?caseId=${caseData.id}`}
-              className="quanly-btn-primary text-xs flex items-center gap-1.5"
-            >
+            <Link href={`/quanly/invoices/create?caseId=${caseData.id}`} className="quanly-btn-primary">
               🧾 Lập Phiếu thanh toán
             </Link>
           )}
 
           <button
+            type="button"
             onClick={handleToggleLock}
-            className={`px-3 py-1.5 rounded-lg text-xs font-semibold border transition ${
-              caseData.is_locked
-                ? "bg-purple-950/50 border-purple-800 text-purple-300 hover:bg-purple-900/50"
-                : "bg-gray-800 border-gray-700 text-gray-300 hover:text-white"
+            className={`quanly-btn-secondary ${
+              caseData.is_locked ? "!border-purple-700/60 !bg-purple-950/40 !text-purple-200" : ""
             }`}
             title="Khóa/Mở khóa số liệu nghiệm thu (Chỉ Owner)"
           >
-            {caseData.is_locked ? "🔓 Mở khóa số liệu" : "🔒 Khóa nghiệm thu"}
+            {caseData.is_locked ? "🔓 Mở khóa" : "🔒 Khóa nghiệm thu"}
           </button>
         </div>
       </div>
 
       {/* Stepper Pipeline */}
       <div className="bg-[#121620] border border-gray-800 rounded-xl p-4">
-        <div className="flex items-center justify-between text-xs">
-          <div className="flex items-center gap-2">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-0 text-xs">
+          <div className="flex items-center gap-2.5">
             <span
-              className={`w-6 h-6 rounded-full flex items-center justify-center font-bold text-xs ${
+              className={`w-6 h-6 shrink-0 rounded-full flex items-center justify-center font-bold text-xs ${
                 caseData.status === "new"
                   ? "bg-blue-500 text-black shadow-md shadow-blue-500/30"
                   : "bg-gray-800 text-gray-400"
@@ -577,10 +566,10 @@ export default function CaseDetailPage({ params }: { params: Promise<{ id: strin
               Mới tiếp nhận
             </span>
           </div>
-          <div className="flex-1 h-0.5 mx-3 bg-gray-800" />
-          <div className="flex items-center gap-2">
+          <div className="hidden sm:block flex-1 h-0.5 mx-3 bg-gray-800" />
+          <div className="flex items-center gap-2.5">
             <span
-              className={`w-6 h-6 rounded-full flex items-center justify-center font-bold text-xs ${
+              className={`w-6 h-6 shrink-0 rounded-full flex items-center justify-center font-bold text-xs ${
                 caseData.status === "processing"
                   ? "bg-amber-500 text-black shadow-md shadow-amber-500/30"
                   : "bg-gray-800 text-gray-400"
@@ -592,10 +581,10 @@ export default function CaseDetailPage({ params }: { params: Promise<{ id: strin
               Đang xử lý hồ sơ
             </span>
           </div>
-          <div className="flex-1 h-0.5 mx-3 bg-gray-800" />
-          <div className="flex items-center gap-2">
+          <div className="hidden sm:block flex-1 h-0.5 mx-3 bg-gray-800" />
+          <div className="flex items-center gap-2.5">
             <span
-              className={`w-6 h-6 rounded-full flex items-center justify-center font-bold text-xs ${
+              className={`w-6 h-6 shrink-0 rounded-full flex items-center justify-center font-bold text-xs ${
                 caseData.status === "completed"
                   ? "bg-emerald-500 text-black shadow-md shadow-emerald-500/30"
                   : "bg-gray-800 text-gray-400"
@@ -604,17 +593,17 @@ export default function CaseDetailPage({ params }: { params: Promise<{ id: strin
               3
             </span>
             <span className={caseData.status === "completed" ? "text-emerald-400 font-bold" : "text-gray-400"}>
-              Hoàn thành & Nghiệm thu
+              Hoàn thành &amp; Nghiệm thu
             </span>
           </div>
         </div>
       </div>
 
       {/* 4 Financial KPI Summary Cards */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
         <div className="quanly-kpi-card">
           <div className="text-[11px] text-gray-400">Giá báo ban đầu</div>
-          <div className="text-base font-bold font-mono text-gray-300 mt-1">
+          <div className="text-sm sm:text-base font-bold font-mono tabular-nums text-gray-300 mt-1">
             {formatMoney(caseData.estimated_amount)}
           </div>
           <div className="text-[10px] text-gray-500 mt-0.5">Giá theo báo giá</div>
@@ -622,7 +611,7 @@ export default function CaseDetailPage({ params }: { params: Promise<{ id: strin
 
         <div className="quanly-kpi-card">
           <div className="text-[11px] text-gray-400">Giá chốt nghiệm thu</div>
-          <div className="text-base font-bold font-mono text-emerald-400 mt-1">
+          <div className="text-sm sm:text-base font-bold font-mono tabular-nums text-emerald-400 mt-1">
             {formatMoney(caseData.final_amount)}
           </div>
           <div className="text-[10px] text-emerald-500/80 mt-0.5">
@@ -632,146 +621,213 @@ export default function CaseDetailPage({ params }: { params: Promise<{ id: strin
 
         <div className="quanly-kpi-card">
           <div className="text-[11px] text-gray-400">Chi phí đã duyệt</div>
-          <div className="text-base font-bold font-mono text-rose-400 mt-1">
+          <div className="text-sm sm:text-base font-bold font-mono tabular-nums text-rose-400 mt-1">
             {formatMoney(approvedCosts)}
           </div>
-          <div className="text-[10px] text-gray-500 mt-0.5">Lệ phí & Công tác phí</div>
+          <div className="text-[10px] text-gray-500 mt-0.5">Lệ phí &amp; Công tác phí</div>
         </div>
 
         <div className="quanly-kpi-card">
           <div className="text-[11px] text-gray-400">Lợi nhuận gộp ước tính</div>
-          <div className="text-base font-bold font-mono text-[#d4af37] mt-1">
+          <div className="text-sm sm:text-base font-bold font-mono tabular-nums text-[#d4af37] mt-1">
             {formatMoney(netEstimated)}
           </div>
-          <div className="text-[10px] text-amber-500/80 mt-0.5">Chia 50/50: {formatMoney(Math.round(netEstimated / 2))}</div>
+          <div className="text-[10px] text-amber-500/80 mt-0.5">
+            Chia 50/50: {formatMoney(Math.round(netEstimated / 2))}
+          </div>
         </div>
       </div>
 
       {/* Tabs Navigation */}
-      <div className="flex border-b border-gray-800 gap-2">
-        <button
-          onClick={() => setActiveTab("services")}
-          className={`px-4 py-2 text-xs font-semibold border-b-2 transition ${
-            activeTab === "services"
-              ? "border-[#d4af37] text-[#d4af37]"
-              : "border-transparent text-gray-400 hover:text-white"
-          }`}
-        >
-          📋 Dịch vụ & Điều chỉnh giá ({caseData.items.length})
-        </button>
+      <div className="border-b border-gray-800">
+        <div className="quanly-scroll-tabs" role="tablist" aria-label="Chi tiết hồ sơ">
+          <button
+            type="button"
+            role="tab"
+            aria-selected={activeTab === "services"}
+            onClick={(e) => {
+              setActiveTab("services");
+              e.currentTarget.scrollIntoView({ block: "nearest", inline: "nearest" });
+            }}
+            className={`px-3.5 py-2.5 text-xs font-semibold transition ${
+              activeTab === "services" ? "text-[#d4af37]" : "text-gray-400 hover:text-white"
+            }`}
+          >
+            📋 Dịch vụ &amp; Điều chỉnh giá ({caseData.items.length})
+          </button>
 
-        <button
-          onClick={() => setActiveTab("documents")}
-          className={`px-4 py-2 text-xs font-semibold border-b-2 transition ${
-            activeTab === "documents"
-              ? "border-[#d4af37] text-[#d4af37]"
-              : "border-transparent text-gray-400 hover:text-white"
-          }`}
-        >
-          📑 Checklist Giấy tờ ({caseData.documents.filter((d) => d.status === "received").length}/
-          {caseData.documents.length})
-        </button>
+          <button
+            type="button"
+            role="tab"
+            aria-selected={activeTab === "documents"}
+            onClick={(e) => {
+              setActiveTab("documents");
+              e.currentTarget.scrollIntoView({ block: "nearest", inline: "nearest" });
+            }}
+            className={`px-3.5 py-2.5 text-xs font-semibold transition ${
+              activeTab === "documents" ? "text-[#d4af37]" : "text-gray-400 hover:text-white"
+            }`}
+          >
+            📑 Checklist Giấy tờ ({caseData.documents.filter((d) => d.status === "received").length}/
+            {caseData.documents.length})
+          </button>
 
-        <button
-          onClick={() => setActiveTab("costs")}
-          className={`px-4 py-2 text-xs font-semibold border-b-2 transition ${
-            activeTab === "costs"
-              ? "border-[#d4af37] text-[#d4af37]"
-              : "border-transparent text-gray-400 hover:text-white"
-          }`}
-        >
-          💰 Chi phí phát sinh ({caseData.costs?.length || 0})
-        </button>
+          <button
+            type="button"
+            role="tab"
+            aria-selected={activeTab === "costs"}
+            onClick={(e) => {
+              setActiveTab("costs");
+              e.currentTarget.scrollIntoView({ block: "nearest", inline: "nearest" });
+            }}
+            className={`px-3.5 py-2.5 text-xs font-semibold transition ${
+              activeTab === "costs" ? "text-[#d4af37]" : "text-gray-400 hover:text-white"
+            }`}
+          >
+            💰 Chi phí phát sinh ({caseData.costs?.length || 0})
+          </button>
 
-        <button
-          onClick={() => setActiveTab("timeline")}
-          className={`px-4 py-2 text-xs font-semibold border-b-2 transition ${
-            activeTab === "timeline"
-              ? "border-[#d4af37] text-[#d4af37]"
-              : "border-transparent text-gray-400 hover:text-white"
-          }`}
-        >
-          ⏱ Nhật ký xử lý ({caseData.audit_logs?.length || 0})
-        </button>
+          <button
+            type="button"
+            role="tab"
+            aria-selected={activeTab === "timeline"}
+            onClick={(e) => {
+              setActiveTab("timeline");
+              e.currentTarget.scrollIntoView({ block: "nearest", inline: "nearest" });
+            }}
+            className={`px-3.5 py-2.5 text-xs font-semibold transition ${
+              activeTab === "timeline" ? "text-[#d4af37]" : "text-gray-400 hover:text-white"
+            }`}
+          >
+            ⏱ Nhật ký xử lý ({caseData.audit_logs?.length || 0})
+          </button>
+        </div>
       </div>
 
       {/* TAB 1: Services & Price Adjustment */}
       {activeTab === "services" && (
         <div className="space-y-4">
-          <div className="quanly-card p-0 overflow-hidden">
-            <table className="w-full text-left text-sm text-gray-300">
-              <thead className="text-xs uppercase text-gray-500 bg-black/40 border-b border-gray-800">
-                <tr>
-                  <th className="px-5 py-3">Tên dịch vụ</th>
-                  <th className="px-5 py-3 font-mono">Giá báo ban đầu</th>
-                  <th className="px-5 py-3 font-mono">Giá điều chỉnh</th>
-                  <th className="px-5 py-3 text-center">SL</th>
-                  <th className="px-5 py-3 font-mono">Thành tiền</th>
-                  <th className="px-5 py-3">Lý do điều chỉnh</th>
-                  <th className="px-5 py-3 text-right">Thao tác</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-800/60 text-xs">
-                {caseData.items.map((item) => {
-                  const isChanged = item.adjusted_price !== item.quoted_price;
-                  return (
-                    <tr key={item.id} className="hover:bg-gray-800/20">
-                      <td className="px-5 py-3.5 font-medium text-white">
-                        {item.service_name}
-                      </td>
-                      <td className="px-5 py-3.5 font-mono text-gray-400">
-                        {formatMoney(item.quoted_price)}
-                      </td>
-                      <td className="px-5 py-3.5 font-mono">
-                        <span className={isChanged ? "text-amber-400 font-bold" : "text-gray-300"}>
-                          {formatMoney(item.adjusted_price)}
-                        </span>
-                      </td>
-                      <td className="px-5 py-3.5 text-center font-mono">{item.quantity}</td>
-                      <td className="px-5 py-3.5 font-mono font-bold text-emerald-400">
-                        {formatMoney(item.final_price)}
-                      </td>
-                      <td className="px-5 py-3.5 text-gray-400 italic">
-                        {item.adjustment_reason || "-"}
-                      </td>
-                      <td className="px-5 py-3.5 text-right">
-                        <button
-                          disabled={caseData.is_locked}
-                          onClick={() => {
-                            setEditingItemId(item.id);
-                            setNewAdjustedPrice(item.adjusted_price);
-                            setNewAdjustmentReason(item.adjustment_reason || "");
-                            setAdjustModalOpen(true);
-                          }}
-                          className="px-2.5 py-1 rounded bg-gray-800 text-gray-300 hover:text-white hover:bg-gray-700 disabled:opacity-40 text-xs"
-                        >
-                          Điều chỉnh giá
-                        </button>
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
+          {/* Mobile Services Cards */}
+          <div className="space-y-3 md:hidden">
+            {caseData.items.map((item) => {
+              const isChanged = item.adjusted_price !== item.quoted_price;
+              return (
+                <article key={item.id} className="quanly-mobile-card">
+                  <div className="font-semibold text-sm text-white">{item.service_name}</div>
+                  <div className="grid grid-cols-3 gap-2 text-xs pt-2 border-t border-white/5">
+                    <div>
+                      <span className="text-[10px] text-gray-500 block">Giá báo</span>
+                      <span className="font-mono text-gray-300">{formatMoney(item.quoted_price)}</span>
+                    </div>
+                    <div>
+                      <span className="text-[10px] text-gray-500 block">Điều chỉnh</span>
+                      <span className={`font-mono ${isChanged ? "text-amber-400 font-bold" : "text-gray-300"}`}>
+                        {formatMoney(item.adjusted_price)}
+                      </span>
+                    </div>
+                    <div className="text-right">
+                      <span className="text-[10px] text-gray-500 block">SL {item.quantity} · Thành tiền</span>
+                      <span className="font-mono font-bold text-emerald-400">{formatMoney(item.final_price)}</span>
+                    </div>
+                  </div>
+                  {item.adjustment_reason && (
+                    <div className="text-[11px] text-gray-400 italic">Lý do: {item.adjustment_reason}</div>
+                  )}
+                  <button
+                    type="button"
+                    disabled={caseData.is_locked}
+                    onClick={() => {
+                      setEditingItemId(item.id);
+                      setNewAdjustedPrice(item.adjusted_price);
+                      setNewAdjustmentReason(item.adjustment_reason || "");
+                      setAdjustModalOpen(true);
+                    }}
+                    className="quanly-btn-secondary w-full !py-2 text-xs disabled:opacity-40"
+                  >
+                    Điều chỉnh giá
+                  </button>
+                </article>
+              );
+            })}
           </div>
 
-          {/* Vehicle summary card below services */}
+          {/* Desktop Services Table */}
+          <div className="quanly-card !p-0 overflow-hidden hidden md:block">
+            <div className="quanly-table-scroll" tabIndex={0} role="region" aria-label="Bảng dịch vụ hồ sơ">
+              <table className="w-full min-w-[780px] text-left text-sm text-gray-300">
+                <thead className="text-xs uppercase text-gray-500 bg-black/40 border-b border-gray-800">
+                  <tr>
+                    <th className="px-5 py-3">Tên dịch vụ</th>
+                    <th className="px-5 py-3 font-mono whitespace-nowrap">Giá báo ban đầu</th>
+                    <th className="px-5 py-3 font-mono whitespace-nowrap">Giá điều chỉnh</th>
+                    <th className="px-5 py-3 text-center whitespace-nowrap">SL</th>
+                    <th className="px-5 py-3 font-mono whitespace-nowrap">Thành tiền</th>
+                    <th className="px-5 py-3">Lý do điều chỉnh</th>
+                    <th className="px-5 py-3 text-right whitespace-nowrap">Thao tác</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-800/60 text-xs">
+                  {caseData.items.map((item) => {
+                    const isChanged = item.adjusted_price !== item.quoted_price;
+                    return (
+                      <tr key={item.id} className="hover:bg-gray-800/20">
+                        <td className="px-5 py-3.5 font-medium text-white">{item.service_name}</td>
+                        <td className="px-5 py-3.5 font-mono text-gray-400 whitespace-nowrap">
+                          {formatMoney(item.quoted_price)}
+                        </td>
+                        <td className="px-5 py-3.5 font-mono whitespace-nowrap">
+                          <span className={isChanged ? "text-amber-400 font-bold" : "text-gray-300"}>
+                            {formatMoney(item.adjusted_price)}
+                          </span>
+                        </td>
+                        <td className="px-5 py-3.5 text-center font-mono">{item.quantity}</td>
+                        <td className="px-5 py-3.5 font-mono font-bold text-emerald-400 whitespace-nowrap">
+                          {formatMoney(item.final_price)}
+                        </td>
+                        <td className="px-5 py-3.5 text-gray-400 italic">
+                          {item.adjustment_reason || "-"}
+                        </td>
+                        <td className="px-5 py-3.5 text-right whitespace-nowrap">
+                          <button
+                            type="button"
+                            disabled={caseData.is_locked}
+                            onClick={() => {
+                              setEditingItemId(item.id);
+                              setNewAdjustedPrice(item.adjusted_price);
+                              setNewAdjustmentReason(item.adjustment_reason || "");
+                              setAdjustModalOpen(true);
+                            }}
+                            className="px-2.5 py-1.5 rounded bg-gray-800 text-gray-300 hover:text-white hover:bg-gray-700 disabled:opacity-40 text-xs"
+                          >
+                            Điều chỉnh giá
+                          </button>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          {/* Vehicle summary card */}
           <div className="quanly-card">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-3 border-b border-gray-800/60 pb-3">
+            <div className="quanly-section-head mb-3 border-b border-gray-800/60 pb-3">
               <div>
                 <h3 className="text-xs font-bold uppercase text-gray-300 flex items-center gap-2">
                   <span>🚗</span> Phương tiện xử lý trong hồ sơ
                 </h3>
-                <p className="text-[11px] text-gray-400">
+                <p className="text-[11px] text-gray-400 mt-0.5">
                   Dữ liệu xe chính thức phục vụ sang tên / rút hồ sơ / đổi biển
                 </p>
               </div>
               <button
+                type="button"
                 disabled={caseData.is_locked}
                 onClick={handleOpenOcrModal}
-                className="quanly-btn-secondary text-xs flex items-center gap-1.5 self-start sm:self-auto hover:border-[#d4af37]"
+                className="quanly-btn-secondary w-full sm:w-auto text-xs hover:border-[#d4af37] disabled:opacity-40"
               >
-                <span>📸</span> Quét Cà vẹt bằng Gemini AI / Cập nhật xe
+                <span>📸</span> Quét Cà vẹt AI / Cập nhật xe
               </button>
             </div>
 
@@ -786,9 +842,7 @@ export default function CaseDetailPage({ params }: { params: Promise<{ id: strin
 
                 <div className="p-2.5 bg-black/40 border border-gray-800/80 rounded-lg">
                   <span className="text-[10px] text-gray-400 block mb-0.5">Chủ xe trên Cà vẹt:</span>
-                  <span className="font-semibold text-white">
-                    {primaryVehicle.owner_name || "Chưa có"}
-                  </span>
+                  <span className="font-semibold text-white">{primaryVehicle.owner_name || "Chưa có"}</span>
                 </div>
 
                 <div className="p-2.5 bg-black/40 border border-gray-800/80 rounded-lg">
@@ -801,14 +855,14 @@ export default function CaseDetailPage({ params }: { params: Promise<{ id: strin
                 {primaryVehicle.chassis_number && (
                   <div className="p-2.5 bg-black/40 border border-gray-800/80 rounded-lg">
                     <span className="text-[10px] text-gray-400 block mb-0.5">Số khung:</span>
-                    <span className="font-mono text-gray-200">{primaryVehicle.chassis_number}</span>
+                    <span className="font-mono text-gray-200 break-all">{primaryVehicle.chassis_number}</span>
                   </div>
                 )}
 
                 {primaryVehicle.engine_number && (
                   <div className="p-2.5 bg-black/40 border border-gray-800/80 rounded-lg">
                     <span className="text-[10px] text-gray-400 block mb-0.5">Số máy:</span>
-                    <span className="font-mono text-gray-200">{primaryVehicle.engine_number}</span>
+                    <span className="font-mono text-gray-200 break-all">{primaryVehicle.engine_number}</span>
                   </div>
                 )}
 
@@ -829,8 +883,8 @@ export default function CaseDetailPage({ params }: { params: Promise<{ id: strin
                 )}
               </div>
             ) : (
-              <div className="text-xs text-gray-500 py-3 italic flex items-center justify-between">
-                <span>Chưa có thông tin xe. Bấm nút phía trên để tải ảnh Cà vẹt quét tự động bằng AI hoặc nhập tay.</span>
+              <div className="text-xs text-gray-500 py-3 italic">
+                Chưa có thông tin xe. Bấm nút phía trên để tải ảnh Cà vẹt quét tự động bằng AI hoặc nhập tay.
               </div>
             )}
           </div>
@@ -841,13 +895,11 @@ export default function CaseDetailPage({ params }: { params: Promise<{ id: strin
       {activeTab === "documents" && (
         <div className="space-y-4">
           <div className="quanly-card">
-            <div className="flex items-center justify-between mb-4">
-              <div>
-                <h3 className="text-sm font-bold text-white">📑 Danh mục Giấy tờ bàn giao</h3>
-                <p className="text-[11px] text-gray-400">
-                  Click chuyển trạng thái nhanh để xác nhận bàn giao bản gốc
-                </p>
-              </div>
+            <div className="mb-4">
+              <h3 className="text-sm font-bold text-white">📑 Danh mục Giấy tờ bàn giao</h3>
+              <p className="text-[11px] text-gray-400 mt-0.5">
+                Chọn trạng thái nhanh để xác nhận bàn giao bản gốc
+              </p>
             </div>
 
             <div className="space-y-3">
@@ -856,24 +908,22 @@ export default function CaseDetailPage({ params }: { params: Promise<{ id: strin
                   key={doc.id}
                   className="p-3.5 bg-black/40 border border-gray-800 rounded-xl flex flex-col sm:flex-row sm:items-center justify-between gap-3"
                 >
-                  <div>
-                    <div className="font-semibold text-white text-xs flex items-center gap-2">
+                  <div className="min-w-0">
+                    <div className="font-semibold text-white text-xs flex flex-wrap items-center gap-2">
                       <span>{doc.document_name}</span>
                       {doc.status === "received" && (
-                        <span className="text-[10px] px-2 py-0.5 rounded bg-emerald-950/60 text-emerald-300 border border-emerald-800/40">
+                        <span className="text-[10px] px-2 py-0.5 rounded bg-emerald-950/60 text-emerald-300 border border-emerald-800/40 whitespace-nowrap">
                           ✓ Đã nhận
                         </span>
                       )}
                       {doc.status === "missing" && (
-                        <span className="text-[10px] px-2 py-0.5 rounded bg-rose-950/60 text-rose-300 border border-rose-800/40">
+                        <span className="text-[10px] px-2 py-0.5 rounded bg-rose-950/60 text-rose-300 border border-rose-800/40 whitespace-nowrap">
                           ⚠️ Thiếu/Bổ sung sau
                         </span>
                       )}
                     </div>
                     {doc.note && (
-                      <div className="text-[11px] text-gray-400 mt-1 italic">
-                        Ghi chú: {doc.note}
-                      </div>
+                      <div className="text-[11px] text-gray-400 mt-1 italic">Ghi chú: {doc.note}</div>
                     )}
                     {doc.verified_by && (
                       <div className="text-[10px] text-gray-500 mt-0.5">
@@ -882,36 +932,39 @@ export default function CaseDetailPage({ params }: { params: Promise<{ id: strin
                     )}
                   </div>
 
-                  <div className="flex items-center gap-1.5 self-end sm:self-auto">
+                  <div className="grid grid-cols-3 sm:flex items-center gap-1.5 w-full sm:w-auto shrink-0">
                     <button
+                      type="button"
                       disabled={caseData.is_locked}
                       onClick={() => handleDocStatusChange(doc.id, "received")}
-                      className={`px-2.5 py-1 rounded text-xs transition ${
+                      className={`min-h-[38px] sm:min-h-0 px-2.5 py-1.5 rounded-lg text-xs transition ${
                         doc.status === "received"
                           ? "bg-emerald-600 text-white font-bold"
-                          : "bg-gray-800 text-gray-400 hover:text-white"
+                          : "bg-gray-800 text-gray-300 hover:text-white"
                       }`}
                     >
                       Đã nhận
                     </button>
                     <button
+                      type="button"
                       disabled={caseData.is_locked}
                       onClick={() => handleDocStatusChange(doc.id, "missing")}
-                      className={`px-2.5 py-1 rounded text-xs transition ${
+                      className={`min-h-[38px] sm:min-h-0 px-2.5 py-1.5 rounded-lg text-xs transition ${
                         doc.status === "missing"
                           ? "bg-rose-600 text-white font-bold"
-                          : "bg-gray-800 text-gray-400 hover:text-white"
+                          : "bg-gray-800 text-gray-300 hover:text-white"
                       }`}
                     >
                       Bổ sung sau
                     </button>
                     <button
+                      type="button"
                       disabled={caseData.is_locked}
                       onClick={() => handleDocStatusChange(doc.id, "required")}
-                      className={`px-2.5 py-1 rounded text-xs transition ${
+                      className={`min-h-[38px] sm:min-h-0 px-2.5 py-1.5 rounded-lg text-xs transition ${
                         doc.status === "required"
                           ? "bg-amber-600 text-white font-bold"
-                          : "bg-gray-800 text-gray-400 hover:text-white"
+                          : "bg-gray-800 text-gray-300 hover:text-white"
                       }`}
                     >
                       Cần thu
@@ -927,92 +980,153 @@ export default function CaseDetailPage({ params }: { params: Promise<{ id: strin
       {/* TAB 3: Costs Management */}
       {activeTab === "costs" && (
         <div className="space-y-4">
-          <div className="flex items-center justify-between">
+          <div className="quanly-section-head">
             <h3 className="text-sm font-bold text-white">💰 Chi phí thực hiện dịch vụ</h3>
             <button
+              type="button"
               disabled={caseData.is_locked}
               onClick={() => setCostModalOpen(true)}
-              className="quanly-btn-secondary text-xs flex items-center gap-1"
+              className="quanly-btn-secondary w-full sm:w-auto text-xs disabled:opacity-40"
             >
               ＋ Nhập chi phí phát sinh
             </button>
           </div>
 
-          <div className="quanly-card p-0 overflow-hidden">
-            <table className="w-full text-left text-sm text-gray-300">
-              <thead className="text-xs uppercase text-gray-500 bg-black/40 border-b border-gray-800">
-                <tr>
-                  <th className="px-5 py-3">Nhóm chi phí</th>
-                  <th className="px-5 py-3">Mô tả</th>
-                  <th className="px-5 py-3 font-mono">Số tiền</th>
-                  <th className="px-5 py-3">Ngày phát sinh</th>
-                  <th className="px-5 py-3">Trạng thái</th>
-                  <th className="px-5 py-3">Người nhập / duyệt</th>
-                  <th className="px-5 py-3 text-right">Duyệt</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-800/60 text-xs">
-                {!caseData.costs || caseData.costs.length === 0 ? (
+          {/* Mobile Cost Cards */}
+          <div className="space-y-3 md:hidden">
+            {!caseData.costs || caseData.costs.length === 0 ? (
+              <div className="quanly-card text-center py-8 text-xs text-gray-500">
+                Chưa phát sinh chi phí nào cho hồ sơ này.
+              </div>
+            ) : (
+              caseData.costs.map((c) => (
+                <article key={c.id} className="quanly-mobile-card">
+                  <div className="flex items-start justify-between gap-2">
+                    <div className="min-w-0">
+                      <span className="text-[11px] text-gray-400">{c.cost_group}</span>
+                      <div className="font-semibold text-sm text-white mt-0.5">{c.description}</div>
+                    </div>
+                    <span
+                      className={`shrink-0 px-2 py-0.5 rounded text-[10px] font-semibold whitespace-nowrap ${
+                        c.status === "approved"
+                          ? "bg-emerald-950/60 text-emerald-300 border border-emerald-800/40"
+                          : c.status === "rejected"
+                          ? "bg-rose-950/60 text-rose-300 border border-rose-800/40"
+                          : "bg-amber-950/60 text-amber-300 border border-amber-800/40"
+                      }`}
+                    >
+                      {c.status === "approved" ? "✓ Đã duyệt" : c.status === "rejected" ? "✕ Từ chối" : "Bản nháp"}
+                    </span>
+                  </div>
+                  <div className="flex items-center justify-between text-xs pt-2 border-t border-white/5">
+                    <span className="text-gray-400">{c.incurred_date}</span>
+                    <span className="font-mono font-bold text-rose-400 text-sm">{formatMoney(c.amount)}</span>
+                  </div>
+                  {c.status !== "approved" && (
+                    <div className="quanly-action-bar pt-1">
+                      <button
+                        type="button"
+                        disabled={caseData.is_locked}
+                        onClick={() => handleApproveCost(c.id, "approved")}
+                        className="quanly-btn-gold !py-2 !text-xs disabled:opacity-40"
+                      >
+                        ✓ Duyệt chi phí
+                      </button>
+                      <button
+                        type="button"
+                        disabled={caseData.is_locked}
+                        onClick={() => handleApproveCost(c.id, "rejected")}
+                        className="quanly-btn-danger !py-2 !text-xs disabled:opacity-40"
+                      >
+                        ✕ Hủy
+                      </button>
+                    </div>
+                  )}
+                </article>
+              ))
+            )}
+          </div>
+
+          {/* Desktop Cost Table */}
+          <div className="quanly-card !p-0 overflow-hidden hidden md:block">
+            <div className="quanly-table-scroll" tabIndex={0} role="region" aria-label="Bảng chi phí phát sinh">
+              <table className="w-full min-w-[780px] text-left text-sm text-gray-300">
+                <thead className="text-xs uppercase text-gray-500 bg-black/40 border-b border-gray-800">
                   <tr>
-                    <td colSpan={7} className="text-center py-8 text-gray-500">
-                      Chưa phát sinh chi phí nào cho hồ sơ này.
-                    </td>
+                    <th className="px-5 py-3">Nhóm chi phí</th>
+                    <th className="px-5 py-3">Mô tả</th>
+                    <th className="px-5 py-3 font-mono whitespace-nowrap">Số tiền</th>
+                    <th className="px-5 py-3 whitespace-nowrap">Ngày phát sinh</th>
+                    <th className="px-5 py-3 whitespace-nowrap">Trạng thái</th>
+                    <th className="px-5 py-3">Người nhập / duyệt</th>
+                    <th className="px-5 py-3 text-right whitespace-nowrap">Duyệt</th>
                   </tr>
-                ) : (
-                  caseData.costs.map((c) => (
-                    <tr key={c.id} className="hover:bg-gray-800/20">
-                      <td className="px-5 py-3.5 text-gray-400">{c.cost_group}</td>
-                      <td className="px-5 py-3.5 font-medium text-white">{c.description}</td>
-                      <td className="px-5 py-3.5 font-mono font-bold text-rose-400">
-                        {formatMoney(c.amount)}
-                      </td>
-                      <td className="px-5 py-3.5 text-gray-400">{c.incurred_date}</td>
-                      <td className="px-5 py-3.5">
-                        <span
-                          className={`px-2 py-0.5 rounded text-[10px] font-semibold ${
-                            c.status === "approved"
-                              ? "bg-emerald-950/60 text-emerald-300 border border-emerald-800/40"
-                              : c.status === "rejected"
-                              ? "bg-rose-950/60 text-rose-300 border border-rose-800/40"
-                              : "bg-amber-950/60 text-amber-300 border border-amber-800/40"
-                          }`}
-                        >
-                          {c.status === "approved"
-                            ? "✓ Đã duyệt"
-                            : c.status === "rejected"
-                            ? "✕ Từ chối"
-                            : "Bản nháp"}
-                        </span>
-                      </td>
-                      <td className="px-5 py-3.5 text-gray-400 text-[11px]">
-                        <div>Nhập: {c.submitted_by || "Nhân viên"}</div>
-                        {c.approved_by && <div>Duyệt: {c.approved_by}</div>}
-                      </td>
-                      <td className="px-5 py-3.5 text-right">
-                        {c.status !== "approved" && (
-                          <div className="flex items-center justify-end gap-1.5">
-                            <button
-                              disabled={caseData.is_locked}
-                              onClick={() => handleApproveCost(c.id, "approved")}
-                              className="px-2 py-1 bg-emerald-950/60 border border-emerald-800/40 text-emerald-300 rounded text-[11px] hover:bg-emerald-900/60"
-                            >
-                              Duyệt
-                            </button>
-                            <button
-                              disabled={caseData.is_locked}
-                              onClick={() => handleApproveCost(c.id, "rejected")}
-                              className="px-2 py-1 bg-rose-950/60 border border-rose-800/40 text-rose-300 rounded text-[11px] hover:bg-rose-900/60"
-                            >
-                              Hủy
-                            </button>
-                          </div>
-                        )}
+                </thead>
+                <tbody className="divide-y divide-gray-800/60 text-xs">
+                  {!caseData.costs || caseData.costs.length === 0 ? (
+                    <tr>
+                      <td colSpan={7} className="text-center py-8 text-gray-500">
+                        Chưa phát sinh chi phí nào cho hồ sơ này.
                       </td>
                     </tr>
-                  ))
-                )}
-              </tbody>
-            </table>
+                  ) : (
+                    caseData.costs.map((c) => (
+                      <tr key={c.id} className="hover:bg-gray-800/20">
+                        <td className="px-5 py-3.5 text-gray-400 whitespace-nowrap">{c.cost_group}</td>
+                        <td className="px-5 py-3.5 font-medium text-white">{c.description}</td>
+                        <td className="px-5 py-3.5 font-mono font-bold text-rose-400 whitespace-nowrap">
+                          {formatMoney(c.amount)}
+                        </td>
+                        <td className="px-5 py-3.5 text-gray-400 whitespace-nowrap">{c.incurred_date}</td>
+                        <td className="px-5 py-3.5 whitespace-nowrap">
+                          <span
+                            className={`px-2 py-0.5 rounded text-[10px] font-semibold ${
+                              c.status === "approved"
+                                ? "bg-emerald-950/60 text-emerald-300 border border-emerald-800/40"
+                                : c.status === "rejected"
+                                ? "bg-rose-950/60 text-rose-300 border border-rose-800/40"
+                                : "bg-amber-950/60 text-amber-300 border border-amber-800/40"
+                            }`}
+                          >
+                            {c.status === "approved"
+                              ? "✓ Đã duyệt"
+                              : c.status === "rejected"
+                              ? "✕ Từ chối"
+                              : "Bản nháp"}
+                          </span>
+                        </td>
+                        <td className="px-5 py-3.5 text-gray-400 text-[11px]">
+                          <div>Nhập: {c.submitted_by || "Nhân viên"}</div>
+                          {c.approved_by && <div>Duyệt: {c.approved_by}</div>}
+                        </td>
+                        <td className="px-5 py-3.5 text-right whitespace-nowrap">
+                          {c.status !== "approved" && (
+                            <div className="flex items-center justify-end gap-1.5">
+                              <button
+                                type="button"
+                                disabled={caseData.is_locked}
+                                onClick={() => handleApproveCost(c.id, "approved")}
+                                className="px-2.5 py-1 bg-emerald-950/60 border border-emerald-800/40 text-emerald-300 rounded text-[11px] hover:bg-emerald-900/60"
+                              >
+                                Duyệt
+                              </button>
+                              <button
+                                type="button"
+                                disabled={caseData.is_locked}
+                                onClick={() => handleApproveCost(c.id, "rejected")}
+                                className="px-2.5 py-1 bg-rose-950/60 border border-rose-800/40 text-rose-300 rounded text-[11px] hover:bg-rose-900/60"
+                              >
+                                Hủy
+                              </button>
+                            </div>
+                          )}
+                        </td>
+                      </tr>
+                    ))
+                  )}
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
       )}
@@ -1020,20 +1134,20 @@ export default function CaseDetailPage({ params }: { params: Promise<{ id: strin
       {/* TAB 4: Timeline / Audit logs */}
       {activeTab === "timeline" && (
         <div className="quanly-card space-y-4">
-          <h3 className="text-sm font-bold text-white mb-2">⏱ Lịch sử Thao tác & Nhật ký Xử lý</h3>
+          <h3 className="text-sm font-bold text-white mb-2">⏱ Lịch sử Thao tác &amp; Nhật ký Xử lý</h3>
           <div className="space-y-3">
             {caseData.audit_logs?.map((log) => (
               <div
                 key={log.id}
-                className="p-3 bg-black/40 border border-gray-800 rounded-lg flex items-start justify-between gap-4 text-xs"
+                className="p-3 bg-black/40 border border-gray-800 rounded-lg flex flex-col sm:flex-row sm:items-start justify-between gap-1.5 sm:gap-4 text-xs"
               >
-                <div>
+                <div className="min-w-0">
                   <div className="font-semibold text-white">{log.details || log.action}</div>
                   <div className="text-[10px] text-gray-500 mt-1">
                     Thực hiện bởi: <span className="text-gray-300">{log.actor_name}</span>
                   </div>
                 </div>
-                <div className="text-[10px] text-gray-500 font-mono whitespace-nowrap">
+                <div className="text-[10px] text-gray-500 font-mono whitespace-nowrap shrink-0">
                   {formatDate(log.timestamp)}
                 </div>
               </div>
@@ -1042,20 +1156,20 @@ export default function CaseDetailPage({ params }: { params: Promise<{ id: strin
         </div>
       )}
 
-      {/* MODAL: Adjust Price (Bắt buộc lý do) */}
+      {/* MODAL: Adjust Price */}
       {adjustModalOpen && (
-        <div className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+        <div className="fixed inset-0 bg-black/75 backdrop-blur-sm z-50 flex items-center justify-center p-4">
           <form
             onSubmit={handleSaveAdjustment}
-            className="bg-[#121620] border border-gray-800 rounded-2xl max-w-md w-full p-6 space-y-4 shadow-2xl"
+            className="bg-[#121620] border border-gray-800 rounded-2xl max-w-md w-full p-5 sm:p-6 space-y-4 shadow-2xl max-h-[90dvh] overflow-y-auto"
           >
             <h3 className="text-base font-bold text-white">⚙️ Điều chỉnh Đơn giá Dịch vụ</h3>
             <p className="text-xs text-gray-400">
-              Quy tắc hệ thống: Khi giá điều chỉnh khác giá báo ban đầu, bạn bắt buộc phải ghi rõ lý do để lưu vết kiểm toán.
+              Quy tắc hệ thống: Khi giá điều chỉnh khác giá báo ban đầu, bắt buộc ghi rõ lý do để lưu vết kiểm toán.
             </p>
 
             {adjustError && (
-              <div className="p-2.5 bg-red-950/40 border border-red-800/60 rounded-lg text-xs text-red-300">
+              <div role="alert" className="p-2.5 bg-red-950/40 border border-red-800/60 rounded-lg text-xs text-red-300">
                 ⚠️ {adjustError}
               </div>
             )}
@@ -1073,9 +1187,7 @@ export default function CaseDetailPage({ params }: { params: Promise<{ id: strin
             </div>
 
             <div>
-              <label className="block text-xs text-gray-300 mb-1">
-                Lý do điều chỉnh giá *
-              </label>
+              <label className="block text-xs text-gray-300 mb-1">Lý do điều chỉnh giá *</label>
               <textarea
                 rows={3}
                 required
@@ -1086,18 +1198,18 @@ export default function CaseDetailPage({ params }: { params: Promise<{ id: strin
               />
             </div>
 
-            <div className="flex items-center justify-end gap-2 pt-2">
+            <div className="quanly-action-bar pt-2">
               <button
                 type="button"
                 onClick={() => setAdjustModalOpen(false)}
-                className="px-4 py-2 rounded-lg bg-gray-800 text-xs text-gray-300 hover:text-white"
+                className="quanly-btn-secondary"
               >
                 Hủy
               </button>
               <button
                 type="submit"
                 disabled={adjustSubmitting}
-                className="quanly-btn-primary text-xs"
+                className="quanly-btn-primary"
               >
                 {adjustSubmitting ? "Đang lưu..." : "Lưu điều chỉnh"}
               </button>
@@ -1108,10 +1220,10 @@ export default function CaseDetailPage({ params }: { params: Promise<{ id: strin
 
       {/* MODAL: Add Cost */}
       {costModalOpen && (
-        <div className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+        <div className="fixed inset-0 bg-black/75 backdrop-blur-sm z-50 flex items-center justify-center p-4">
           <form
             onSubmit={handleAddCost}
-            className="bg-[#121620] border border-gray-800 rounded-2xl max-w-md w-full p-6 space-y-4 shadow-2xl"
+            className="bg-[#121620] border border-gray-800 rounded-2xl max-w-md w-full p-5 sm:p-6 space-y-4 shadow-2xl max-h-[90dvh] overflow-y-auto"
           >
             <h3 className="text-base font-bold text-white">💰 Nhập Chi phí Phát sinh</h3>
             <p className="text-xs text-gray-400">
@@ -1157,18 +1269,18 @@ export default function CaseDetailPage({ params }: { params: Promise<{ id: strin
               />
             </div>
 
-            <div className="flex items-center justify-end gap-2 pt-2">
+            <div className="quanly-action-bar pt-2">
               <button
                 type="button"
                 onClick={() => setCostModalOpen(false)}
-                className="px-4 py-2 rounded-lg bg-gray-800 text-xs text-gray-300 hover:text-white"
+                className="quanly-btn-secondary"
               >
                 Hủy
               </button>
               <button
                 type="submit"
                 disabled={costSubmitting}
-                className="quanly-btn-primary text-xs"
+                className="quanly-btn-primary"
               >
                 {costSubmitting ? "Đang lưu..." : "Xác nhận chi phí"}
               </button>
@@ -1176,35 +1288,36 @@ export default function CaseDetailPage({ params }: { params: Promise<{ id: strin
           </form>
         </div>
       )}
+
       {/* MODAL: Gemini Cavet OCR & Review */}
       {ocrModalOpen && (
-        <div className="fixed inset-0 bg-black/75 backdrop-blur-sm z-50 flex items-center justify-center p-4 overflow-y-auto">
-          <div className="bg-[#121620] border border-gray-800 rounded-2xl max-w-2xl w-full p-6 space-y-5 shadow-2xl my-8">
-            <div className="flex items-center justify-between border-b border-gray-800 pb-3">
-              <div>
+        <div className="fixed inset-0 bg-black/75 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="bg-[#121620] border border-gray-800 rounded-2xl max-w-2xl w-full p-5 sm:p-6 space-y-5 shadow-2xl max-h-[90dvh] overflow-y-auto">
+            <div className="flex items-start justify-between gap-3 border-b border-gray-800 pb-3">
+              <div className="min-w-0">
                 <h3 className="text-base font-bold text-white flex items-center gap-2">
                   <span>📸</span> Quét Cà vẹt bằng Google Gemini AI
                 </h3>
                 <p className="text-xs text-gray-400 mt-0.5">
-                  AI trích xuất tự động thông tin đăng ký xe. Nhân viên kiểm tra và xác nhận trước khi lưu.
+                  AI trích xuất thông tin đăng ký xe. Nhân viên kiểm tra và xác nhận trước khi lưu.
                 </p>
               </div>
               <button
                 type="button"
                 onClick={() => setOcrModalOpen(false)}
-                className="text-gray-400 hover:text-white text-lg p-1"
+                aria-label="Đóng hộp thoại"
+                className="text-gray-400 hover:text-white text-lg p-1 shrink-0"
               >
                 ✕
               </button>
             </div>
 
             {ocrError && (
-              <div className="p-3 bg-red-950/40 border border-red-800/60 rounded-xl text-xs text-red-300">
+              <div role="alert" className="p-3 bg-red-950/40 border border-red-800/60 rounded-xl text-xs text-red-300">
                 ⚠️ {ocrError}
               </div>
             )}
 
-            {/* Upload & Preview Step */}
             <div className="p-4 bg-black/40 border border-gray-800 rounded-xl space-y-3">
               <label className="block text-xs font-semibold text-gray-300">
                 1. Chọn ảnh Cà vẹt xe (mặt trước hoặc mặt sau)
@@ -1214,7 +1327,7 @@ export default function CaseDetailPage({ params }: { params: Promise<{ id: strin
                   type="file"
                   accept="image/*"
                   onChange={handleOcrFileSelect}
-                  className="text-xs text-gray-400 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-gray-800 file:text-gray-200 hover:file:bg-gray-700"
+                  className="w-full max-w-full min-w-0 text-xs text-gray-400 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-gray-800 file:text-gray-200 hover:file:bg-gray-700"
                 />
 
                 {ocrImagePreview && (
@@ -1222,11 +1335,11 @@ export default function CaseDetailPage({ params }: { params: Promise<{ id: strin
                     type="button"
                     disabled={ocrScanning}
                     onClick={handleScanCavetWithAi}
-                    className="px-4 py-2 rounded-lg bg-gradient-to-r from-amber-500 to-amber-600 text-black font-bold text-xs hover:from-amber-400 hover:to-amber-500 transition disabled:opacity-50 flex items-center justify-center gap-2"
+                    className="quanly-btn-gold w-full sm:w-auto shrink-0 disabled:opacity-50"
                   >
                     {ocrScanning ? (
                       <>
-                        <span className="animate-spin inline-block">⚡</span> Đang phân tích bằng Gemini AI...
+                        <span className="animate-spin inline-block">⚡</span> Đang phân tích AI...
                       </>
                     ) : (
                       <>
@@ -1237,7 +1350,6 @@ export default function CaseDetailPage({ params }: { params: Promise<{ id: strin
                 )}
               </div>
 
-              {/* Status Indicator Pill */}
               <div className="flex flex-wrap items-center gap-2 pt-1">
                 {ocrStatus === "idle" && (
                   <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] bg-gray-800 text-gray-400 border border-gray-700">
@@ -1270,20 +1382,15 @@ export default function CaseDetailPage({ params }: { params: Promise<{ id: strin
               {ocrImagePreview && (
                 <div className="mt-2 border border-gray-800 rounded-lg overflow-hidden max-h-48 flex items-center justify-center bg-black/60">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src={ocrImagePreview}
-                    alt="Xem trước Cà vẹt"
-                    className="max-h-48 object-contain"
-                  />
+                  <img src={ocrImagePreview} alt="Xem trước Cà vẹt" className="max-h-48 object-contain" />
                 </div>
               )}
             </div>
 
-            {/* Editable Form for Human Verification */}
             <form onSubmit={handleSaveVehicle} className="space-y-4">
-              <div className="flex items-center justify-between">
+              <div>
                 <label className="text-xs font-semibold text-[#d4af37]">
-                  2. Kiểm tra & chỉnh sửa dữ liệu trích xuất (Bắt buộc kiểm tra trước khi lưu)
+                  2. Kiểm tra &amp; chỉnh sửa dữ liệu trích xuất
                 </label>
               </div>
 
@@ -1368,20 +1475,20 @@ export default function CaseDetailPage({ params }: { params: Promise<{ id: strin
                 </div>
               </div>
 
-              <div className="flex items-center justify-end gap-2 pt-3 border-t border-gray-800">
+              <div className="quanly-action-bar pt-3 border-t border-gray-800">
                 <button
                   type="button"
                   onClick={() => setOcrModalOpen(false)}
-                  className="px-4 py-2 rounded-lg bg-gray-800 text-xs text-gray-300 hover:text-white"
+                  className="quanly-btn-secondary"
                 >
                   Hủy
                 </button>
                 <button
                   type="submit"
                   disabled={ocrSaving}
-                  className="quanly-btn-primary text-xs flex items-center gap-1.5"
+                  className="quanly-btn-primary"
                 >
-                  {ocrSaving ? "Đang lưu..." : "✓ Xác nhận & Áp dụng vào hồ sơ"}
+                  {ocrSaving ? "Đang lưu..." : "✓ Xác nhận & Áp dụng"}
                 </button>
               </div>
             </form>

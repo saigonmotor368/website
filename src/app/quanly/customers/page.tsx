@@ -102,48 +102,124 @@ export default function CustomersPage() {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="quanly-content-container space-y-6">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
+      <div className="quanly-page-header">
+        <div className="min-w-0">
           <h1 className="text-2xl font-bold text-white">Quản lý Khách hàng</h1>
           <p className="text-gray-400 text-sm mt-1">
             Danh sách khách hàng cá nhân, doanh nghiệp và thông tin liên hệ Zalo/MST.
           </p>
         </div>
-        <button
-          onClick={() => setModalOpen(true)}
-          className="quanly-btn-gold"
-        >
-          <span>+ Thêm Khách Hàng</span>
-        </button>
+        <div className="quanly-action-bar quanly-action-bar-single">
+          <button
+            type="button"
+            onClick={() => setModalOpen(true)}
+            className="quanly-btn-gold"
+          >
+            <span>+ Thêm Khách Hàng</span>
+          </button>
+        </div>
       </div>
 
       {/* Search Bar */}
-      <div className="quanly-card p-3 flex items-center gap-3">
-        <span className="text-gray-400 pl-2">🔍</span>
+      <div className="quanly-card !p-3 flex items-center gap-3">
+        <span className="text-gray-400 pl-1 shrink-0">🔍</span>
         <input
           type="text"
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
-          placeholder="Tìm theo tên, SĐT, tên Zalo, tên công ty, mã số thuế..."
-          className="bg-transparent w-full text-sm text-gray-200 placeholder-gray-500 focus:outline-none"
+          placeholder="Tìm theo tên, SĐT, tên Zalo, công ty, MST..."
+          className="bg-transparent w-full min-w-0 text-sm text-gray-200 placeholder-gray-500 focus:outline-none py-1"
         />
         {searchTerm && (
           <button
+            type="button"
             onClick={() => setSearchTerm("")}
-            className="text-gray-500 hover:text-white text-xs pr-2"
+            className="text-gray-400 hover:text-white text-xs px-2 py-1.5 shrink-0 whitespace-nowrap"
           >
             ✕ Xóa
           </button>
         )}
       </div>
 
-      {/* Customers List */}
-      <div className="quanly-card p-0 overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="w-full text-left text-sm text-gray-300">
-            <thead className="text-xs uppercase text-gray-500 bg-black/30 border-b border-gray-800">
+      {/* Customers List — Mobile Cards */}
+      <div className="md:hidden space-y-3">
+        {loading ? (
+          <div className="quanly-card text-center py-10 text-gray-500 text-sm">
+            Đang tìm kiếm khách hàng...
+          </div>
+        ) : customers.length === 0 ? (
+          <div className="quanly-card text-center py-10 text-gray-500 text-sm">
+            Không tìm thấy khách hàng nào.
+          </div>
+        ) : (
+          customers.map((c) => (
+            <div key={c.id} className="quanly-mobile-card space-y-3">
+              <div className="flex items-start justify-between gap-2">
+                <div className="min-w-0 flex-1">
+                  <div className="font-bold text-white text-base truncate">{c.name}</div>
+                  <a
+                    href={`tel:${c.phone}`}
+                    className="font-mono text-sm text-[#d4af37] font-semibold hover:underline inline-block mt-0.5 tabular-nums"
+                  >
+                    {c.phone}
+                  </a>
+                </div>
+                <span
+                  className={`px-2 py-0.5 rounded-full text-[11px] font-semibold border whitespace-nowrap shrink-0 ${
+                    c.type === "company"
+                      ? "bg-purple-950/60 text-purple-300 border-purple-800/40"
+                      : "bg-teal-950/60 text-teal-300 border-teal-800/40"
+                  }`}
+                >
+                  {c.type === "company" ? "Doanh nghiệp" : "Cá nhân"}
+                </span>
+              </div>
+
+              {(c.zalo_name || c.company_name || c.address || c.notes) && (
+                <div className="text-xs text-gray-400 space-y-1.5 border-t border-white/5 pt-2.5">
+                  {c.zalo_name && (
+                    <div>
+                      Zalo: <span className="text-blue-400 font-medium">{c.zalo_name}</span>
+                    </div>
+                  )}
+                  {c.company_name && (
+                    <div>
+                      <span className="font-semibold text-gray-200">{c.company_name}</span>
+                      {c.tax_id && (
+                        <span className="font-mono text-gray-400"> · MST: {c.tax_id}</span>
+                      )}
+                    </div>
+                  )}
+                  {c.address && <div className="line-clamp-2">Địa chỉ: {c.address}</div>}
+                  {c.notes && <div className="text-gray-500 line-clamp-2">Ghi chú: {c.notes}</div>}
+                </div>
+              )}
+
+              <div className="pt-2 border-t border-white/5">
+                <a
+                  href={`/quanly/quotes/create?phone=${encodeURIComponent(c.phone)}`}
+                  className="quanly-btn-gold w-full justify-center text-xs"
+                >
+                  Tạo báo giá
+                </a>
+              </div>
+            </div>
+          ))
+        )}
+      </div>
+
+      {/* Customers List — Desktop Table */}
+      <div className="hidden md:block quanly-card !p-0 overflow-hidden">
+        <div
+          className="quanly-table-scroll"
+          role="region"
+          aria-label="Bảng danh sách khách hàng"
+          tabIndex={0}
+        >
+          <table className="w-full min-w-[820px] text-left text-sm text-gray-300">
+            <thead className="text-xs uppercase text-gray-500 bg-black/30 border-b border-gray-800 whitespace-nowrap">
               <tr>
                 <th className="px-5 py-3.5">Khách hàng</th>
                 <th className="px-5 py-3.5">Số điện thoại / Zalo</th>
@@ -177,10 +253,10 @@ export default function CustomersPage() {
                         </div>
                       )}
                     </td>
-                    <td className="px-5 py-4">
+                    <td className="px-5 py-4 whitespace-nowrap">
                       <a
                         href={`tel:${c.phone}`}
-                        className="font-mono text-[#d4af37] font-semibold hover:underline block"
+                        className="font-mono text-[#d4af37] font-semibold hover:underline block tabular-nums"
                       >
                         {c.phone}
                       </a>
@@ -190,7 +266,7 @@ export default function CustomersPage() {
                         </div>
                       )}
                     </td>
-                    <td className="px-5 py-4 text-xs">
+                    <td className="px-5 py-4 text-xs whitespace-nowrap">
                       <span
                         className={`px-2 py-0.5 rounded-full ${
                           c.type === "company"
@@ -220,10 +296,10 @@ export default function CustomersPage() {
                     <td className="px-5 py-4 text-xs text-gray-400 max-w-xs truncate">
                       {c.address || "—"}
                     </td>
-                    <td className="px-5 py-4 text-right">
+                    <td className="px-5 py-4 text-right whitespace-nowrap">
                       <a
                         href={`/quanly/quotes/create?phone=${encodeURIComponent(c.phone)}`}
-                        className="text-xs text-amber-400 hover:underline mr-3"
+                        className="inline-flex items-center justify-center rounded-lg border border-[#d4af37]/40 bg-[#d4af37]/10 px-3 py-1.5 text-xs font-semibold text-[#e8c766] hover:bg-[#d4af37]/20"
                       >
                         Tạo báo giá
                       </a>
@@ -239,7 +315,7 @@ export default function CustomersPage() {
       {/* Modal Add Customer */}
       {modalOpen && (
         <div className="fixed inset-0 z-50 bg-black/75 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-[#141923] border border-gray-700 rounded-xl max-w-lg w-full p-6 shadow-2xl max-h-[90vh] overflow-y-auto">
+          <div className="bg-[#141923] border border-gray-700 rounded-xl max-w-lg w-full p-5 sm:p-6 shadow-2xl max-h-[90dvh] overflow-y-auto">
             <div className="flex items-center justify-between pb-3 border-b border-gray-800 mb-4">
               <h2 className="text-lg font-bold text-[#d4af37]">Thêm khách hàng mới</h2>
               <button
@@ -357,11 +433,11 @@ export default function CustomersPage() {
                 />
               </div>
 
-              <div className="flex justify-end gap-3 pt-3 border-t border-gray-800">
+              <div className="quanly-action-bar pt-3 border-t border-gray-800">
                 <button
                   type="button"
                   onClick={() => setModalOpen(false)}
-                  className="px-4 py-2 rounded-lg bg-gray-800 text-gray-300 hover:bg-gray-700"
+                  className="quanly-btn-secondary"
                 >
                   Hủy
                 </button>

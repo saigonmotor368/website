@@ -3,16 +3,48 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Isolate /quanly from public globals.css body padding and light typography */
+html:has(.quanly-shell) {
+  scroll-padding-top: 72px;
+  scroll-padding-bottom: calc(4.75rem + env(safe-area-inset-bottom, 0px));
+}
+
+body:has(.quanly-shell) {
+  background-color: #0b0e14;
+  color: #e2e8f0;
+  padding-bottom: 0 !important;
+  font-family: var(--font-be-vietnam), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
 .quanly-shell {
-  min-height: 100vh;
+  --ql-target: 36px;
+  min-height: 100dvh;
   display: flex;
   background-color: #0b0e14;
   color: #e2e8f0;
   font-family: var(--font-be-vietnam), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  overflow-x: hidden;
-  max-width: 100vw;
+  overflow-x: clip;
+  max-width: 100%;
 }
 
+@media (pointer: coarse) {
+  .quanly-shell {
+    --ql-target: 44px;
+  }
+}
+
+.quanly-shell h1,
+.quanly-shell h2,
+.quanly-shell h3 {
+  text-wrap: balance;
+  color: inherit;
+}
+
+.quanly-shell p {
+  color: inherit;
+}
+
+/* Loading screen */
 .quanly-loading {
   position: fixed;
   inset: 0;
@@ -20,7 +52,7 @@
   min-height: 100dvh;
   display: grid;
   place-items: center;
-  padding: max(24px, env(safe-area-inset-top)) 24px max(24px, env(safe-area-inset-bottom));
+  padding: max(24px, env(safe-area-inset-top, 0px)) 24px max(24px, env(safe-area-inset-bottom, 0px));
   background: #0b0e14;
   color: #f8fafc;
 }
@@ -53,13 +85,13 @@
   margin-top: 20px;
   color: #f8fafc;
   font-size: 1.08rem;
-  letter-spacing: .08em;
+  letter-spacing: 0.08em;
 }
 
 .quanly-loading-brand span {
   margin-top: 8px;
   color: #94a3b8;
-  font-size: .86rem;
+  font-size: 0.86rem;
 }
 
 .quanly-loading-brand i {
@@ -88,9 +120,13 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .quanly-loading-brand i::after { animation: none; width: 100%; }
+  .quanly-loading-brand i::after {
+    animation: none;
+    width: 100%;
+  }
 }
 
+/* Desktop Sticky Sidebar & Mobile Safe-Area Drawer */
 .quanly-sidebar {
   width: 260px;
   background-color: #11151f;
@@ -98,12 +134,38 @@
   display: flex;
   flex-direction: column;
   flex-shrink: 0;
-  transition: transform 0.25s ease;
-  z-index: 40;
+  transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+  z-index: 45;
+}
+
+@media (min-width: 1024px) {
+  .quanly-sidebar {
+    position: sticky;
+    top: 0;
+    height: 100dvh;
+  }
+}
+
+@media (max-width: 1023px) {
+  .quanly-sidebar {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: min(290px, 86vw);
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+    transform: translateX(-100%);
+    box-shadow: 6px 0 32px rgba(0, 0, 0, 0.72);
+  }
+
+  .quanly-sidebar.mobile-open {
+    transform: translateX(0);
+  }
 }
 
 .quanly-sidebar-logo {
-  padding: 20px 24px;
+  padding: 18px 20px;
   display: flex;
   align-items: center;
   gap: 12px;
@@ -123,12 +185,13 @@
   display: flex;
   align-items: center;
   gap: 12px;
+  min-block-size: max(42px, var(--ql-target));
   padding: 10px 14px;
   border-radius: 10px;
   font-size: 0.88rem;
   font-weight: 500;
   color: #94a3b8;
-  transition: all 0.15s ease;
+  transition: background-color 0.15s ease, color 0.15s ease;
 }
 
 .quanly-nav-item:hover {
@@ -143,23 +206,26 @@
   border: 1px solid rgba(212, 175, 55, 0.25);
 }
 
+/* Main Column & Sticky Header */
 .quanly-main {
   flex: 1;
   display: flex;
   flex-direction: column;
   min-width: 0;
-  overflow-x: hidden;
   max-width: 100%;
+  overflow-x: clip;
 }
 
 .quanly-header {
-  height: 64px;
-  background-color: #11151f;
+  min-height: 62px;
+  background-color: rgba(17, 21, 31, 0.94);
+  backdrop-filter: blur(12px);
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 16px;
+  gap: 12px;
+  padding: 8px 14px;
   position: sticky;
   top: 0;
   z-index: 30;
@@ -167,7 +233,8 @@
 
 @media (min-width: 640px) {
   .quanly-header {
-    padding: 0 24px;
+    padding: 8px 24px;
+    min-height: 64px;
   }
 }
 
@@ -177,14 +244,156 @@
   margin-inline: auto;
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 18px;
+  min-width: 0;
+}
+
+@media (min-width: 640px) {
+  .quanly-content-container {
+    gap: 22px;
+  }
+}
+
+/* Standardized Responsive Page Header & Unbreakable Action Bars */
+.quanly-page-header {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 14px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  min-width: 0;
+}
+
+@media (min-width: 768px) {
+  .quanly-page-header {
+    flex-direction: row;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 20px;
+  }
+}
+
+.quanly-page-title-group {
+  min-width: 0;
+  flex: 1;
+}
+
+.quanly-action-bar {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  width: 100%;
+}
+
+.quanly-action-bar.quanly-action-bar-single {
+  grid-template-columns: 1fr;
+}
+
+.quanly-action-bar > * {
+  width: 100%;
+  min-width: 0;
+  text-align: center;
+}
+
+.quanly-action-span-full {
+  grid-column: 1 / -1;
+}
+
+@media (min-width: 640px) {
+  .quanly-action-bar,
+  .quanly-action-bar.quanly-action-bar-single {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 10px;
+    width: auto;
+    flex-shrink: 0;
+  }
+
+  .quanly-action-bar > * {
+    width: auto;
+  }
+
+  .quanly-action-span-full {
+    grid-column: auto;
+  }
+}
+
+.quanly-section-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px 14px;
+  min-width: 0;
+}
+
+/* Horizontal Scroll Tabs (Single Row, Non-Color Selected Indicator) */
+.quanly-scroll-tabs {
+  display: flex;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  scroll-snap-type: inline proximity;
+  scrollbar-width: none;
+  gap: 6px;
+  max-width: 100%;
+  -webkit-overflow-scrolling: touch;
+}
+
+.quanly-scroll-tabs::-webkit-scrollbar {
+  display: none;
+}
+
+.quanly-scroll-tabs > * {
+  position: relative;
+  flex: none;
+  white-space: nowrap;
+  scroll-snap-align: start;
+  min-block-size: max(38px, var(--ql-target));
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.quanly-scroll-tabs > [aria-selected="true"],
+.quanly-scroll-tabs > [aria-pressed="true"] {
+  border-bottom: 2px solid #d4af37;
+}
+
+/* Smooth Horizontal Scroll Table Wrapper */
+.quanly-table-scroll {
+  overflow-x: auto;
+  max-width: 100%;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(212, 175, 55, 0.35) rgba(255, 255, 255, 0.04);
+}
+
+.quanly-table-scroll:focus-visible {
+  outline: 2px solid #d4af37;
+  outline-offset: -2px;
+}
+
+/* Mobile Record Cards */
+.quanly-mobile-card {
+  background-color: #141923;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 14px;
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.22);
+  min-width: 0;
 }
 
 /* KPI Responsive Grid */
 .quanly-kpi-grid {
   display: grid;
   grid-template-columns: repeat(1, minmax(0, 1fr));
-  gap: 14px;
+  gap: 12px;
   width: 100%;
 }
 
@@ -204,9 +413,9 @@
 
 .quanly-card {
   background-color: #141923;
-  border: 1px solid rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 14px;
-  padding: 16px;
+  padding: 15px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
   min-width: 0;
 }
@@ -219,9 +428,9 @@
 
 .quanly-kpi-card {
   background-color: #141923;
-  border: 1px solid rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 14px;
-  padding: 16px;
+  padding: 14px 16px;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
   display: flex;
   flex-direction: column;
@@ -233,7 +442,7 @@
   background-color: rgba(212, 175, 55, 0.15);
   color: #d4af37;
   border: 1px solid rgba(212, 175, 55, 0.3);
-  font-size: 0.72rem;
+  font-size: 0.7rem;
   padding: 2px 8px;
   border-radius: 999px;
   font-weight: 600;
@@ -244,54 +453,65 @@
   background-color: rgba(0, 229, 255, 0.12);
   color: #00e5ff;
   border: 1px solid rgba(0, 229, 255, 0.25);
-  font-size: 0.72rem;
+  font-size: 0.7rem;
   padding: 2px 8px;
   border-radius: 999px;
   font-weight: 600;
   white-space: nowrap;
 }
 
-.quanly-btn-primary {
-  background: linear-gradient(135deg, #bd2c3b 0%, #8f1d29 100%);
-  color: #fff;
-  font-weight: 600;
+/* Touch-Friendly Tactile Buttons */
+.quanly-btn-primary,
+.quanly-btn-gold,
+.quanly-btn-secondary,
+.quanly-btn-danger {
+  min-block-size: max(40px, var(--ql-target));
   border-radius: 10px;
-  padding: 9px 18px;
-  transition: all 0.2s ease;
+  padding: 9px 16px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
-  font-size: 0.88rem;
-  box-shadow: 0 4px 14px rgba(189, 44, 59, 0.25);
+  gap: 7px;
+  font-size: 0.85rem;
+  line-height: 1.25;
   white-space: nowrap;
   cursor: pointer;
+  transition: background-color 0.18s ease, border-color 0.18s ease, color 0.18s ease, filter 0.18s ease, box-shadow 0.18s ease;
+}
+
+@media (max-width: 420px) {
+  .quanly-btn-primary,
+  .quanly-btn-gold,
+  .quanly-btn-secondary,
+  .quanly-btn-danger {
+    padding: 9px 11px;
+    font-size: 0.8rem;
+    white-space: normal;
+  }
+}
+
+.quanly-btn-primary {
+  background: linear-gradient(135deg, #bd2c3b 0%, #8f1d29 100%);
+  color: #ffffff;
+  font-weight: 600;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 4px 14px rgba(189, 44, 59, 0.25);
 }
 
 .quanly-btn-primary:hover {
   filter: brightness(1.1);
-  transform: translateY(-1px);
 }
 
 .quanly-btn-gold {
-  background: linear-gradient(135deg, #d4af37 0%, #aa8c2c 100%);
+  background: linear-gradient(135deg, #d4af37 0%, #b59125 100%);
   color: #0b0e14;
   font-weight: 700;
-  border-radius: 10px;
-  padding: 9px 18px;
-  transition: all 0.2s ease;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  font-size: 0.88rem;
-  white-space: nowrap;
-  cursor: pointer;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  box-shadow: 0 4px 14px rgba(212, 175, 55, 0.22);
 }
 
 .quanly-btn-gold:hover {
   filter: brightness(1.08);
-  transform: translateY(-1px);
 }
 
 .quanly-btn-secondary {
@@ -299,23 +519,75 @@
   border: 1px solid rgba(255, 255, 255, 0.12);
   color: #cbd5e1;
   font-weight: 500;
-  border-radius: 10px;
-  padding: 9px 16px;
-  transition: all 0.2s ease;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  font-size: 0.88rem;
-  white-space: nowrap;
-  cursor: pointer;
 }
 
 .quanly-btn-secondary:hover {
   background-color: #242d3d;
-  color: #fff;
+  color: #ffffff;
 }
 
+.quanly-btn-danger {
+  background-color: rgba(136, 19, 55, 0.38);
+  border: 1px solid rgba(244, 63, 94, 0.35);
+  color: #fda4af;
+  font-weight: 600;
+}
+
+.quanly-btn-danger:hover {
+  background-color: rgba(159, 18, 57, 0.58);
+  color: #ffffff;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .quanly-btn-primary:hover,
+  .quanly-btn-gold:hover {
+    transform: translateY(-1px);
+  }
+}
+
+/* Safe-Area Fixed Bottom App Bar for Mobile */
+.quanly-mobile-nav {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 35;
+  height: calc(58px + env(safe-area-inset-bottom, 0px));
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+  background: rgba(16, 20, 30, 0.96);
+  backdrop-filter: blur(14px);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  box-shadow: 0 -8px 26px rgba(0, 0, 0, 0.4);
+}
+
+.quanly-mobile-nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  font-size: 0.67rem;
+  font-weight: 600;
+  color: #94a3b8;
+  border-top: 2px solid transparent;
+  transition: color 0.15s ease, border-color 0.15s ease;
+}
+
+.quanly-mobile-nav-item.is-active {
+  color: #d4af37;
+  border-top-color: #d4af37;
+  background: rgba(212, 175, 55, 0.06);
+}
+
+@media (min-width: 1024px) {
+  .quanly-mobile-nav {
+    display: none;
+  }
+}
+
+/* ==================== PRINT STYLES (PRESERVED) ==================== */
 @page {
   size: A4 portrait;
   margin: 10mm;
@@ -330,6 +602,12 @@
     padding: 0 !important;
     background: #fff !important;
     overflow: visible !important;
+  }
+
+  body.invoice-printing .quanly-mobile-nav,
+  body.invoice-printing .quanly-header,
+  body.invoice-printing .quanly-sidebar {
+    display: none !important;
   }
 
   body.invoice-printing .quanly-shell,
@@ -409,6 +687,7 @@
 
   body.invoice-printing #invoice-print-area table {
     width: 100% !important;
+    min-width: 0 !important;
     font-size: 8pt !important;
   }
 
@@ -417,7 +696,8 @@
     padding: 1.5mm 2mm !important;
   }
 
-  body.invoice-printing #invoice-print-area .overflow-x-auto {
+  body.invoice-printing #invoice-print-area .overflow-x-auto,
+  body.invoice-printing #invoice-print-area .quanly-table-scroll {
     overflow: visible !important;
   }
 
@@ -443,21 +723,5 @@
 
   a[href]::after {
     content: none !important;
-  }
-}
-
-/* Mobile Sidebar Drawer */
-@media (max-width: 1023px) {
-  .quanly-sidebar {
-    position: fixed;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    transform: translateX(-100%);
-    box-shadow: 4px 0 24px rgba(0, 0, 0, 0.7);
-  }
-
-  .quanly-sidebar.mobile-open {
-    transform: translateX(0);
   }
 }

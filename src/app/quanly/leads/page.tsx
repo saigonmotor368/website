@@ -268,30 +268,31 @@ export default function LeadsPage() {
   ) as string[];
 
   return (
-    <div className="container mx-auto max-w-7xl py-8 px-4">
+    <div className="quanly-content-container max-w-7xl space-y-6">
       {/* Top Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
-        <div>
-          <div className="flex items-center gap-3">
-            <h1 className="text-3xl font-bold text-[#D4AF37]">Quản lý khách hàng tiềm năng</h1>
-            <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-[#203040] text-[#00E5FF] border border-[#00E5FF]/30">
+      <div className="quanly-page-header">
+        <div className="min-w-0">
+          <div className="flex flex-wrap items-center gap-2.5">
+            <h1 className="text-2xl sm:text-3xl font-bold text-[#D4AF37]">Quản lý khách hàng tiềm năng</h1>
+            <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-[#203040] text-[#00E5FF] border border-[#00E5FF]/30 whitespace-nowrap tabular-nums">
               {leads.length} yêu cầu
             </span>
           </div>
-          <p className="text-gray-400 mt-1">
+          <p className="text-gray-400 text-sm mt-1">
             Theo dõi từ liên hệ đầu tiên đến khi bàn giao hồ sơ hoàn tất.
           </p>
         </div>
-        <div className="flex items-center gap-3">
+        <div className="quanly-action-bar">
           <Link
             href="/quanly/quotes"
-            className="px-4 py-2 rounded-lg bg-gray-800 text-gray-200 hover:bg-gray-700 text-sm font-medium transition-colors"
+            className="quanly-btn-secondary"
           >
             ← Quản lý báo giá
           </Link>
           <button
+            type="button"
             onClick={() => void refreshData()}
-            className="px-4 py-2 rounded-lg bg-[#D4AF37]/10 text-[#D4AF37] border border-[#D4AF37]/30 hover:bg-[#D4AF37]/20 text-sm font-medium transition-colors"
+            className="quanly-btn-gold"
           >
             Làm mới
           </button>
@@ -299,7 +300,7 @@ export default function LeadsPage() {
       </div>
 
       {/* Filter Toolbar */}
-      <div className="bg-[#1a1d27] border border-gray-800 rounded-xl p-4 mb-6 shadow-lg">
+      <div className="bg-[#1a1d27] border border-gray-800 rounded-xl p-4 shadow-lg">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
           <div>
             <label className="block text-xs font-medium text-gray-400 mb-1">Trạng thái hồ sơ</label>
@@ -506,7 +507,7 @@ export default function LeadsPage() {
                   </div>
 
                   {/* Right Column: Actions & Controls */}
-                  <div className="flex flex-col justify-between items-start lg:items-end gap-4 min-w-[240px] pt-2 lg:pt-0 border-t lg:border-t-0 border-gray-800">
+                  <div className="flex flex-col justify-between items-start lg:items-end gap-4 w-full lg:w-[270px] lg:shrink-0 pt-3 lg:pt-0 border-t lg:border-t-0 border-gray-800">
                     <div className="w-full space-y-3">
                       {/* Status Selector */}
                       <div>
@@ -561,16 +562,18 @@ export default function LeadsPage() {
                         </div>
                       )}
 
-                      <div className="flex gap-2">
+                      <div className="quanly-action-bar">
                         <button
+                          type="button"
                           onClick={() => handleViewHistory(lead.id)}
-                          className="flex-1 px-3 py-1.5 rounded-lg bg-gray-800 hover:bg-gray-700 text-xs font-medium text-gray-300 transition-colors"
+                          className="quanly-btn-secondary !px-3 !py-2 text-xs"
                         >
                           Lịch sử xử lý
                         </button>
                         <button
+                          type="button"
                           onClick={() => handleResendEmail(lead.id)}
-                          className="flex-1 px-3 py-1.5 rounded-lg bg-teal-900/40 border border-teal-700/50 hover:bg-teal-900/60 text-xs font-medium text-teal-300 transition-colors"
+                          className="px-3 py-2 rounded-lg bg-teal-900/40 border border-teal-700/50 hover:bg-teal-900/60 text-xs font-semibold text-teal-300 transition-colors whitespace-nowrap"
                           title="Gửi lại thông báo email cho quản trị viên"
                         >
                           Gửi lại email
@@ -588,7 +591,7 @@ export default function LeadsPage() {
       {/* Lost Reason Modal */}
       {lostModalLeadId && (
         <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-[#1a1d27] border border-gray-700 rounded-xl max-w-md w-full p-6 shadow-2xl">
+          <div className="bg-[#1a1d27] border border-gray-700 rounded-xl max-w-md w-full p-5 sm:p-6 shadow-2xl max-h-[90dvh] overflow-y-auto">
             <h3 className="text-lg font-bold text-rose-400 mb-2">Đánh dấu hồ sơ không phù hợp</h3>
             <p className="text-xs text-gray-400 mb-4">
               Vui lòng nhập lý do cụ thể (ví dụ: hồ sơ tranh chấp, xe mất nguồn gốc, khách hủy lịch, v.v.)
@@ -600,16 +603,18 @@ export default function LeadsPage() {
               rows={3}
               className="w-full bg-[#11151d] border border-gray-700 rounded-lg p-3 text-sm text-gray-200 focus:outline-none focus:border-rose-400 mb-4"
             />
-            <div className="flex justify-end gap-3">
+            <div className="quanly-action-bar pt-2 border-t border-gray-800">
               <button
+                type="button"
                 onClick={() => setLostModalLeadId(null)}
-                className="px-4 py-2 rounded-lg bg-gray-800 hover:bg-gray-700 text-sm text-gray-300"
+                className="quanly-btn-secondary"
               >
                 Hủy
               </button>
               <button
+                type="button"
                 onClick={() => void submitLostReason()}
-                className="px-4 py-2 rounded-lg bg-rose-600 hover:bg-rose-500 text-sm font-semibold text-white"
+                className="px-4 py-2 rounded-lg bg-rose-600 hover:bg-rose-500 text-sm font-semibold text-white whitespace-nowrap"
               >
                 Xác nhận
               </button>
@@ -621,12 +626,14 @@ export default function LeadsPage() {
       {/* History Events Modal */}
       {historyModalLeadId && (
         <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-[#1a1d27] border border-gray-700 rounded-xl max-w-lg w-full p-6 shadow-2xl max-h-[85vh] flex flex-col">
+          <div className="bg-[#1a1d27] border border-gray-700 rounded-xl max-w-lg w-full p-5 sm:p-6 shadow-2xl max-h-[90dvh] flex flex-col">
             <div className="flex items-center justify-between pb-3 border-b border-gray-800 mb-4">
               <h3 className="text-lg font-bold text-[#D4AF37]">Lịch sử xử lý hồ sơ</h3>
               <button
+                type="button"
                 onClick={() => setHistoryModalLeadId(null)}
-                className="text-gray-400 hover:text-white text-lg font-bold"
+                aria-label="Đóng lịch sử"
+                className="min-w-[40px] min-h-[40px] flex items-center justify-center rounded-lg text-gray-400 hover:text-white hover:bg-white/5 text-lg font-bold"
               >
                 ✕
               </button>
@@ -643,11 +650,11 @@ export default function LeadsPage() {
                     key={evt.id}
                     className="bg-[#12151e] border border-gray-800/80 rounded-lg p-3 text-xs"
                   >
-                    <div className="flex items-center justify-between mb-1">
+                    <div className="flex flex-wrap items-center justify-between gap-2 mb-1">
                       <span className="font-semibold text-[#00E5FF]">
                         {eventLabels[evt.event_name] || evt.event_name}
                       </span>
-                      <span className="text-gray-500">{formatDate(evt.occurred_at)}</span>
+                      <span className="text-gray-500 tabular-nums">{formatDate(evt.occurred_at)}</span>
                     </div>
                     <div className="text-gray-400">
                       Thực hiện bởi:{" "}
@@ -656,7 +663,7 @@ export default function LeadsPage() {
                       </span>
                     </div>
                     {evt.metadata && Object.keys(evt.metadata).length > 0 && (
-                      <div className="mt-1 text-gray-500 font-mono text-[11px] bg-black/30 p-1.5 rounded">
+                      <div className="mt-1 text-gray-500 font-mono text-[11px] bg-black/30 p-1.5 rounded break-all">
                         {JSON.stringify(evt.metadata)}
                       </div>
                     )}
@@ -665,10 +672,11 @@ export default function LeadsPage() {
               )}
             </div>
 
-            <div className="pt-4 border-t border-gray-800 mt-4 flex justify-end">
+            <div className="pt-4 border-t border-gray-800 mt-4 quanly-action-bar quanly-action-bar-single">
               <button
+                type="button"
                 onClick={() => setHistoryModalLeadId(null)}
-                className="px-4 py-2 rounded-lg bg-gray-800 hover:bg-gray-700 text-sm text-gray-300"
+                className="quanly-btn-secondary"
               >
                 Đóng
               </button>

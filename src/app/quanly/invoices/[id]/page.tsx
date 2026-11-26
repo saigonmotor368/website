@@ -186,21 +186,24 @@ export default function InvoiceDetailPage({ params }: { params: Promise<{ id: st
     return (
       <div className="quanly-content-container py-12 text-center space-y-4">
         <div className="text-red-400 text-sm">⚠️ {error || "Không tìm thấy phiếu"}</div>
-        <Link href="/quanly/invoices" className="quanly-btn-secondary text-xs inline-block">
+        <Link href="/quanly/invoices" className="quanly-btn-secondary inline-flex">
           ← Quay lại danh sách phiếu
         </Link>
       </div>
     );
   }
 
+  const canRecordPayment = invoice.status === "issued" && invoice.balance > 0;
+  const canCancelInvoice = invoice.status === "issued" && invoice.paid_amount === 0;
+
   return (
-    <div className="quanly-content-container max-w-4xl space-y-6">
+    <div className="quanly-content-container max-w-4xl">
       {/* Action Bar (Hidden when printing) */}
-      <div className="print:hidden flex flex-wrap items-center justify-between gap-4 border-b border-gray-800 pb-4">
-        <div className="flex items-center gap-2">
+      <div className="print:hidden quanly-page-header">
+        <div className="quanly-page-title-group flex flex-wrap items-center gap-2">
           <Link
             href="/quanly/invoices"
-            className="text-xs text-gray-400 hover:text-white px-2.5 py-1 rounded bg-gray-900 border border-gray-800"
+            className="text-xs text-gray-300 hover:text-white px-2.5 py-1.5 rounded-lg bg-gray-900 border border-gray-800 inline-flex items-center"
           >
             ← Danh sách phiếu
           </Link>
@@ -208,7 +211,7 @@ export default function InvoiceDetailPage({ params }: { params: Promise<{ id: st
             {invoice.invoice_number}
           </span>
           <span
-            className={`text-[11px] px-2 py-0.5 rounded font-semibold ${
+            className={`text-[11px] px-2.5 py-0.5 rounded-full font-semibold ${
               invoice.status === "issued"
                 ? "bg-blue-950/60 text-blue-300 border border-blue-800/40"
                 : invoice.status === "cancelled"
@@ -224,30 +227,39 @@ export default function InvoiceDetailPage({ params }: { params: Promise<{ id: st
           </span>
         </div>
 
-        <div className="flex items-center gap-2">
-          {invoice.status === "issued" && invoice.balance > 0 && (
+        <div
+          className={`quanly-action-bar ${
+            !canRecordPayment && !canCancelInvoice ? "quanly-action-bar-single" : ""
+          }`}
+        >
+          {canRecordPayment && (
             <button
+              type="button"
               onClick={() => {
                 setPayAmount(invoice.balance);
                 setPayModalOpen(true);
               }}
-              className="quanly-btn-primary text-xs flex items-center gap-1 shadow-md shadow-emerald-950/40"
+              className={`quanly-btn-primary ${
+                canCancelInvoice ? "quanly-action-span-full" : ""
+              }`}
             >
               <span>＋</span> Ghi nhận thu tiền
             </button>
           )}
 
           <button
+            type="button"
             onClick={handlePrintInvoice}
-            className="px-3 py-1.5 rounded-lg bg-gray-800 text-xs font-semibold text-gray-200 hover:text-white border border-gray-700 transition flex items-center gap-1"
+            className="quanly-btn-secondary"
           >
             <span>🖨</span> In phiếu (A4)
           </button>
 
-          {invoice.status === "issued" && invoice.paid_amount === 0 && (
+          {canCancelInvoice && (
             <button
+              type="button"
               onClick={handleCancelInvoice}
-              className="px-3 py-1.5 rounded-lg bg-rose-950/50 text-xs font-semibold text-rose-300 hover:bg-rose-900/50 border border-rose-800 transition"
+              className="quanly-btn-danger"
               title="Hủy phiếu thanh toán (Chỉ Owner)"
             >
               Hủy phiếu
@@ -256,19 +268,22 @@ export default function InvoiceDetailPage({ params }: { params: Promise<{ id: st
         </div>
       </div>
 
-      {/* Printable Invoice Sheet */}
-      <div id="invoice-print-area" className="bg-[#121620] print:bg-white print:text-black border border-gray-800 print:border-none rounded-2xl p-6 sm:p-10 shadow-2xl space-y-6">
-        {/* Header with Saigon Motor Branding */}
-        <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-6 border-b border-gray-800 print:border-gray-300 pb-6">
+      {/* Printable Invoice Sheet (Keep direct child ordering intact for @media print!) */}
+      <div
+        id="invoice-print-area"
+        className="bg-[#121620] print:bg-white print:text-black border border-gray-800 print:border-none rounded-2xl p-4 sm:p-8 shadow-2xl space-y-6"
+      >
+        {/* Child 1: Header with Saigon Motor Branding */}
+        <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4 sm:gap-6 border-b border-gray-800 print:border-gray-300 pb-5 sm:pb-6">
           <div className="flex items-center gap-3">
             <Image
               src="/logo_sgm.png"
               alt="Saigon Motor"
               width={56}
               height={56}
-              className="object-contain"
+              className="object-contain shrink-0"
             />
-            <div>
+            <div className="min-w-0">
               <h2 className="text-base font-bold text-white print:text-black tracking-wide">
                 SAIGON MOTOR
               </h2>
@@ -281,7 +296,7 @@ export default function InvoiceDetailPage({ params }: { params: Promise<{ id: st
             </div>
           </div>
 
-          <div className="text-right sm:self-center">
+          <div className="text-left sm:text-right sm:self-center">
             <h1 className="text-lg font-extrabold text-white print:text-black uppercase tracking-wider">
               PHIẾU THANH TOÁN
             </h1>
@@ -297,7 +312,7 @@ export default function InvoiceDetailPage({ params }: { params: Promise<{ id: st
           </div>
         </div>
 
-        {/* Customer & Case info */}
+        {/* Child 2: Customer & Case info */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
           <div className="p-4 bg-black/30 print:bg-gray-100 rounded-xl space-y-1.5">
             <div className="text-[10px] font-bold uppercase text-gray-500 print:text-gray-600">
@@ -357,16 +372,16 @@ export default function InvoiceDetailPage({ params }: { params: Promise<{ id: st
           </div>
         </div>
 
-        {/* Services Items Table */}
-        <div className="overflow-x-auto">
-          <table className="w-full text-left text-xs text-gray-300 print:text-black border-collapse">
+        {/* Child 3: Services Items Table */}
+        <div className="quanly-table-scroll" tabIndex={0} role="region" aria-label="Chi tiết dịch vụ thanh toán">
+          <table className="w-full min-w-[540px] text-left text-xs text-gray-300 print:text-black border-collapse">
             <thead>
               <tr className="border-b border-gray-800 print:border-gray-400 bg-black/40 print:bg-gray-200 uppercase text-[10px] text-gray-400 print:text-gray-700">
                 <th className="py-2.5 px-3 w-10 text-center">STT</th>
                 <th className="py-2.5 px-3">Tên dịch vụ pháp lý thực hiện</th>
-                <th className="py-2.5 px-3 font-mono text-right">Đơn giá</th>
+                <th className="py-2.5 px-3 font-mono text-right whitespace-nowrap">Đơn giá</th>
                 <th className="py-2.5 px-3 text-center w-12">SL</th>
-                <th className="py-2.5 px-3 font-mono text-right">Thành tiền</th>
+                <th className="py-2.5 px-3 font-mono text-right whitespace-nowrap">Thành tiền</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-800/60 print:divide-gray-300">
@@ -376,11 +391,11 @@ export default function InvoiceDetailPage({ params }: { params: Promise<{ id: st
                   <td className="py-3 px-3 font-medium text-white print:text-black">
                     {item.item_name}
                   </td>
-                  <td className="py-3 px-3 font-mono text-right text-gray-400 print:text-gray-700">
+                  <td className="py-3 px-3 font-mono text-right text-gray-400 print:text-gray-700 whitespace-nowrap">
                     {formatMoney(item.unit_price)}
                   </td>
                   <td className="py-3 px-3 font-mono text-center">{item.quantity}</td>
-                  <td className="py-3 px-3 font-mono text-right font-bold text-white print:text-black">
+                  <td className="py-3 px-3 font-mono text-right font-bold text-white print:text-black whitespace-nowrap">
                     {formatMoney(item.total_price)}
                   </td>
                 </tr>
@@ -389,31 +404,31 @@ export default function InvoiceDetailPage({ params }: { params: Promise<{ id: st
           </table>
         </div>
 
-        {/* Financial Summary Box */}
+        {/* Child 4: Financial Summary Box */}
         <div className="flex justify-end pt-2">
           <div className="w-full sm:w-80 space-y-2 text-xs">
-            <div className="flex justify-between py-1 border-b border-gray-800/80 print:border-gray-300">
+            <div className="flex justify-between gap-3 py-1 border-b border-gray-800/80 print:border-gray-300">
               <span className="text-gray-400 print:text-gray-700">Tổng cộng chi phí dịch vụ:</span>
-              <span className="font-mono font-bold text-white print:text-black">
+              <span className="font-mono font-bold text-white print:text-black whitespace-nowrap">
                 {formatMoney(invoice.total_amount)}
               </span>
             </div>
-            <div className="flex justify-between py-1 border-b border-gray-800/80 print:border-gray-300">
+            <div className="flex justify-between gap-3 py-1 border-b border-gray-800/80 print:border-gray-300">
               <span className="text-gray-400 print:text-gray-700">Số tiền đã thanh toán:</span>
-              <span className="font-mono font-bold text-emerald-400 print:text-green-700">
+              <span className="font-mono font-bold text-emerald-400 print:text-green-700 whitespace-nowrap">
                 {formatMoney(invoice.paid_amount)}
               </span>
             </div>
-            <div className="flex justify-between py-1.5 font-bold text-sm">
+            <div className="flex justify-between gap-3 py-1.5 font-bold text-sm">
               <span className="text-white print:text-black">Còn lại phải thu (Công nợ):</span>
-              <span className="font-mono text-amber-400 print:text-black">
+              <span className="font-mono text-amber-400 print:text-black whitespace-nowrap">
                 {formatMoney(invoice.balance)}
               </span>
             </div>
           </div>
         </div>
 
-        {/* Payment History */}
+        {/* Child 5 (Conditional): Payment History */}
         {invoice.payments && invoice.payments.length > 0 && (
           <div className="pt-4 border-t border-gray-800 print:border-gray-300 space-y-2 text-xs">
             <h4 className="font-bold text-white print:text-black text-xs uppercase tracking-wide">
@@ -423,9 +438,9 @@ export default function InvoiceDetailPage({ params }: { params: Promise<{ id: st
               {invoice.payments.map((p) => (
                 <div
                   key={p.id}
-                  className="flex items-center justify-between p-2 rounded bg-black/40 print:bg-gray-100 text-[11px]"
+                  className="flex flex-wrap items-center justify-between gap-2 p-2.5 rounded bg-black/40 print:bg-gray-100 text-[11px]"
                 >
-                  <div>
+                  <div className="min-w-0">
                     <span className="font-semibold text-white print:text-black">
                       {p.payment_method === "cash"
                         ? "Tiền mặt"
@@ -445,7 +460,7 @@ export default function InvoiceDetailPage({ params }: { params: Promise<{ id: st
                       </span>
                     )}
                   </div>
-                  <span className="font-mono font-bold text-emerald-400 print:text-green-700">
+                  <span className="font-mono font-bold text-emerald-400 print:text-green-700 whitespace-nowrap shrink-0">
                     +{formatMoney(p.amount)}
                   </span>
                 </div>
@@ -454,7 +469,7 @@ export default function InvoiceDetailPage({ params }: { params: Promise<{ id: st
           </div>
         )}
 
-        {/* Legal Disclaimer / Signatures */}
+        {/* Last child: Signatures */}
         <div className="pt-8 border-t border-gray-800 print:border-gray-300 grid grid-cols-2 text-center text-xs text-gray-400 print:text-black">
           <div>
             <div className="font-bold uppercase text-[11px]">Người lập phiếu</div>
@@ -471,17 +486,15 @@ export default function InvoiceDetailPage({ params }: { params: Promise<{ id: st
 
       {/* MODAL: Record Payment */}
       {payModalOpen && (
-        <div className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+        <div className="fixed inset-0 bg-black/75 backdrop-blur-sm z-50 flex items-center justify-center p-4">
           <form
             onSubmit={handleRecordPayment}
-            className="bg-[#121620] border border-gray-800 rounded-2xl max-w-md w-full p-6 space-y-4 shadow-2xl"
+            className="bg-[#121620] border border-gray-800 rounded-2xl max-w-md w-full p-5 sm:p-6 space-y-4 shadow-2xl max-h-[90dvh] overflow-y-auto"
           >
             <h3 className="text-base font-bold text-white">💰 Ghi nhận Thu tiền Khách hàng</h3>
             <p className="text-xs text-gray-400">
               Công nợ hiện tại:{" "}
-              <span className="font-mono font-bold text-amber-400">
-                {formatMoney(invoice.balance)}
-              </span>
+              <span className="font-mono font-bold text-amber-400">{formatMoney(invoice.balance)}</span>
             </p>
 
             <div>
@@ -536,18 +549,18 @@ export default function InvoiceDetailPage({ params }: { params: Promise<{ id: st
               />
             </div>
 
-            <div className="flex items-center justify-end gap-2 pt-2">
+            <div className="quanly-action-bar pt-2">
               <button
                 type="button"
                 onClick={() => setPayModalOpen(false)}
-                className="px-4 py-2 rounded-lg bg-gray-800 text-xs text-gray-300 hover:text-white"
+                className="quanly-btn-secondary"
               >
                 Hủy
               </button>
               <button
                 type="submit"
                 disabled={paySubmitting}
-                className="quanly-btn-primary text-xs"
+                className="quanly-btn-primary"
               >
                 {paySubmitting ? "Đang lưu..." : "Xác nhận thu tiền"}
               </button>

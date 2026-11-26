@@ -43,31 +43,36 @@ export default function ManagementSidebar({ open, onClose, userRole }: SidebarPr
       {open && (
         <div
           onClick={onClose}
-          className="fixed inset-0 bg-black/70 backdrop-blur-sm z-30 lg:hidden"
+          aria-hidden="true"
+          className="fixed inset-0 bg-black/75 backdrop-blur-sm z-40 lg:hidden"
         />
       )}
 
-      <aside className={open ? "quanly-sidebar mobile-open" : "quanly-sidebar"}>
+      <aside className={open ? "quanly-sidebar mobile-open" : "quanly-sidebar"} aria-label="Menu điều hướng quản lý">
         {/* Brand logo */}
         <div className="quanly-sidebar-logo">
-          <Image
-            src="/logo_sgm.png"
-            alt="Saigon Motor"
-            width={38}
-            height={38}
-            className="object-contain"
-          />
+          <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-white p-1">
+            <Image
+              src="/logo_sgm.png"
+              alt="Saigon Motor"
+              width={34}
+              height={34}
+              className="object-contain"
+            />
+          </span>
           <div className="flex-1 min-w-0">
-            <span className="block font-bold text-white text-sm tracking-wide leading-tight">
+            <span className="block font-bold text-white text-sm tracking-wide leading-tight truncate">
               SAIGON MOTOR
             </span>
-            <span className="block text-[11px] text-[#d4af37] font-semibold">
+            <span className="block text-[11px] text-[#d4af37] font-semibold truncate">
               Hệ thống Quản lý
             </span>
           </div>
           <button
+            type="button"
             onClick={onClose}
-            className="lg:hidden text-gray-400 hover:text-white text-lg p-1"
+            aria-label="Đóng menu"
+            className="lg:hidden min-w-[40px] min-h-[40px] grid place-items-center rounded-lg bg-white/5 text-gray-300 hover:text-white text-base"
           >
             ✕
           </button>
@@ -82,23 +87,23 @@ export default function ManagementSidebar({ open, onClose, userRole }: SidebarPr
           {navItems
             .filter((item) => !item.ownerOnly || userRole === "owner")
             .map((item) => {
-            const isActive =
-              item.href === "/quanly"
-                ? pathname === "/quanly"
-                : pathname?.startsWith(item.href);
+              const isActive =
+                item.href === "/quanly"
+                  ? pathname === "/quanly"
+                  : pathname?.startsWith(item.href);
 
-            return (
-              <Link
-                key={item.href}
-                href={item.href}
-                onClick={onClose}
-                className={isActive ? "quanly-nav-item active" : "quanly-nav-item"}
-              >
-                <span className="text-base">{item.icon}</span>
-                <span>{item.label}</span>
-              </Link>
-            );
-          })}
+              return (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  onClick={onClose}
+                  className={isActive ? "quanly-nav-item active" : "quanly-nav-item"}
+                >
+                  <span className="text-base">{item.icon}</span>
+                  <span className="truncate">{item.label}</span>
+                </Link>
+              );
+            })}
 
           <div className="pt-4 px-3 pb-2 text-[10px] font-bold uppercase tracking-wider text-gray-500">
             Công cụ hỗ trợ
@@ -108,6 +113,7 @@ export default function ManagementSidebar({ open, onClose, userRole }: SidebarPr
             href="/"
             className="quanly-nav-item text-xs text-gray-400 hover:text-white"
             target="_blank"
+            rel="noopener noreferrer"
           >
             <span className="text-base">🌐</span>
             <span>Trang web chính</span>
@@ -116,7 +122,7 @@ export default function ManagementSidebar({ open, onClose, userRole }: SidebarPr
 
         {/* User role bottom info */}
         <div className="p-4 border-t border-white/5 bg-black/20 text-xs">
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between gap-2">
             <span className="text-gray-400">Quyền truy cập:</span>
             <span className={roleClass}>{roleLabel}</span>
           </div>

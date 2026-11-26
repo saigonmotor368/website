@@ -80,7 +80,6 @@ export default function InvoicesListPage() {
     };
   }, [statusFilter, searchQuery]);
 
-  // Aggregate metrics
   const totalIssued = invoices
     .filter((i) => i.status !== "cancelled")
     .reduce((sum, i) => sum + i.total_amount, 0);
@@ -89,32 +88,39 @@ export default function InvoicesListPage() {
     .reduce((sum, i) => sum + i.paid_amount, 0);
   const totalDebt = Math.max(0, totalIssued - totalPaid);
 
+  const filterButtons = [
+    { value: "", label: `Tất cả (${invoices.length})`, activeClass: "bg-[#1c2233] text-white", idleClass: "text-gray-400 hover:text-white" },
+    { value: "issued", label: "Đã phát hành", activeClass: "bg-blue-900/40 text-blue-300", idleClass: "text-gray-400 hover:text-blue-400" },
+    { value: "draft", label: "Bản nháp", activeClass: "bg-gray-800 text-gray-200", idleClass: "text-gray-400 hover:text-gray-200" },
+    { value: "cancelled", label: "Đã hủy", activeClass: "bg-rose-900/40 text-rose-300", idleClass: "text-gray-400 hover:text-rose-400" },
+  ];
+
   return (
     <div className="quanly-content-container">
       {/* Top Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
-          <h1 className="text-2xl font-bold text-white tracking-tight flex items-center gap-2">
+      <div className="quanly-page-header">
+        <div className="quanly-page-title-group">
+          <h1 className="text-xl sm:text-2xl font-bold text-white tracking-tight flex items-center gap-2">
             🧾 Phiếu Thanh toán / Biên nhận Dịch vụ
           </h1>
-          <p className="text-xs text-gray-400 mt-1">
+          <p className="text-xs sm:text-sm text-gray-400 mt-1">
             Quản lý phiếu biên nhận thanh toán dịch vụ xe, ghi nhận tiền đặt cọc và theo dõi công nợ
           </p>
         </div>
 
-        <Link
-          href="/quanly/invoices/create"
-          className="quanly-btn-primary self-start sm:self-auto text-xs flex items-center gap-1.5 shadow-md shadow-emerald-950/40"
-        >
-          <span>＋</span> Lập phiếu thanh toán mới
-        </Link>
+        <div className="quanly-action-bar quanly-action-bar-single">
+          <Link href="/quanly/invoices/create" className="quanly-btn-primary">
+            <span>＋</span>
+            <span>Lập phiếu thanh toán mới</span>
+          </Link>
+        </div>
       </div>
 
       {/* Financial Metrics Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5 sm:gap-4">
         <div className="quanly-kpi-card">
           <div className="text-[11px] text-gray-400">Tổng doanh thu phát hành</div>
-          <div className="text-xl font-bold font-mono text-blue-400 mt-1">
+          <div className="text-xl font-bold font-mono tabular-nums text-blue-400 mt-1">
             {formatMoney(totalIssued)}
           </div>
           <div className="text-[10px] text-gray-500 mt-0.5">Các phiếu có hiệu lực</div>
@@ -122,15 +128,15 @@ export default function InvoicesListPage() {
 
         <div className="quanly-kpi-card">
           <div className="text-[11px] text-gray-400">Tiền thực tế đã thu</div>
-          <div className="text-xl font-bold font-mono text-emerald-400 mt-1">
+          <div className="text-xl font-bold font-mono tabular-nums text-emerald-400 mt-1">
             {formatMoney(totalPaid)}
           </div>
-          <div className="text-[10px] text-emerald-500/80 mt-0.5">Tiền mặt & Chuyển khoản</div>
+          <div className="text-[10px] text-emerald-500/80 mt-0.5">Tiền mặt &amp; Chuyển khoản</div>
         </div>
 
         <div className="quanly-kpi-card">
           <div className="text-[11px] text-gray-400">Công nợ còn lại cần thu</div>
-          <div className="text-xl font-bold font-mono text-amber-400 mt-1">
+          <div className="text-xl font-bold font-mono tabular-nums text-amber-400 mt-1">
             {formatMoney(totalDebt)}
           </div>
           <div className="text-[10px] text-amber-500/80 mt-0.5">Khách chưa hoàn tất</div>
@@ -138,55 +144,46 @@ export default function InvoicesListPage() {
       </div>
 
       {/* Filter Tabs & Search */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 pt-2">
-        <div className="flex items-center gap-1 bg-[#121620] p-1 rounded-xl border border-gray-800">
-          <button
-            onClick={() => setStatusFilter("")}
-            className={`px-3 py-1.5 rounded-lg text-xs font-medium transition ${
-              statusFilter === "" ? "bg-[#1c2233] text-white" : "text-gray-400 hover:text-white"
-            }`}
-          >
-            Tất cả ({invoices.length})
-          </button>
-          <button
-            onClick={() => setStatusFilter("issued")}
-            className={`px-3 py-1.5 rounded-lg text-xs font-medium transition ${
-              statusFilter === "issued" ? "bg-blue-900/40 text-blue-300 border border-blue-700/50" : "text-gray-400 hover:text-blue-400"
-            }`}
-          >
-            Đã phát hành
-          </button>
-          <button
-            onClick={() => setStatusFilter("draft")}
-            className={`px-3 py-1.5 rounded-lg text-xs font-medium transition ${
-              statusFilter === "draft" ? "bg-gray-800 text-gray-200" : "text-gray-400 hover:text-gray-200"
-            }`}
-          >
-            Bản nháp
-          </button>
-          <button
-            onClick={() => setStatusFilter("cancelled")}
-            className={`px-3 py-1.5 rounded-lg text-xs font-medium transition ${
-              statusFilter === "cancelled" ? "bg-rose-900/40 text-rose-300 border border-rose-700/50" : "text-gray-400 hover:text-rose-400"
-            }`}
-          >
-            Đã hủy
-          </button>
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-3">
+        <div className="bg-[#121620] p-1 rounded-xl border border-gray-800 min-w-0">
+          <div className="quanly-scroll-tabs" role="group" aria-label="Lọc trạng thái phiếu thanh toán">
+            {filterButtons.map((btn) => {
+              const active = statusFilter === btn.value;
+              return (
+                <button
+                  key={btn.value || "all"}
+                  type="button"
+                  aria-pressed={active}
+                  onClick={(e) => {
+                    setStatusFilter(btn.value);
+                    e.currentTarget.scrollIntoView({ block: "nearest", inline: "nearest" });
+                  }}
+                  className={`px-3 py-1.5 rounded-lg text-xs font-medium transition ${
+                    active ? btn.activeClass : btn.idleClass
+                  }`}
+                >
+                  {btn.label}
+                </button>
+              );
+            })}
+          </div>
         </div>
 
-        <div className="relative min-w-[280px]">
+        <div className="relative w-full md:w-72 lg:w-80">
           <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 text-xs">🔍</span>
           <input
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Tìm số phiếu PT, mã HS, tên khách, SĐT..."
-            className="w-full bg-[#121620] border border-gray-800 rounded-xl pl-8 pr-8 py-2 text-xs text-gray-200 placeholder-gray-500 focus:outline-none focus:border-[#d4af37]"
+            className="w-full bg-[#121620] border border-gray-800 rounded-xl pl-8 pr-8 py-2.5 text-xs text-gray-200 placeholder-gray-500 focus:outline-none focus:border-[#d4af37]"
           />
           {searchQuery && (
             <button
+              type="button"
               onClick={() => setSearchQuery("")}
-              className="absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-500 hover:text-white text-xs"
+              aria-label="Xóa từ khóa"
+              className="absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-500 hover:text-white text-xs p-1"
             >
               ✕
             </button>
@@ -194,21 +191,100 @@ export default function InvoicesListPage() {
         </div>
       </div>
 
-      {/* Invoices Table */}
-      <div className="quanly-card p-0 overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="w-full text-left text-sm text-gray-300">
+      {/* Mobile Cards List */}
+      <div className="space-y-3 md:hidden">
+        {loading ? (
+          <div className="quanly-card text-center py-10 text-xs text-gray-500">
+            Đang tải danh sách phiếu thanh toán...
+          </div>
+        ) : invoices.length === 0 ? (
+          <div className="quanly-card text-center py-10 text-xs text-gray-500">
+            Chưa có phiếu thanh toán nào phù hợp với bộ lọc.
+          </div>
+        ) : (
+          invoices.map((inv) => {
+            const badge = statusConfig[inv.status] || statusConfig.issued;
+            return (
+              <article key={inv.id} className="quanly-mobile-card">
+                <div className="flex items-start justify-between gap-2">
+                  <div className="min-w-0">
+                    <Link
+                      href={`/quanly/invoices/${inv.id}`}
+                      className="font-mono text-sm font-bold text-[#d4af37] hover:underline"
+                    >
+                      {inv.invoice_number}
+                    </Link>
+                    {inv.case_number && (
+                      <Link
+                        href={`/quanly/cases/${inv.case_id}`}
+                        className="ml-2 text-[11px] font-mono text-gray-400 hover:text-white"
+                      >
+                        ({inv.case_number})
+                      </Link>
+                    )}
+                  </div>
+                  <span
+                    className={`shrink-0 px-2.5 py-0.5 rounded-full text-[11px] font-medium whitespace-nowrap ${badge.bg} ${badge.text} border ${badge.border}`}
+                  >
+                    {badge.label}
+                  </span>
+                </div>
+
+                <div className="text-xs">
+                  <div className="font-semibold text-white truncate">{inv.customer.name}</div>
+                  <div className="text-[11px] text-gray-400 font-mono mt-0.5">
+                    {inv.customer.phone} · {formatDate(inv.issued_at || inv.created_at)}
+                  </div>
+                  {inv.customer.company_name && (
+                    <div className="text-[11px] text-gray-500 truncate mt-0.5">
+                      🏢 {inv.customer.company_name}
+                    </div>
+                  )}
+                </div>
+
+                <div className="grid grid-cols-3 gap-2 pt-2 border-t border-white/5 text-xs">
+                  <div>
+                    <span className="text-[10px] text-gray-500 block">Tổng tiền</span>
+                    <span className="font-mono tabular-nums font-bold text-white">{formatMoney(inv.total_amount)}</span>
+                  </div>
+                  <div>
+                    <span className="text-[10px] text-gray-500 block">Đã thu</span>
+                    <span className="font-mono tabular-nums font-semibold text-emerald-400">{formatMoney(inv.paid_amount)}</span>
+                  </div>
+                  <div className="text-right">
+                    <span className="text-[10px] text-gray-500 block">Còn nợ</span>
+                    <span className={`font-mono tabular-nums font-bold ${inv.balance > 0 ? "text-amber-400" : "text-gray-500"}`}>
+                      {formatMoney(inv.balance)}
+                    </span>
+                  </div>
+                </div>
+
+                <div className="quanly-action-bar quanly-action-bar-single pt-1">
+                  <Link href={`/quanly/invoices/${inv.id}`} className="quanly-btn-secondary !py-2 !text-xs">
+                    Xem / Thu tiền →
+                  </Link>
+                </div>
+              </article>
+            );
+          })
+        )}
+      </div>
+
+      {/* Desktop Invoices Table */}
+      <div className="quanly-card !p-0 overflow-hidden hidden md:block">
+        <div className="quanly-table-scroll" tabIndex={0} role="region" aria-label="Danh sách phiếu thanh toán">
+          <table className="w-full min-w-[920px] text-left text-sm text-gray-300">
             <thead className="text-xs uppercase text-gray-500 bg-black/40 border-b border-gray-800">
               <tr>
-                <th className="px-5 py-3.5">Mã phiếu</th>
-                <th className="px-5 py-3.5">Hồ sơ liên quan</th>
+                <th className="px-5 py-3.5 whitespace-nowrap">Mã phiếu</th>
+                <th className="px-5 py-3.5 whitespace-nowrap">Hồ sơ liên quan</th>
                 <th className="px-5 py-3.5">Khách hàng</th>
-                <th className="px-5 py-3.5">Trạng thái</th>
-                <th className="px-5 py-3.5 font-mono">Tổng tiền</th>
-                <th className="px-5 py-3.5 font-mono">Đã thu</th>
-                <th className="px-5 py-3.5 font-mono">Còn nợ</th>
-                <th className="px-5 py-3.5">Ngày phát hành</th>
-                <th className="px-5 py-3.5 text-right">Thao tác</th>
+                <th className="px-5 py-3.5 whitespace-nowrap">Trạng thái</th>
+                <th className="px-5 py-3.5 font-mono whitespace-nowrap">Tổng tiền</th>
+                <th className="px-5 py-3.5 font-mono whitespace-nowrap">Đã thu</th>
+                <th className="px-5 py-3.5 font-mono whitespace-nowrap">Còn nợ</th>
+                <th className="px-5 py-3.5 whitespace-nowrap">Ngày phát hành</th>
+                <th className="px-5 py-3.5 text-right whitespace-nowrap">Thao tác</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-800/60 text-xs">
@@ -231,16 +307,13 @@ export default function InvoicesListPage() {
 
                   return (
                     <tr key={inv.id} className="hover:bg-gray-800/20 transition">
-                      <td className="px-5 py-4 font-mono font-bold text-xs">
-                        <Link
-                          href={`/quanly/invoices/${inv.id}`}
-                          className="text-[#d4af37] hover:underline"
-                        >
+                      <td className="px-5 py-4 font-mono font-bold text-xs whitespace-nowrap">
+                        <Link href={`/quanly/invoices/${inv.id}`} className="text-[#d4af37] hover:underline">
                           {inv.invoice_number}
                         </Link>
                       </td>
 
-                      <td className="px-5 py-4 font-mono text-gray-400 text-xs">
+                      <td className="px-5 py-4 font-mono text-gray-400 text-xs whitespace-nowrap">
                         {inv.case_number ? (
                           <Link
                             href={`/quanly/cases/${inv.case_id}`}
@@ -255,9 +328,7 @@ export default function InvoicesListPage() {
 
                       <td className="px-5 py-4">
                         <div className="font-semibold text-white">{inv.customer.name}</div>
-                        <div className="text-[11px] text-gray-400 font-mono">
-                          {inv.customer.phone}
-                        </div>
+                        <div className="text-[11px] text-gray-400 font-mono">{inv.customer.phone}</div>
                         {inv.customer.company_name && (
                           <div className="text-[10px] text-gray-500 truncate max-w-[160px]">
                             🏢 {inv.customer.company_name}
@@ -265,28 +336,26 @@ export default function InvoicesListPage() {
                         )}
                       </td>
 
-                      <td className="px-5 py-4">
+                      <td className="px-5 py-4 whitespace-nowrap">
                         <span
-                          className={`px-2.5 py-1 rounded-full font-medium ${badge.bg} ${badge.text} border ${badge.border}`}
+                          className={`inline-flex px-2.5 py-1 rounded-full font-medium ${badge.bg} ${badge.text} border ${badge.border}`}
                         >
                           {badge.label}
                         </span>
                       </td>
 
-                      <td className="px-5 py-4 font-mono font-bold text-white">
+                      <td className="px-5 py-4 font-mono tabular-nums font-bold text-white whitespace-nowrap">
                         {formatMoney(inv.total_amount)}
                       </td>
 
-                      <td className="px-5 py-4 font-mono font-semibold text-emerald-400">
+                      <td className="px-5 py-4 font-mono tabular-nums font-semibold text-emerald-400 whitespace-nowrap">
                         {formatMoney(inv.paid_amount)}
                         {isFullyPaid && (
-                          <span className="block text-[10px] text-emerald-500 font-normal">
-                            ✓ Đã thu đủ
-                          </span>
+                          <span className="block text-[10px] text-emerald-500 font-normal">✓ Đã thu đủ</span>
                         )}
                       </td>
 
-                      <td className="px-5 py-4 font-mono font-bold">
+                      <td className="px-5 py-4 font-mono tabular-nums font-bold whitespace-nowrap">
                         {inv.balance > 0 ? (
                           <span className="text-amber-400">{formatMoney(inv.balance)}</span>
                         ) : (
@@ -294,19 +363,17 @@ export default function InvoicesListPage() {
                         )}
                       </td>
 
-                      <td className="px-5 py-4 text-gray-400">
+                      <td className="px-5 py-4 text-gray-400 whitespace-nowrap">
                         {formatDate(inv.issued_at || inv.created_at)}
                       </td>
 
-                      <td className="px-5 py-4 text-right">
-                        <div className="flex items-center justify-end gap-2">
-                          <Link
-                            href={`/quanly/invoices/${inv.id}`}
-                            className="px-2.5 py-1.5 rounded-lg bg-gray-800 text-gray-200 hover:text-white hover:bg-gray-700 transition"
-                          >
-                            Xem / Thu tiền →
-                          </Link>
-                        </div>
+                      <td className="px-5 py-4 text-right whitespace-nowrap">
+                        <Link
+                          href={`/quanly/invoices/${inv.id}`}
+                          className="inline-flex px-2.5 py-1.5 rounded-lg bg-gray-800 text-gray-200 hover:text-white hover:bg-gray-700 transition"
+                        >
+                          Xem / Thu tiền →
+                        </Link>
                       </td>
                     </tr>
                   );

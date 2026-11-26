@@ -1,10 +1,13 @@
 "use client";
 
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import ManagementSidebar from "./ManagementSidebar";
 import ManagementHeader from "./ManagementHeader";
 
 export default function ManagementShell({ children }: { children: React.ReactNode }) {
+  const pathname = usePathname();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [staffInfo, setStaffInfo] = useState<{
     name: string | null;
@@ -32,6 +35,13 @@ export default function ManagementShell({ children }: { children: React.ReactNod
     };
   }, []);
 
+  const isMenuRouteActive =
+    pathname?.startsWith("/quanly/customers") ||
+    pathname?.startsWith("/quanly/costs") ||
+    pathname?.startsWith("/quanly/leads") ||
+    pathname?.startsWith("/quanly/services") ||
+    pathname?.startsWith("/quanly/settings");
+
   return (
     <div className="quanly-shell">
       <ManagementSidebar
@@ -46,8 +56,51 @@ export default function ManagementShell({ children }: { children: React.ReactNod
           staffEmail={staffInfo.email}
           userRole={staffInfo.role}
         />
-        <main className="p-4 sm:p-6 lg:p-8 flex-1">{children}</main>
+        <main className="p-3.5 sm:p-6 lg:p-8 pb-24 lg:pb-8 flex-1 min-w-0">
+          {children}
+        </main>
       </div>
+
+      {/* Fixed 5-item Mobile App Navigation Dock */}
+      <nav className="quanly-mobile-nav" aria-label="Điều hướng nhanh trên điện thoại">
+        <Link
+          href="/quanly"
+          className={pathname === "/quanly" ? "quanly-mobile-nav-item is-active" : "quanly-mobile-nav-item"}
+        >
+          <span className="text-base leading-none" aria-hidden="true">📊</span>
+          <span>Tổng quan</span>
+        </Link>
+        <Link
+          href="/quanly/quotes"
+          className={pathname?.startsWith("/quanly/quotes") ? "quanly-mobile-nav-item is-active" : "quanly-mobile-nav-item"}
+        >
+          <span className="text-base leading-none" aria-hidden="true">📝</span>
+          <span>Báo giá</span>
+        </Link>
+        <Link
+          href="/quanly/cases"
+          className={pathname?.startsWith("/quanly/cases") ? "quanly-mobile-nav-item is-active" : "quanly-mobile-nav-item"}
+        >
+          <span className="text-base leading-none" aria-hidden="true">📂</span>
+          <span>Hồ sơ</span>
+        </Link>
+        <Link
+          href="/quanly/invoices"
+          className={pathname?.startsWith("/quanly/invoices") ? "quanly-mobile-nav-item is-active" : "quanly-mobile-nav-item"}
+        >
+          <span className="text-base leading-none" aria-hidden="true">🧾</span>
+          <span>Phiếu thu</span>
+        </Link>
+        <button
+          type="button"
+          onClick={() => setSidebarOpen((prev) => !prev)}
+          aria-expanded={sidebarOpen}
+          className={sidebarOpen || isMenuRouteActive ? "quanly-mobile-nav-item is-active" : "quanly-mobile-nav-item"}
+        >
+          <span className="text-base leading-none" aria-hidden="true">☰</span>
+          <span>Mở rộng</span>
+        </button>
+      </nav>
     </div>
   );
 }

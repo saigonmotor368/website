@@ -91,7 +91,6 @@ export default function CreateQuotePage() {
   const [quoteNotes, setQuoteNotes] = useState("Báo giá có giá trị trong vòng 15 ngày kể từ ngày phát hành.");
   const [saving, setSaving] = useState(false);
 
-  // Load catalog on mount
   useEffect(() => {
     let ignore = false;
     fetch("/api/internal/service-catalog")
@@ -107,7 +106,6 @@ export default function CreateQuotePage() {
     };
   }, []);
 
-  // Mở lại báo giá đã lưu để tiếp tục chỉnh sửa hoặc phát hành.
   useEffect(() => {
     const id = new URLSearchParams(window.location.search).get("edit");
     if (!id) return;
@@ -119,50 +117,50 @@ export default function CreateQuotePage() {
       setLoadQuoteError("");
 
       fetch(`/api/internal/quotes/${encodeURIComponent(id)}`, { cache: "no-store" })
-      .then(async (res) => {
-        const data = await res.json().catch(() => null);
-        if (!res.ok) throw new Error(data?.error || "Không thể tải báo giá");
-        return data;
-      })
-      .then((data) => {
-        if (ignore) return;
+        .then(async (res) => {
+          const data = await res.json().catch(() => null);
+          if (!res.ok) throw new Error(data?.error || "Không thể tải báo giá");
+          return data;
+        })
+        .then((data) => {
+          if (ignore) return;
 
-        setQuoteNumber(data.quoteNumber || id);
-        setQuoteCreatedAt(data.createdAt ? new Date(data.createdAt) : new Date());
-        setQuoteStatus(data.status === "issued" ? "issued" : "draft");
-        setCustomerType(data.customer?.type === "company" ? "company" : "individual");
-        setCustomerName(data.customer?.name || "");
-        setCustomerPhone(data.customer?.phone || "");
-        setZaloName(data.customer?.zalo_name || "");
-        setCompanyName(data.customer?.company_name || "");
-        setTaxId(data.customer?.tax_id || "");
-        setAddress(data.customer?.address || "");
+          setQuoteNumber(data.quoteNumber || id);
+          setQuoteCreatedAt(data.createdAt ? new Date(data.createdAt) : new Date());
+          setQuoteStatus(data.status === "issued" ? "issued" : "draft");
+          setCustomerType(data.customer?.type === "company" ? "company" : "individual");
+          setCustomerName(data.customer?.name || "");
+          setCustomerPhone(data.customer?.phone || "");
+          setZaloName(data.customer?.zalo_name || "");
+          setCompanyName(data.customer?.company_name || "");
+          setTaxId(data.customer?.tax_id || "");
+          setAddress(data.customer?.address || "");
 
-        const vehicle = data.vehicles?.[0];
-        if (vehicle?.description || Number(vehicle?.quantity) > 1) {
-          setVehicleMode("fleet");
-          setFleetDesc(vehicle.description || "");
-          setFleetCount(Math.max(1, Number(vehicle.quantity) || 1));
-        } else {
-          setVehicleMode("single");
-          setLicensePlate(vehicle?.license_plate || "");
-          setVehicleBrand(vehicle?.brand || "");
-          setVehicleModel(vehicle?.model || "");
-        }
+          const vehicle = data.vehicles?.[0];
+          if (vehicle?.description || Number(vehicle?.quantity) > 1) {
+            setVehicleMode("fleet");
+            setFleetDesc(vehicle.description || "");
+            setFleetCount(Math.max(1, Number(vehicle.quantity) || 1));
+          } else {
+            setVehicleMode("single");
+            setLicensePlate(vehicle?.license_plate || "");
+            setVehicleBrand(vehicle?.brand || "");
+            setVehicleModel(vehicle?.model || "");
+          }
 
-        setSelectedServices(Array.isArray(data.services) ? data.services : []);
-        setDocuments(Array.isArray(data.documents) ? data.documents : []);
-        setVatRate(Number(data.vatRate) || 0);
-        setQuoteNotes(data.notes || "");
-      })
-      .catch((error: unknown) => {
-        if (!ignore) {
-          setLoadQuoteError(error instanceof Error ? error.message : "Không thể tải báo giá");
-        }
-      })
-      .finally(() => {
-        if (!ignore) setLoadingQuote(false);
-      });
+          setSelectedServices(Array.isArray(data.services) ? data.services : []);
+          setDocuments(Array.isArray(data.documents) ? data.documents : []);
+          setVatRate(Number(data.vatRate) || 0);
+          setQuoteNotes(data.notes || "");
+        })
+        .catch((error: unknown) => {
+          if (!ignore) {
+            setLoadQuoteError(error instanceof Error ? error.message : "Không thể tải báo giá");
+          }
+        })
+        .finally(() => {
+          if (!ignore) setLoadingQuote(false);
+        });
     }, 0);
 
     return () => {
@@ -171,7 +169,61 @@ export default function CreateQuotePage() {
     };
   }, []);
 
-  // Search existing customer as user types phone
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("edit")) return;
+    const rawPhone = params.get("phone")?.trim() || "";
+    if (!rawPhone) return;
+
+    let ignore = false;
+    const timer = window.setTimeout(() => {
+      setCustomerPhone(rawPhone);
+
+      fetch(`/api/internal/customers?phone=${encodeURIComponent(rawPhone)}`, {
+        cache: "no-store",
+      })
+        .then((res) => (res.ok ? res.json() : null))
+        .then(
+          (
+            data: Array<{
+              type?: string;
+              name?: string;
+              phone?: string;
+              company_name?: string;
+              zalo_name?: string;
+              tax_id?: string;
+              address?: string;
+            }> | null
+          ) => {
+            if (ignore || !Array.isArray(data) || data.length === 0) return;
+
+            const normalizedTarget = rawPhone.replace(/[\s.()-]/g, "");
+            const matched =
+              data.find(
+                (item) => (item.phone || "").replace(/[\s.()-]/g, "") === normalizedTarget
+              ) || data[0];
+
+            if (!matched) return;
+            if (matched.name) setCustomerName(matched.name);
+            if (matched.phone) setCustomerPhone(matched.phone);
+            if (matched.type === "company" || matched.company_name) {
+              setCustomerType("company");
+            }
+            if (matched.company_name) setCompanyName(matched.company_name);
+            if (matched.zalo_name) setZaloName(matched.zalo_name);
+            if (matched.tax_id) setTaxId(matched.tax_id);
+            if (matched.address) setAddress(matched.address);
+          }
+        )
+        .catch(() => {});
+    }, 0);
+
+    return () => {
+      ignore = true;
+      window.clearTimeout(timer);
+    };
+  }, []);
+
   const searchCustomer = async (term: string) => {
     if (term.length < 3) {
       setSearchResults([]);
@@ -258,7 +310,6 @@ export default function CreateQuotePage() {
     setDocuments(documents.filter((d) => d.id !== id));
   };
 
-  // Calculations
   const subtotal = selectedServices.reduce((sum, s) => sum + s.price * s.quantity, 0);
   const vatAmount = subtotal * (vatRate / 100);
   const totalAmount = Math.round(subtotal + vatAmount);
@@ -518,27 +569,34 @@ export default function CreateQuotePage() {
   }
 
   return (
-    <div className="space-y-8 max-w-6xl mx-auto pb-16">
+    <div className="quanly-content-container max-w-6xl pb-6">
       {/* Top Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
+      <div className="quanly-page-header">
+        <div className="quanly-page-title-group">
           <div className="flex items-center gap-2 text-xs text-gray-400 mb-1">
             <Link href="/quanly/quotes" className="hover:underline">Báo giá</Link>
             <span>/</span>
             <span className="text-gray-200">{editId ? "Chỉnh sửa báo giá" : "Lập báo giá mới"}</span>
           </div>
-          <div className="flex flex-wrap items-center gap-3">
-            <h1 className="text-2xl font-bold text-white">
+          <div className="flex flex-wrap items-center gap-2.5">
+            <h1 className="text-xl sm:text-2xl font-bold text-white">
               {editId ? `Báo giá ${quoteNumber}` : "Tạo Báo Giá Dịch Vụ Mới"}
             </h1>
             {editId && (
-              <span className={`rounded-full border px-2.5 py-1 text-[11px] font-semibold ${quoteStatus === "issued" ? "border-emerald-500/30 bg-emerald-500/10 text-emerald-300" : "border-gray-600 bg-gray-800 text-gray-300"}`}>
+              <span
+                className={`rounded-full border px-2.5 py-1 text-[11px] font-semibold whitespace-nowrap ${
+                  quoteStatus === "issued"
+                    ? "border-emerald-500/30 bg-emerald-500/10 text-emerald-300"
+                    : "border-gray-600 bg-gray-800 text-gray-300"
+                }`}
+              >
                 {quoteStatus === "issued" ? "Đã phát hành" : "Bản nháp"}
               </span>
             )}
           </div>
         </div>
-        <div className="flex flex-wrap items-center gap-3">
+
+        <div className="quanly-action-bar">
           <button
             type="button"
             onClick={() => setShowPreview(true)}
@@ -549,6 +607,7 @@ export default function CreateQuotePage() {
           </button>
           {!isIssuedQuote && (
             <button
+              type="button"
               onClick={() => void handleSaveQuote("draft")}
               disabled={saving}
               className="quanly-btn-secondary"
@@ -559,26 +618,29 @@ export default function CreateQuotePage() {
           {isIssuedQuote ? (
             <>
               <button
-                onClick={() => handleDownloadIssuedQuote("pdf")}
-                disabled={saving}
-                className="quanly-btn-gold"
-              >
-                {saving ? "Đang xử lý..." : "↻ Tải PDF"}
-              </button>
-              <button
+                type="button"
                 onClick={() => handleDownloadIssuedQuote("image")}
                 disabled={saving}
                 className="quanly-btn-secondary"
                 title="Tải ảnh JPG gọn nhẹ để gửi qua Zalo"
               >
-                {saving ? "Đang xử lý..." : "▧ Tải ảnh gửi Zalo"}
+                {saving ? "Đang xử lý..." : "▧ Ảnh gửi Zalo"}
+              </button>
+              <button
+                type="button"
+                onClick={() => handleDownloadIssuedQuote("pdf")}
+                disabled={saving}
+                className="quanly-btn-gold quanly-action-span-full"
+              >
+                {saving ? "Đang xử lý..." : "↻ Tải PDF"}
               </button>
             </>
           ) : (
             <button
+              type="button"
               onClick={handlePrimaryPdfAction}
               disabled={saving}
-              className="quanly-btn-gold"
+              className="quanly-btn-gold quanly-action-span-full"
             >
               {saving ? "Đang xử lý..." : "✓ Phát hành & tải PDF"}
             </button>
@@ -588,18 +650,18 @@ export default function CreateQuotePage() {
 
       {/* Section 1: Customer Info */}
       <div className="quanly-card space-y-4">
-        <h2 className="text-base font-bold text-[#d4af37] border-b border-gray-800 pb-2 flex items-center justify-between">
-          <span>1. Thông tin khách hàng</span>
-          <span className="text-xs font-normal text-gray-400">Hỗ trợ cá nhân & doanh nghiệp</span>
-        </h2>
+        <div className="quanly-section-head border-b border-gray-800 pb-2.5">
+          <h2 className="text-base font-bold text-[#d4af37]">1. Thông tin khách hàng</h2>
+          <span className="text-xs font-normal text-gray-400">Hỗ trợ cá nhân &amp; doanh nghiệp</span>
+        </div>
 
-        {/* Customer Type Radio */}
-        <div className="flex gap-6 text-xs text-gray-300">
+        <div className="flex flex-wrap gap-4 sm:gap-6 text-xs text-gray-300">
           <label className="flex items-center gap-2 cursor-pointer">
             <input
               type="radio"
               checked={customerType === "individual"}
               onChange={() => setCustomerType("individual")}
+              className="accent-[#d4af37]"
             />
             <span className="font-medium">Khách hàng cá nhân</span>
           </label>
@@ -608,12 +670,12 @@ export default function CreateQuotePage() {
               type="radio"
               checked={customerType === "company"}
               onChange={() => setCustomerType("company")}
+              className="accent-[#d4af37]"
             />
             <span className="font-medium">Khách hàng doanh nghiệp</span>
           </label>
         </div>
 
-        {/* Inputs */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs">
           <div className="relative">
             <label className="block text-gray-400 mb-1">Họ tên khách hàng / Người liên hệ *</label>
@@ -628,7 +690,6 @@ export default function CreateQuotePage() {
               placeholder="Ví dụ: Nguyễn Văn A"
               className="w-full bg-[#0d1017] border border-gray-700 rounded-lg p-2.5 text-gray-200 focus:outline-none focus:border-[#d4af37]"
             />
-            {/* Auto suggestions */}
             {showSuggestions && searchResults.length > 0 && (
               <div className="absolute left-0 right-0 top-full mt-1 bg-[#1a202c] border border-gray-700 rounded-lg shadow-xl z-20 max-h-48 overflow-y-auto">
                 {searchResults.map((c, i) => (
@@ -671,7 +732,7 @@ export default function CreateQuotePage() {
               placeholder="Tên tài khoản Zalo"
               className="w-full bg-[#0d1017] border border-gray-700 rounded-lg p-2.5 text-gray-200 focus:outline-none focus:border-[#d4af37]"
             />
-            <p className="mt-1.5 text-[10px] leading-relaxed text-gray-600">
+            <p className="mt-1.5 text-[10px] leading-relaxed text-gray-500">
               Chỉ cần có số điện thoại hoặc tên Zalo.
             </p>
           </div>
@@ -716,14 +777,15 @@ export default function CreateQuotePage() {
 
       {/* Section 2: Vehicles Info */}
       <div className="quanly-card space-y-4">
-        <h2 className="text-base font-bold text-[#d4af37] border-b border-gray-800 pb-2 flex items-center justify-between">
-          <span>2. Thông tin xe / Phương tiện</span>
-          <div className="flex gap-4 text-xs font-normal">
+        <div className="quanly-section-head border-b border-gray-800 pb-2.5">
+          <h2 className="text-base font-bold text-[#d4af37]">2. Thông tin xe / Phương tiện</h2>
+          <div className="flex flex-wrap gap-4 text-xs font-normal">
             <label className="flex items-center gap-1.5 cursor-pointer">
               <input
                 type="radio"
                 checked={vehicleMode === "single"}
                 onChange={() => setVehicleMode("single")}
+                className="accent-[#d4af37]"
               />
               <span>1 Xe</span>
             </label>
@@ -732,11 +794,12 @@ export default function CreateQuotePage() {
                 type="radio"
                 checked={vehicleMode === "fleet"}
                 onChange={() => setVehicleMode("fleet")}
+                className="accent-[#d4af37]"
               />
               <span>Đội xe / Lô xe</span>
             </label>
           </div>
-        </h2>
+        </div>
 
         {vehicleMode === "single" ? (
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs">
@@ -799,21 +862,27 @@ export default function CreateQuotePage() {
 
       {/* Section 3: Services Cart */}
       <div className="quanly-card space-y-5 !p-0">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between px-5 sm:px-6 py-5 border-b border-white/5 bg-gradient-to-r from-[#171d29] to-[#131822] gap-3">
-          <div>
+        <div className="quanly-section-head px-4 sm:px-6 py-4 sm:py-5 border-b border-white/5 bg-gradient-to-r from-[#171d29] to-[#131822]">
+          <div className="min-w-0">
             <div className="flex items-center gap-2">
-              <span className="grid h-8 w-8 place-items-center rounded-lg bg-[#d4af37]/15 text-[#e8c766]">🛒</span>
-              <h2 className="text-lg font-bold text-white">3. Chọn dịch vụ cần báo giá</h2>
+              <span className="grid h-8 w-8 shrink-0 place-items-center rounded-lg bg-[#d4af37]/15 text-[#e8c766]">🛒</span>
+              <h2 className="text-base sm:text-lg font-bold text-white">3. Chọn dịch vụ cần báo giá</h2>
             </div>
-            <p className="text-xs text-gray-500 mt-2 sm:ml-10">Chọn từ danh mục chuẩn hoặc thêm một dòng riêng cho hồ sơ đặc thù.</p>
+            <p className="text-xs text-gray-400 mt-1.5 sm:ml-10">
+              Chọn từ danh mục chuẩn hoặc thêm một dòng riêng cho hồ sơ đặc thù.
+            </p>
           </div>
-          <div className="flex items-center gap-2">
-            <span className="rounded-full border border-[#d4af37]/25 bg-[#d4af37]/10 px-3 py-1.5 text-xs text-[#e8c766]">{selectedServices.length} dịch vụ đã chọn</span>
-            <button type="button" onClick={addCustomService} className="quanly-btn-secondary !py-1.5 !px-3 text-xs">＋ Dòng tự nhập</button>
+          <div className="flex flex-wrap items-center gap-2 shrink-0">
+            <span className="rounded-full border border-[#d4af37]/25 bg-[#d4af37]/10 px-3 py-1.5 text-xs text-[#e8c766] whitespace-nowrap">
+              {selectedServices.length} dịch vụ đã chọn
+            </span>
+            <button type="button" onClick={addCustomService} className="quanly-btn-secondary !py-1.5 !px-3 text-xs">
+              ＋ Dòng tự nhập
+            </button>
           </div>
         </div>
 
-        <div className="relative z-20 px-5 sm:px-6">
+        <div className="relative z-20 px-4 sm:px-6">
           <div className="relative">
             <span className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-500">⌕</span>
             <input
@@ -833,7 +902,10 @@ export default function CreateQuotePage() {
             />
 
             {normalizedServiceSearch && (
-              <div id="service-suggestions" className="absolute left-0 right-0 top-[calc(100%+8px)] overflow-hidden rounded-xl border border-gray-700 bg-[#111620] shadow-2xl shadow-black/60">
+              <div
+                id="service-suggestions"
+                className="absolute left-0 right-0 top-[calc(100%+8px)] overflow-hidden rounded-xl border border-gray-700 bg-[#111620] shadow-2xl shadow-black/60"
+              >
                 {suggestedServices.length > 0 ? (
                   <div className="max-h-72 overflow-y-auto p-1.5">
                     {suggestedServices.map((service) => (
@@ -851,7 +923,11 @@ export default function CreateQuotePage() {
                             {service.name}
                           </span>
                           <span className="mt-0.5 block truncate text-[11px] text-gray-500">
-                            {service.vehicle_type === "car" ? "Ô tô" : service.vehicle_type === "motorbike" ? "Xe máy" : "Mọi loại xe"}
+                            {service.vehicle_type === "car"
+                              ? "Ô tô"
+                              : service.vehicle_type === "motorbike"
+                              ? "Xe máy"
+                              : "Mọi loại xe"}
                             <span className="px-1.5 text-gray-700">•</span>
                             {service.group_name.replace(/^Nhóm \d+:\s*/, "")}
                           </span>
@@ -875,20 +951,95 @@ export default function CreateQuotePage() {
               </div>
             )}
           </div>
-          <p className="mt-2 text-[11px] text-gray-600">
+          <p className="mt-2 text-[11px] text-gray-500">
             Gõ một phần tên dịch vụ, loại xe hoặc mã dịch vụ.
           </p>
         </div>
 
-        {/* Selected Services Table */}
-        <div className="mx-5 sm:mx-6 overflow-x-auto border border-gray-800 rounded-xl bg-[#0e1219]">
-          <table className="w-full text-left text-xs text-gray-300">
+        {/* Mobile Editable Service Cards */}
+        <div className="px-4 space-y-3 md:hidden">
+          {selectedServices.length === 0 ? (
+            <div className="rounded-xl border border-gray-800 bg-[#0e1219] p-6 text-center text-xs text-gray-500">
+              <span className="block text-2xl mb-2">🧾</span>
+              Chưa có dịch vụ nào. Anh/chị hãy chọn từ danh mục phía trên.
+            </div>
+          ) : (
+            selectedServices.map((item) => (
+              <div
+                key={item.id}
+                className="rounded-xl border border-gray-800 bg-[#0e1219] p-3.5 space-y-3 text-xs"
+              >
+                <div className="flex items-start justify-between gap-2">
+                  <textarea
+                    rows={2}
+                    value={item.name}
+                    onChange={(e) => updateService(item.id, "name", e.target.value)}
+                    className="flex-1 min-w-0 resize-none bg-transparent text-sm font-semibold leading-snug text-white border-b border-gray-800 pb-1 focus:border-[#d4af37] focus:outline-none"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => removeService(item.id)}
+                    aria-label="Xóa dòng dịch vụ"
+                    className="text-gray-400 hover:text-red-400 text-sm px-2 py-1 shrink-0"
+                  >
+                    ✕
+                  </button>
+                </div>
+
+                <div className="grid grid-cols-2 gap-2.5">
+                  <div>
+                    <label className="block text-[10px] text-gray-500 mb-1">Đơn giá (VNĐ)</label>
+                    <input
+                      type="number"
+                      step="50000"
+                      value={item.price}
+                      onChange={(e) => updateService(item.id, "price", Number(e.target.value))}
+                      className="w-full bg-[#0d1017] border border-gray-700 rounded-lg px-2.5 py-2 font-mono text-gray-200 focus:outline-none focus:border-[#d4af37]"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-[10px] text-gray-500 mb-1">Số lượng</label>
+                    <input
+                      type="number"
+                      min="1"
+                      value={item.quantity}
+                      onChange={(e) => updateService(item.id, "quantity", Number(e.target.value) || 1)}
+                      className="w-full bg-[#0d1017] border border-gray-700 rounded-lg px-2.5 py-2 font-mono text-center text-gray-200 focus:outline-none focus:border-[#d4af37]"
+                    />
+                  </div>
+                </div>
+
+                <div className="flex items-center justify-between gap-3 pt-1 border-t border-white/5">
+                  <input
+                    type="text"
+                    value={item.note || ""}
+                    onChange={(e) => updateService(item.id, "note", e.target.value)}
+                    placeholder="Ghi chú..."
+                    className="flex-1 min-w-0 bg-transparent text-gray-400 focus:outline-none"
+                  />
+                  <span className="font-mono font-bold text-emerald-400 shrink-0">
+                    {formatMoney(item.price * item.quantity)}
+                  </span>
+                </div>
+              </div>
+            ))
+          )}
+        </div>
+
+        {/* Desktop Selected Services Table */}
+        <div
+          className="mx-6 hidden md:block quanly-table-scroll border border-gray-800 rounded-xl bg-[#0e1219]"
+          tabIndex={0}
+          role="region"
+          aria-label="Bảng dịch vụ báo giá"
+        >
+          <table className="w-full min-w-[680px] text-left text-xs text-gray-300">
             <thead className="uppercase bg-black/40 text-gray-500 border-b border-gray-800">
               <tr>
                 <th className="px-4 py-2.5">Tên dịch vụ</th>
-                <th className="px-4 py-2.5 w-36">Đơn giá (VNĐ)</th>
-                <th className="px-4 py-2.5 w-24 text-center">Số lượng</th>
-                <th className="px-4 py-2.5 w-36 text-right">Thành tiền</th>
+                <th className="px-4 py-2.5 w-36 whitespace-nowrap">Đơn giá (VNĐ)</th>
+                <th className="px-4 py-2.5 w-24 text-center whitespace-nowrap">Số lượng</th>
+                <th className="px-4 py-2.5 w-36 text-right whitespace-nowrap">Thành tiền</th>
                 <th className="px-4 py-2.5">Ghi chú</th>
                 <th className="px-4 py-2.5 w-12"></th>
               </tr>
@@ -897,7 +1048,8 @@ export default function CreateQuotePage() {
               {selectedServices.length === 0 ? (
                 <tr>
                   <td colSpan={6} className="text-center py-8 text-gray-500">
-                    <span className="block text-2xl mb-2">🧾</span>Chưa có dịch vụ nào. Anh/chị hãy chọn từ danh mục phía trên.
+                    <span className="block text-2xl mb-2">🧾</span>
+                    Chưa có dịch vụ nào. Anh/chị hãy chọn từ danh mục phía trên.
                   </td>
                 </tr>
               ) : (
@@ -929,7 +1081,7 @@ export default function CreateQuotePage() {
                         className="w-16 bg-[#0d1017] border border-gray-700 rounded px-2 py-1 font-mono text-center text-gray-200 focus:outline-none focus:border-[#d4af37]"
                       />
                     </td>
-                    <td className="px-4 py-2.5 text-right font-mono font-bold text-emerald-400">
+                    <td className="px-4 py-2.5 text-right font-mono font-bold text-emerald-400 whitespace-nowrap">
                       {formatMoney(item.price * item.quantity)}
                     </td>
                     <td className="px-4 py-2.5">
@@ -943,6 +1095,7 @@ export default function CreateQuotePage() {
                     </td>
                     <td className="px-4 py-2.5 text-right">
                       <button
+                        type="button"
                         onClick={() => removeService(item.id)}
                         className="text-gray-500 hover:text-red-400 text-sm"
                         title="Xóa dòng này"
@@ -958,13 +1111,13 @@ export default function CreateQuotePage() {
         </div>
 
         {/* Pricing Summary */}
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-4 px-5 sm:px-6 py-5 border-t border-gray-800 bg-black/15">
-          <div className="flex items-center gap-4 text-xs">
+        <div className="flex flex-col sm:flex-row justify-between items-stretch sm:items-end gap-4 px-4 sm:px-6 py-4 sm:py-5 border-t border-gray-800 bg-black/15">
+          <div className="flex flex-wrap items-center gap-3 text-xs">
             <span className="text-gray-400">Thuế GTGT (VAT):</span>
             <select
               value={vatRate}
               onChange={(e) => setVatRate(Number(e.target.value))}
-              className="bg-[#0d1017] border border-gray-700 rounded px-3 py-1.5 text-xs text-gray-200 focus:outline-none"
+              className="bg-[#0d1017] border border-gray-700 rounded-lg px-3 py-2 text-xs text-gray-200 focus:outline-none"
             >
               <option value={0}>0% (Không chịu thuế)</option>
               <option value={8}>8% (VAT ưu đãi)</option>
@@ -972,17 +1125,22 @@ export default function CreateQuotePage() {
             </select>
           </div>
 
-          <div className="text-right space-y-1">
-            <div className="text-xs text-gray-400">
-              Tổng tiền dịch vụ: <span className="font-mono text-white">{formatMoney(subtotal)}</span>
+          <div className="w-full sm:w-auto text-left sm:text-right space-y-1.5">
+            <div className="text-xs text-gray-400 flex items-center justify-between sm:justify-end gap-3">
+              <span>Tổng tiền dịch vụ:</span>
+              <span className="font-mono tabular-nums text-white">{formatMoney(subtotal)}</span>
             </div>
             {vatRate > 0 && (
-              <div className="text-xs text-gray-400">
-                Tiền thuế VAT ({vatRate}%): <span className="font-mono text-white">{formatMoney(vatAmount)}</span>
+              <div className="text-xs text-gray-400 flex items-center justify-between sm:justify-end gap-3">
+                <span>Tiền thuế VAT ({vatRate}%):</span>
+                <span className="font-mono tabular-nums text-white">{formatMoney(vatAmount)}</span>
               </div>
             )}
-            <div className="text-base font-bold text-white pt-2 mt-2 border-t border-gray-700">
-              TỔNG CỘNG: <span className="text-2xl font-mono text-emerald-400 ml-2">{formatMoney(totalAmount)}</span>
+            <div className="text-base font-bold text-white pt-2 mt-2 border-t border-gray-700 flex items-baseline justify-between sm:justify-end gap-3">
+              <span>TỔNG CỘNG:</span>
+              <span className="text-xl sm:text-2xl font-mono tabular-nums text-emerald-400">
+                {formatMoney(totalAmount)}
+              </span>
             </div>
           </div>
         </div>
@@ -990,138 +1148,160 @@ export default function CreateQuotePage() {
 
       {/* Section 4: Documents Checklist */}
       <div className="quanly-card space-y-4">
-        <div className="flex items-center justify-between pb-2 border-b border-gray-800">
+        <div className="quanly-section-head pb-2.5 border-b border-gray-800">
           <h2 className="text-base font-bold text-[#d4af37]">
             4. Hồ sơ thủ tục cần chuẩn bị (Đính kèm báo giá)
           </h2>
           <button
             type="button"
             onClick={addDocument}
-            className="text-xs px-3 py-1.5 rounded-lg border border-gray-700 hover:bg-gray-800 text-gray-300"
+            className="quanly-btn-secondary !py-1.5 !px-3 text-xs shrink-0"
           >
             + Thêm giấy tờ
           </button>
         </div>
 
-        <div className="space-y-2">
+        <div className="space-y-2.5">
           {documents.map((doc, idx) => (
             <div
               key={doc.id}
-              className="flex items-center gap-3 p-2.5 rounded-lg bg-[#0d1017] border border-gray-800 text-xs"
+              className="flex flex-col md:flex-row md:items-center gap-2.5 p-3 rounded-xl bg-[#0d1017] border border-gray-800 text-xs"
             >
-              <span className="text-gray-500 font-mono w-6">{idx + 1}.</span>
-              <input
-                type="text"
-                value={doc.name}
-                onChange={(e) => {
-                  setDocuments(
-                    documents.map((d) => (d.id === doc.id ? { ...d, name: e.target.value } : d))
-                  );
-                }}
-                className="flex-1 bg-transparent text-gray-200 focus:outline-none"
-              />
-              <div className="flex items-center gap-1.5">
-                <span className="text-gray-500 text-[11px]">SL:</span>
+              <div className="flex items-center gap-2 flex-1 min-w-0">
+                <span className="text-gray-500 font-mono w-5 shrink-0">{idx + 1}.</span>
                 <input
-                  type="number"
-                  min="1"
-                  value={doc.quantity}
+                  type="text"
+                  value={doc.name}
                   onChange={(e) => {
                     setDocuments(
-                      documents.map((d) => (d.id === doc.id ? { ...d, quantity: Number(e.target.value) || 1 } : d))
+                      documents.map((d) => (d.id === doc.id ? { ...d, name: e.target.value } : d))
                     );
                   }}
-                  className="w-12 bg-black/40 border border-gray-700 rounded text-center text-gray-200 py-0.5 focus:outline-none"
+                  className="flex-1 min-w-0 bg-transparent font-medium text-gray-100 focus:outline-none border-b border-transparent focus:border-gray-700"
                 />
+                <button
+                  type="button"
+                  onClick={() => removeDocument(doc.id)}
+                  aria-label="Xóa giấy tờ"
+                  className="md:hidden text-gray-500 hover:text-red-400 p-1 shrink-0"
+                >
+                  ✕
+                </button>
               </div>
-              <input
-                type="text"
-                value={doc.note || ""}
-                onChange={(e) => {
-                  setDocuments(
-                    documents.map((d) => (d.id === doc.id ? { ...d, note: e.target.value } : d))
-                  );
-                }}
-                placeholder="Ghi chú (bản chính / công chứng)..."
-                className="w-48 bg-transparent text-gray-400 text-xs focus:outline-none border-b border-transparent focus:border-gray-700"
-              />
-              <button
-                type="button"
-                onClick={() => removeDocument(doc.id)}
-                className="text-gray-500 hover:text-red-400 p-1"
-              >
-                ✕
-              </button>
+
+              <div className="flex items-center gap-2.5 pl-7 md:pl-0">
+                <div className="flex items-center gap-1.5 shrink-0">
+                  <span className="text-gray-500 text-[11px]">SL:</span>
+                  <input
+                    type="number"
+                    min="1"
+                    value={doc.quantity}
+                    onChange={(e) => {
+                      setDocuments(
+                        documents.map((d) => (d.id === doc.id ? { ...d, quantity: Number(e.target.value) || 1 } : d))
+                      );
+                    }}
+                    className="w-12 bg-black/40 border border-gray-700 rounded text-center text-gray-200 py-1 focus:outline-none"
+                  />
+                </div>
+                <input
+                  type="text"
+                  value={doc.note || ""}
+                  onChange={(e) => {
+                    setDocuments(
+                      documents.map((d) => (d.id === doc.id ? { ...d, note: e.target.value } : d))
+                    );
+                  }}
+                  placeholder="Ghi chú (bản chính / công chứng)..."
+                  className="flex-1 md:w-48 md:flex-none min-w-0 bg-transparent text-gray-400 text-xs focus:outline-none border-b border-gray-800/70 focus:border-gray-600 pb-0.5"
+                />
+                <button
+                  type="button"
+                  onClick={() => removeDocument(doc.id)}
+                  aria-label="Xóa giấy tờ"
+                  className="hidden md:inline-flex text-gray-500 hover:text-red-400 p-1 shrink-0"
+                >
+                  ✕
+                </button>
+              </div>
             </div>
           ))}
         </div>
 
         <div>
-          <label className="block text-gray-400 mb-1 text-xs">Điều khoản & Ghi chú chung ở cuối báo giá</label>
+          <label className="block text-gray-400 mb-1 text-xs">Điều khoản &amp; Ghi chú chung ở cuối báo giá</label>
           <textarea
             rows={2}
             value={quoteNotes}
             onChange={(e) => setQuoteNotes(e.target.value)}
-            className="w-full bg-[#0d1017] border border-gray-700 rounded-lg p-2.5 text-xs text-gray-200 focus:outline-none"
+            className="w-full bg-[#0d1017] border border-gray-700 rounded-lg p-2.5 text-xs text-gray-200 focus:outline-none focus:border-[#d4af37]"
           />
         </div>
       </div>
 
       {/* Action Footer */}
-      <div className="flex flex-wrap justify-end gap-4 pt-4 border-t border-gray-800">
-        <Link href="/quanly/quotes" className="quanly-btn-secondary">
-          Hủy bỏ
-        </Link>
-        {!isIssuedQuote && (
-          <button
-            onClick={() => void handleSaveQuote("draft")}
-            disabled={saving}
-            className="quanly-btn-secondary"
-          >
-            Lưu bản nháp
-          </button>
-        )}
-        {isIssuedQuote ? (
-          <>
+      <div className="flex justify-end pt-4 border-t border-gray-800">
+        <div className="quanly-action-bar">
+          <Link href="/quanly/quotes" className="quanly-btn-secondary">
+            Hủy bỏ
+          </Link>
+          {!isIssuedQuote && (
             <button
-              onClick={() => handleDownloadIssuedQuote("pdf")}
-              disabled={saving}
-              className="quanly-btn-gold"
-            >
-              {saving ? "Đang xử lý..." : "↻ Tải lại PDF"}
-            </button>
-            <button
-              onClick={() => handleDownloadIssuedQuote("image")}
+              type="button"
+              onClick={() => void handleSaveQuote("draft")}
               disabled={saving}
               className="quanly-btn-secondary"
-              title="Tải ảnh JPG gọn nhẹ để gửi qua Zalo"
             >
-              {saving ? "Đang xử lý..." : "▧ Tải ảnh gửi Zalo"}
+              Lưu bản nháp
             </button>
-          </>
-        ) : (
-          <button
-            onClick={handlePrimaryPdfAction}
-            disabled={saving}
-            className="quanly-btn-gold"
-          >
-            {saving ? "Đang xử lý..." : "✓ Phát hành báo giá & xuất PDF"}
-          </button>
-        )}
+          )}
+          {isIssuedQuote ? (
+            <>
+              <button
+                type="button"
+                onClick={() => handleDownloadIssuedQuote("image")}
+                disabled={saving}
+                className="quanly-btn-secondary"
+                title="Tải ảnh JPG gọn nhẹ để gửi qua Zalo"
+              >
+                {saving ? "Đang xử lý..." : "▧ Tải ảnh Zalo"}
+              </button>
+              <button
+                type="button"
+                onClick={() => handleDownloadIssuedQuote("pdf")}
+                disabled={saving}
+                className="quanly-btn-gold quanly-action-span-full"
+              >
+                {saving ? "Đang xử lý..." : "↻ Tải lại PDF"}
+              </button>
+            </>
+          ) : (
+            <button
+              type="button"
+              onClick={handlePrimaryPdfAction}
+              disabled={saving}
+              className="quanly-btn-gold quanly-action-span-full"
+            >
+              {saving ? "Đang xử lý..." : "✓ Phát hành báo giá & xuất PDF"}
+            </button>
+          )}
+        </div>
       </div>
 
       {showPreview && (
-        <div className="fixed inset-0 z-50 overflow-y-auto bg-black/80 p-3 backdrop-blur-sm sm:p-6">
+        <div className="fixed inset-0 z-50 overflow-y-auto bg-black/80 p-3 pb-8 backdrop-blur-sm sm:p-6">
           <div className="mx-auto max-w-5xl">
-            <div className="sticky top-2 z-10 mb-3 flex items-center justify-between rounded-xl border border-white/10 bg-[#141923]/95 px-4 py-3 shadow-xl backdrop-blur">
-              <div>
+            <div className="sticky top-2 z-10 mb-3 flex flex-wrap items-center justify-between gap-2 rounded-xl border border-white/10 bg-[#141923]/95 px-4 py-3 shadow-xl backdrop-blur">
+              <div className="min-w-0">
                 <div className="text-sm font-bold text-white">Xem trước báo giá</div>
-                <div className="text-xs text-gray-400">Kiểm tra nội dung trước khi phát hành bản chính thức.</div>
+                <div className="text-xs text-gray-400">
+                  Kiểm tra nội dung trước khi phát hành bản chính thức.
+                </div>
               </div>
               <button
                 type="button"
                 onClick={() => setShowPreview(false)}
-                className="rounded-lg border border-gray-700 px-3 py-1.5 text-sm text-gray-300 hover:bg-white/5"
+                className="rounded-lg border border-gray-700 px-3 py-1.5 text-sm text-gray-300 hover:bg-white/5 shrink-0"
               >
                 Đóng
               </button>
