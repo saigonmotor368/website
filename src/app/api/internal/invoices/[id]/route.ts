@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getCurrentStaff } from "@/lib/staff-auth";
+import { getSupabaseAdmin } from "@/lib/supabase-admin";
 import { SupabaseEntities, PaymentData } from "@/lib/supabase-entities";
 
 export async function GET(
@@ -34,13 +35,22 @@ export async function PATCH(
 
   const { id } = await params;
   let body: {
-    action: "record_payment" | "cancel_invoice" | "issue_invoice";
+    action: "record_payment" | "cancel_invoice" | "issue_invoice" | "update_invoice_info";
     payment?: {
       amount: number;
       payment_method: "cash" | "bank_transfer" | "other";
       reference_code?: string;
       notes?: string;
     };
+    customer?: {
+      name?: string;
+      phone?: string;
+      company_name?: string;
+      tax_id?: string;
+      address?: string;
+    };
+    vat_rate?: number;
+    notes?: string;
     cancel_reason?: string;
   };
 
@@ -144,6 +154,115 @@ export async function PATCH(
       return NextResponse.json({ ok: true, invoice: updated });
     } catch {
       return NextResponse.json({ error: "Không thể phát hành phiếu trên Supabase" }, { status: 500 });
+    }
+  }
+
+  // 4. Update Customer / Company Info & VAT Rate
+  if (body.action === "update_invoice_info") {
+    if (invoice.status === "cancelled") {
+      return NextResponse.json(
+        { error: "Không thể cập nhật thông tin trên phiếu đã bị hủy" },
+        { status: 400 }
+      );
+    }
+
+    const nextName =
+      body.customer?.name !== undefined ? body.customer.name.trim() : invoice.customer.name;
+    const nextPhone =
+      body.customer?.phone !== undefined ? body.customer.phone.trim() : invoice.customer.phone;
+    if (!nextName || !nextPhone) {
+      return NextResponse.json(
+        { error: "Vui lòng nhập tên người liên hệ và số điện thoại" },
+        { status: 400 }
+      );
+    }
+
+    const nextCompanyName =
+      body.customer?.company_name !== undefined
+        ? body.customer.company_name.trim()
+        : invoice.customer.company_name ?? "";
+    const nextTaxId =
+      body.customer?.tax_id !== undefined
+        ? body.customer.tax_id.trim()
+        : invoice.customer.tax_id ?? "";
+    const nextAddress =
+      body.customer?.address !== undefined
+        ? body.customer.address.trim()
+        : invoice.customer.address ?? "";
+
+    const normalizedVatRate =
+      body.vat_rate !== undefined
+        ? Number(body.vat_rate) === 8
+          ? 8
+          : Number(body.vat_rate) === 10
+            ? 10
+            : 0
+        : invoice.vat_rate || 0;
+
+    const itemsSubtotal = invoice.items.reduce(
+      (sum, item) => sum + Number(item.total_price || 0),
+      0
+    );
+    const effectiveSubtotal =
+      itemsSubtotal > 0 ? itemsSubtotal : invoice.subtotal_amount || invoice.total_amount;
+    const newVatAmount = Math.round(effectiveSubtotal * (normalizedVatRate / 100));
+    const newTotalAmount = effectiveSubtotal + newVatAmount;
+
+    if (newTotalAmount < invoice.paid_amount) {
+      return NextResponse.json(
+        {
+          error: `Tổng cộng sau điều chỉnh (${newTotalAmount.toLocaleString("vi-VN")}đ) nhỏ hơn số tiền đã thu (${invoice.paid_amount.toLocaleString("vi-VN")}đ).`,
+        },
+        { status: 400 }
+      );
+    }
+
+    const rawNotes = body.notes !== undefined ? body.notes : invoice.notes || "";
+    const cleanBaseNotes = rawNotes.replace(/\s*\[VAT:(?:8|10)%\]\s*/g, " ").trim();
+    const storedNotes =
+      normalizedVatRate > 0
+        ? `${cleanBaseNotes ? `${cleanBaseNotes} ` : ""}[VAT:${normalizedVatRate}%]`
+        : cleanBaseNotes || null;
+
+    try {
+      const savedCustomer = await SupabaseEntities.saveCustomer({
+        id: invoice.customer_id || invoice.customer.id || undefined,
+        name: nextName,
+        phone: nextPhone,
+        type: nextCompanyName || nextTaxId ? "company" : "individual",
+        company_name: nextCompanyName,
+        tax_id: nextTaxId,
+        address: nextAddress,
+        created_by: staff.user.id,
+      });
+
+      const admin = getSupabaseAdmin();
+      const { error: updateErr } = await admin
+        .from("invoices")
+        .update({
+          customer_id: savedCustomer.id,
+          total_amount: newTotalAmount,
+          notes: storedNotes,
+          updated_at: now,
+        })
+        .eq("id", invoice.id);
+
+      if (updateErr) {
+        throw new Error(updateErr.message);
+      }
+
+      const updated = await SupabaseEntities.getInvoiceById(invoice.id);
+      return NextResponse.json({ ok: true, invoice: updated });
+    } catch (err) {
+      return NextResponse.json(
+        {
+          error:
+            err instanceof Error
+              ? err.message
+              : "Không thể cập nhật thông tin phiếu thanh toán",
+        },
+        { status: 500 }
+      );
     }
   }
 

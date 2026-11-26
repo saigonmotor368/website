@@ -371,6 +371,7 @@ export default function CreateQuotePage() {
       phone: customerPhone.trim(),
       zaloName: zaloName.trim() || undefined,
       companyName: companyName.trim() || undefined,
+      taxId: taxId.trim() || undefined,
       address: address.trim() || undefined,
     },
     vehicle:

@@ -81,6 +81,17 @@ export default function InvoiceDetailPage({ params }: { params: Promise<{ id: st
   const [payNote, setPayNote] = useState("");
   const [paySubmitting, setPaySubmitting] = useState(false);
 
+  // Edit Company / Customer & VAT modal state
+  const [editInfoOpen, setEditInfoOpen] = useState(false);
+  const [editCustName, setEditCustName] = useState("");
+  const [editCustPhone, setEditCustPhone] = useState("");
+  const [editCompanyName, setEditCompanyName] = useState("");
+  const [editTaxId, setEditTaxId] = useState("");
+  const [editAddress, setEditAddress] = useState("");
+  const [editVatRate, setEditVatRate] = useState<0 | 8 | 10>(0);
+  const [editError, setEditError] = useState("");
+  const [editSubmitting, setEditSubmitting] = useState(false);
+
   useEffect(() => {
     let ignore = false;
     async function loadInvoice() {
@@ -173,6 +184,58 @@ export default function InvoiceDetailPage({ params }: { params: Promise<{ id: st
     }
   }
 
+  function openEditInfoModal() {
+    if (!invoice) return;
+    setEditCustName(invoice.customer.name || "");
+    setEditCustPhone(invoice.customer.phone || "");
+    setEditCompanyName(invoice.customer.company_name || "");
+    setEditTaxId(invoice.customer.tax_id || "");
+    setEditAddress(invoice.customer.address || "");
+    setEditVatRate(invoice.vat_rate === 8 ? 8 : invoice.vat_rate === 10 ? 10 : 0);
+    setEditError("");
+    setEditInfoOpen(true);
+  }
+
+  async function handleSaveInvoiceInfo(e: React.FormEvent) {
+    e.preventDefault();
+    if (!editCustName.trim() || !editCustPhone.trim()) {
+      setEditError("Vui lòng nhập tên người liên hệ và số điện thoại.");
+      return;
+    }
+
+    setEditSubmitting(true);
+    setEditError("");
+    try {
+      const res = await fetch(`/api/internal/invoices/${id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          action: "update_invoice_info",
+          customer: {
+            name: editCustName.trim(),
+            phone: editCustPhone.trim(),
+            company_name: editCompanyName.trim(),
+            tax_id: editTaxId.trim(),
+            address: editAddress.trim(),
+          },
+          vat_rate: editVatRate,
+        }),
+      });
+
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data.error || "Không thể cập nhật thông tin phiếu thanh toán");
+      }
+
+      setEditInfoOpen(false);
+      setRefreshKey((k) => k + 1);
+    } catch (err) {
+      setEditError(err instanceof Error ? err.message : "Đã có lỗi xảy ra");
+    } finally {
+      setEditSubmitting(false);
+    }
+  }
+
   async function handleDownloadColorImage() {
     if (!invoice) return;
     setExportingImage(true);
@@ -240,8 +303,10 @@ export default function InvoiceDetailPage({ params }: { params: Promise<{ id: st
   }
 
   const canRecordPayment = invoice.status === "issued" && invoice.balance > 0;
+  const canEditInfo = invoice.status !== "cancelled";
   const canCancelInvoice = invoice.status === "issued" && invoice.paid_amount === 0;
-  const actionCount = (canRecordPayment ? 1 : 0) + 2 + (canCancelInvoice ? 1 : 0);
+  const actionCount =
+    (canRecordPayment ? 1 : 0) + (canEditInfo ? 1 : 0) + 2 + (canCancelInvoice ? 1 : 0);
   const isBw = docMode === "bw";
   const vatRate = invoice.vat_rate || 0;
   const itemsSubtotal = invoice.items.reduce((sum, item) => sum + item.total_price, 0);
@@ -252,6 +317,8 @@ export default function InvoiceDetailPage({ params }: { params: Promise<{ id: st
       : vatRate > 0
         ? Math.max(0, invoice.total_amount - subtotalAmount)
         : 0;
+  const previewVatAmount = Math.round(subtotalAmount * (editVatRate / 100));
+  const previewTotalAmount = subtotalAmount + previewVatAmount;
 
   return (
     <div className="quanly-content-container max-w-5xl">
@@ -292,9 +359,19 @@ export default function InvoiceDetailPage({ params }: { params: Promise<{ id: st
                 setPayAmount(invoice.balance);
                 setPayModalOpen(true);
               }}
-              className={`quanly-btn-primary ${actionCount === 3 ? "quanly-action-span-full" : ""}`}
+              className={`quanly-btn-primary ${actionCount % 2 === 1 ? "quanly-action-span-full" : ""}`}
             >
               <span>＋</span> Ghi nhận thu tiền
+            </button>
+          )}
+
+          {canEditInfo && (
+            <button
+              type="button"
+              onClick={openEditInfoModal}
+              className={`quanly-btn-secondary ${!canRecordPayment && actionCount % 2 === 1 ? "quanly-action-span-full" : ""}`}
+            >
+              🏢 Sửa Công ty / VAT
             </button>
           )}
 
@@ -523,22 +600,37 @@ export default function InvoiceDetailPage({ params }: { params: Promise<{ id: st
                 >
                   Khách hàng / Đơn vị thanh toán
                 </div>
-                <div className="font-bold text-[14px]">{invoice.customer.name}</div>
+                {invoice.customer.company_name ? (
+                  <>
+                    <div className="font-bold text-[14px] leading-snug">
+                      {invoice.customer.company_name}
+                    </div>
+                    {invoice.customer.tax_id && (
+                      <div className="font-mono text-[12px]">
+                        <span className={isBw ? "text-black" : "text-[#536761]"}>Mã số thuế (MST):</span>{" "}
+                        <span className="font-bold">{invoice.customer.tax_id}</span>
+                      </div>
+                    )}
+                    <div>
+                      <span className={isBw ? "text-black" : "text-[#536761]"}>Người liên hệ:</span>{" "}
+                      <span className="font-semibold">{invoice.customer.name}</span>
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <div className="font-bold text-[14px]">{invoice.customer.name}</div>
+                    {invoice.customer.tax_id && (
+                      <div className="font-mono text-[12px]">
+                        <span className={isBw ? "text-black" : "text-[#536761]"}>Mã số thuế (MST):</span>{" "}
+                        <span className="font-bold">{invoice.customer.tax_id}</span>
+                      </div>
+                    )}
+                  </>
+                )}
                 <div className="font-mono text-[12px]">
                   <span className={isBw ? "text-black" : "text-[#536761]"}>Điện thoại:</span>{" "}
                   <span className="font-semibold">{invoice.customer.phone}</span>
                 </div>
-                {invoice.customer.company_name && (
-                  <div>
-                    <span className={isBw ? "text-black" : "text-[#536761]"}>Đơn vị:</span>{" "}
-                    <span className="font-semibold">{invoice.customer.company_name}</span>
-                  </div>
-                )}
-                {invoice.customer.tax_id && (
-                  <div className="font-mono text-[12px]">
-                    <span className={isBw ? "text-black" : "text-[#536761]"}>MST:</span> {invoice.customer.tax_id}
-                  </div>
-                )}
                 {invoice.customer.address && (
                   <div>
                     <span className={isBw ? "text-black" : "text-[#536761]"}>Địa chỉ:</span>{" "}
@@ -987,6 +1079,167 @@ export default function InvoiceDetailPage({ params }: { params: Promise<{ id: st
               </button>
               <button type="submit" disabled={paySubmitting} className="quanly-btn-primary">
                 {paySubmitting ? "Đang lưu..." : "✓ Xác nhận đã thu"}
+              </button>
+            </div>
+          </form>
+        </div>
+      )}
+
+      {/* MODAL: Update Company Info & VAT */}
+      {editInfoOpen && (
+        <div className="fixed inset-0 bg-black/75 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <form
+            onSubmit={handleSaveInvoiceInfo}
+            className="bg-[#121620] border border-gray-800 rounded-2xl max-w-lg w-full p-5 sm:p-6 space-y-4 shadow-2xl max-h-[90dvh] overflow-y-auto"
+          >
+            <div>
+              <h3 className="text-base font-bold text-white">
+                🏢 Cập nhật Thông tin Công ty & VAT
+              </h3>
+              <p className="text-xs text-gray-400 mt-1">
+                Thông tin này sẽ hiển thị ngay trên bản in A4 và ảnh gửi Zalo của phiếu{" "}
+                <span className="font-mono text-[#d4af37]">{invoice.invoice_number}</span>.
+              </p>
+            </div>
+
+            {editError && (
+              <div
+                role="alert"
+                className="p-2.5 rounded-lg bg-red-950/50 border border-red-800/60 text-xs text-red-300"
+              >
+                ⚠️ {editError}
+              </div>
+            )}
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div>
+                <label className="block text-[11px] text-gray-300 mb-1">
+                  Tên người liên hệ / Khách hàng *
+                </label>
+                <input
+                  type="text"
+                  required
+                  value={editCustName}
+                  onChange={(e) => setEditCustName(e.target.value)}
+                  className="w-full bg-[#0d1017] border border-gray-800 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-[#d4af37]"
+                />
+              </div>
+              <div>
+                <label className="block text-[11px] text-gray-300 mb-1">Số điện thoại *</label>
+                <input
+                  type="tel"
+                  required
+                  value={editCustPhone}
+                  onChange={(e) => setEditCustPhone(e.target.value)}
+                  className="w-full bg-[#0d1017] border border-gray-800 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-[#d4af37]"
+                />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div>
+                <label className="block text-[11px] text-gray-300 mb-1">
+                  Tên công ty / Đơn vị
+                </label>
+                <input
+                  type="text"
+                  value={editCompanyName}
+                  onChange={(e) => setEditCompanyName(e.target.value)}
+                  placeholder="Công ty TNHH / Cổ phần..."
+                  className="w-full bg-[#0d1017] border border-gray-800 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-[#d4af37]"
+                />
+              </div>
+              <div>
+                <label className="block text-[11px] text-gray-300 mb-1">Mã số thuế (MST)</label>
+                <input
+                  type="text"
+                  value={editTaxId}
+                  onChange={(e) => setEditTaxId(e.target.value)}
+                  placeholder="03xxxxxxxx"
+                  className="w-full bg-[#0d1017] border border-gray-800 rounded-lg px-3 py-2 text-xs text-white font-mono focus:outline-none focus:border-[#d4af37]"
+                />
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-[11px] text-gray-300 mb-1">
+                Địa chỉ công ty / khách hàng
+              </label>
+              <input
+                type="text"
+                value={editAddress}
+                onChange={(e) => setEditAddress(e.target.value)}
+                placeholder="Số nhà, tên đường, phường/xã, tỉnh/thành phố..."
+                className="w-full bg-[#0d1017] border border-gray-800 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-[#d4af37]"
+              />
+            </div>
+
+            <div className="space-y-2 pt-1 border-t border-gray-800">
+              <span className="block text-[11px] text-gray-300">Thuế GTGT (VAT) áp dụng:</span>
+              <div className="grid grid-cols-3 gap-2" role="group" aria-label="Cập nhật mức thuế VAT">
+                <button
+                  type="button"
+                  aria-pressed={editVatRate === 0}
+                  onClick={() => setEditVatRate(0)}
+                  className={`min-h-[38px] px-2 py-2 rounded-lg border text-xs font-semibold transition whitespace-nowrap ${
+                    editVatRate === 0
+                      ? "border-[#d4af37] bg-[#d4af37]/15 text-[#f3d27a]"
+                      : "border-gray-800 bg-[#0d1017] text-gray-400 hover:text-white"
+                  }`}
+                >
+                  Không VAT
+                </button>
+                <button
+                  type="button"
+                  aria-pressed={editVatRate === 8}
+                  onClick={() => setEditVatRate(8)}
+                  className={`min-h-[38px] px-2 py-2 rounded-lg border text-xs font-semibold transition whitespace-nowrap ${
+                    editVatRate === 8
+                      ? "border-[#d4af37] bg-[#d4af37]/20 text-[#f3d27a]"
+                      : "border-gray-800 bg-[#0d1017] text-gray-400 hover:text-white"
+                  }`}
+                >
+                  VAT 8%
+                </button>
+                <button
+                  type="button"
+                  aria-pressed={editVatRate === 10}
+                  onClick={() => setEditVatRate(10)}
+                  className={`min-h-[38px] px-2 py-2 rounded-lg border text-xs font-semibold transition whitespace-nowrap ${
+                    editVatRate === 10
+                      ? "border-[#d4af37] bg-[#d4af37]/20 text-[#f3d27a]"
+                      : "border-gray-800 bg-[#0d1017] text-gray-400 hover:text-white"
+                  }`}
+                >
+                  VAT 10%
+                </button>
+              </div>
+              <div className="rounded-lg bg-black/40 border border-gray-800 p-2.5 text-xs space-y-1">
+                <div className="flex justify-between text-gray-400">
+                  <span>Tiền dịch vụ (Trước thuế):</span>
+                  <span className="font-mono text-gray-200">{formatMoney(subtotalAmount)}</span>
+                </div>
+                <div className="flex justify-between text-amber-300">
+                  <span>Thuế GTGT (VAT {editVatRate}%):</span>
+                  <span className="font-mono">{formatMoney(previewVatAmount)}</span>
+                </div>
+                <div className="flex justify-between font-bold text-emerald-400 pt-1 border-t border-gray-800">
+                  <span>Tổng cộng mới:</span>
+                  <span className="font-mono">{formatMoney(previewTotalAmount)}</span>
+                </div>
+              </div>
+            </div>
+
+            <div className="quanly-action-bar pt-2">
+              <button
+                type="button"
+                onClick={() => setEditInfoOpen(false)}
+                className="quanly-btn-secondary"
+              >
+                Đóng
+              </button>
+              <button type="submit" disabled={editSubmitting} className="quanly-btn-primary">
+                {editSubmitting ? "Đang lưu..." : "✓ Lưu thông tin"}
               </button>
             </div>
           </form>

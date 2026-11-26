@@ -61,14 +61,47 @@ export async function POST(request: NextRequest) {
   const invoiceId = crypto.randomUUID(); // Real UUID
   const now = new Date().toISOString();
 
-  // If created from case_id, populate from case data
+  // If created from case_id, populate from case data & merge customer company edits
   if (body.case_id) {
     const caseRecord = await SupabaseEntities.getCaseById(body.case_id);
     if (!caseRecord) {
       return NextResponse.json({ error: "Không tìm thấy hồ sơ nguồn" }, { status: 404 });
     }
 
-    targetCustomer = caseRecord.customer;
+    const baseCustomer = caseRecord.customer;
+    if (body.customer) {
+      const mergedCompany =
+        body.customer.company_name !== undefined
+          ? body.customer.company_name.trim() || undefined
+          : baseCustomer.company_name;
+      const mergedTaxId =
+        body.customer.tax_id !== undefined
+          ? body.customer.tax_id.trim() || undefined
+          : baseCustomer.tax_id;
+      const mergedAddress =
+        body.customer.address !== undefined
+          ? body.customer.address.trim() || undefined
+          : baseCustomer.address;
+
+      targetCustomer = await SupabaseEntities.saveCustomer({
+        id: baseCustomer.id || undefined,
+        name: body.customer.name?.trim() || baseCustomer.name,
+        phone: body.customer.phone?.trim() || baseCustomer.phone,
+        type:
+          mergedCompany || mergedTaxId || body.customer.type === "company"
+            ? "company"
+            : "individual",
+        company_name: mergedCompany,
+        tax_id: mergedTaxId,
+        zalo_name: body.customer.zalo_name ?? baseCustomer.zalo_name,
+        email: body.customer.email ?? baseCustomer.email,
+        address: mergedAddress,
+        notes: body.customer.notes ?? baseCustomer.notes,
+        created_by: staff.user.id,
+      });
+    } else {
+      targetCustomer = baseCustomer;
+    }
     targetCaseNumber = caseRecord.case_number;
 
     if (body.items && body.items.length > 0) {
@@ -94,9 +127,15 @@ export async function POST(request: NextRequest) {
     if (!body.customer?.name || !body.customer?.phone) {
       return NextResponse.json({ error: "Vui lòng nhập thông tin khách hàng" }, { status: 400 });
     }
+    const hasCompanyInfo = Boolean(
+      body.customer.company_name?.trim() ||
+        body.customer.tax_id?.trim() ||
+        body.customer.type === "company"
+    );
     targetCustomer = await SupabaseEntities.saveCustomer({
       ...body.customer,
       id: undefined,
+      type: hasCompanyInfo ? "company" : "individual",
       created_by: staff.user.id,
     });
 

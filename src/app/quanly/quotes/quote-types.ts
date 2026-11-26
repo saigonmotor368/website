@@ -22,6 +22,7 @@ export interface CustomerInfo {
   phone: string;
   zaloName?: string;
   companyName?: string;
+  taxId?: string;
   address?: string;
 }
 

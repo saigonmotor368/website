@@ -336,6 +336,14 @@ export default function QuotePreview({
                       <span className="font-semibold">{quoteData.customer.companyName}</span>
                     </p>
                   )}
+                  {quoteData.customer.taxId && (
+                    <p>
+                      <span className={isBw ? "inline-block w-20 font-medium text-black" : "inline-block w-20 text-[#536761]"}>
+                        MST:
+                      </span>{" "}
+                      <span className="font-mono font-semibold">{quoteData.customer.taxId}</span>
+                    </p>
+                  )}
                   {quoteData.customer.phone && (
                     <p>
                       <span className={isBw ? "inline-block w-20 font-medium text-black" : "inline-block w-20 text-[#536761]"}>

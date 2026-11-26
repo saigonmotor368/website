@@ -292,41 +292,68 @@ export const SupabaseEntities = {
 
   async saveCustomer(c: Partial<CustomerData> & { name: string; phone: string; created_by?: string }): Promise<CustomerData> {
     const admin = getSupabaseAdmin();
-    // 1. Canonical phone normalization
-    let cleanPhone = (c.phone || "").replace(/[^0-9+]/g, "");
-    if (cleanPhone.startsWith("+84")) {
-      cleanPhone = "0" + cleanPhone.slice(3);
-    } else if (cleanPhone.startsWith("84") && cleanPhone.length >= 11) {
-      cleanPhone = "0" + cleanPhone.slice(2);
-    }
+    // 1. Canonical phone normalization matching SQL public._normalize_phone()
+    const digitsOnly = (c.phone || "").replace(/[^0-9]/g, "");
+    const cleanPhone =
+      digitsOnly.startsWith("84") && digitsOnly.length >= 10
+        ? "0" + digitsOnly.slice(2)
+        : digitsOnly;
     const now = new Date().toISOString();
     const defaultActorId = "d18cc40a-4400-41bf-89ed-6d9d167af747"; // Owner UUID
 
-    // 2. Anti-duplication lookup
+    // 2. Anti-duplication lookup & preserve existing fields
     let customerId = c.id;
-    if (!customerId) {
+    let existingRow: Record<string, unknown> | null = null;
+
+    if (customerId) {
+      const { data: byId } = await admin
+        .from("customers")
+        .select("*")
+        .eq("id", customerId)
+        .maybeSingle();
+      existingRow = (byId as Record<string, unknown> | null) || null;
+
+      // Avoid unique constraint collision on customers_canonical_phone_uidx when phone changed to an existing customer's phone
+      if (cleanPhone && existingRow?.phone !== cleanPhone) {
+        const { data: phoneConflict } = await admin
+          .from("customers")
+          .select("*")
+          .eq("phone", cleanPhone)
+          .neq("id", customerId)
+          .order("updated_at", { ascending: false })
+          .limit(1);
+        if (phoneConflict && phoneConflict.length > 0) {
+          existingRow = phoneConflict[0] as Record<string, unknown>;
+          customerId = existingRow.id as string;
+        }
+      }
+    } else {
       // Số điện thoại có thể để trống khi khách chỉ liên hệ qua Zalo.
-      // Không đối chiếu chuỗi rỗng vì sẽ gộp nhầm nhiều khách hàng khác nhau.
-      const { data: existingPhone } = cleanPhone
+      // Dùng limit(1) thay vì maybeSingle() để không lỗi nếu DB từng có dòng trùng SĐT.
+      const { data: phoneRows } = cleanPhone
         ? await admin
             .from("customers")
-            .select("id")
+            .select("*")
             .eq("phone", cleanPhone)
-            .maybeSingle()
+            .order("updated_at", { ascending: false })
+            .limit(1)
         : { data: null };
 
-      if (existingPhone?.id) {
-        customerId = existingPhone.id;
+      if (phoneRows && phoneRows.length > 0) {
+        existingRow = phoneRows[0] as Record<string, unknown>;
+        customerId = existingRow.id as string;
       } else if (c.tax_id && c.tax_id.trim()) {
         // Check existing by tax_id for company customers
-        const { data: existingTax } = await admin
+        const { data: taxRows } = await admin
           .from("customers")
-          .select("id")
+          .select("*")
           .eq("tax_id", c.tax_id.trim())
-          .maybeSingle();
+          .order("updated_at", { ascending: false })
+          .limit(1);
 
-        if (existingTax?.id) {
-          customerId = existingTax.id;
+        if (taxRows && taxRows.length > 0) {
+          existingRow = taxRows[0] as Record<string, unknown>;
+          customerId = existingRow.id as string;
         }
       }
 
@@ -335,18 +362,47 @@ export const SupabaseEntities = {
       }
     }
 
+    const resolvedCompanyName =
+      c.company_name !== undefined
+        ? c.company_name.trim() || null
+        : (existingRow?.company_name as string | null) ?? null;
+    const resolvedTaxId =
+      c.tax_id !== undefined
+        ? c.tax_id.trim() || null
+        : (existingRow?.tax_id as string | null) ?? null;
+    const resolvedZaloName =
+      c.zalo_name !== undefined
+        ? c.zalo_name.trim() || null
+        : (existingRow?.zalo_name as string | null) ?? null;
+    const resolvedEmail =
+      c.email !== undefined
+        ? c.email.trim() || null
+        : (existingRow?.email as string | null) ?? null;
+    const resolvedAddress =
+      c.address !== undefined
+        ? c.address.trim() || null
+        : (existingRow?.address as string | null) ?? null;
+    const resolvedNotes =
+      c.notes !== undefined
+        ? c.notes.trim() || null
+        : (existingRow?.notes as string | null) ?? null;
+    const resolvedType =
+      resolvedCompanyName || resolvedTaxId
+        ? "company"
+        : c.type || ((existingRow?.type as "individual" | "company") || "individual");
+
     const customerRow = {
       id: customerId,
-      type: c.type || "individual",
-      name: c.name.trim(),
-      phone: cleanPhone,
-      company_name: c.company_name?.trim() || null,
-      tax_id: c.tax_id?.trim() || null,
-      zalo_name: c.zalo_name?.trim() || null,
-      email: c.email?.trim() || null,
-      address: c.address?.trim() || null,
-      notes: c.notes?.trim() || null,
-      created_by: c.created_by || defaultActorId,
+      type: resolvedType,
+      name: c.name.trim() || ((existingRow?.name as string) || ""),
+      phone: cleanPhone || ((existingRow?.phone as string) || ""),
+      company_name: resolvedCompanyName,
+      tax_id: resolvedTaxId,
+      zalo_name: resolvedZaloName,
+      email: resolvedEmail,
+      address: resolvedAddress,
+      notes: resolvedNotes,
+      created_by: c.created_by || (existingRow?.created_by as string) || defaultActorId,
       updated_at: now,
     };
 

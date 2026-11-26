@@ -114,10 +114,13 @@ function InvoiceCreateForm() {
           id: `cust_${Date.now()}`,
           name: customerName.trim(),
           phone: customerPhone.trim(),
-          type: companyName ? ("company" as const) : ("individual" as const),
-          company_name: companyName.trim() || undefined,
-          tax_id: taxId.trim() || undefined,
-          address: customerAddress.trim() || undefined,
+          type:
+            companyName.trim() || taxId.trim()
+              ? ("company" as const)
+              : ("individual" as const),
+          company_name: caseId ? companyName.trim() : companyName.trim() || undefined,
+          tax_id: caseId ? taxId.trim() : taxId.trim() || undefined,
+          address: caseId ? customerAddress.trim() : customerAddress.trim() || undefined,
           created_at: new Date().toISOString(),
         },
         status: "issued" as const,
